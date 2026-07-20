@@ -17,8 +17,10 @@ export default function AdminSettingsModal({
   onImportCreations,
   onResetCreations
 }: AdminSettingsModalProps) {
-  // Auth state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Auth state with session memory
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('myheartcraft_admin_session') === 'true';
+  });
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
@@ -41,10 +43,26 @@ export default function AdminSettingsModal({
     e.preventDefault();
     if (passwordInput === savedPassword) {
       setIsAuthenticated(true);
+      sessionStorage.setItem('myheartcraft_admin_session', 'true');
       setAuthError('');
     } else {
       setAuthError('Incorrect admin password. Please try again.');
     }
+  };
+
+  // Quick Unlock for default passcode
+  const handleQuickUnlock = () => {
+    setPasswordInput(savedPassword);
+    setIsAuthenticated(true);
+    sessionStorage.setItem('myheartcraft_admin_session', 'true');
+    setAuthError('');
+  };
+
+  // Lock / Logout Admin
+  const handleAdminLogout = () => {
+    sessionStorage.removeItem('myheartcraft_admin_session');
+    setIsAuthenticated(false);
+    setPasswordInput('');
   };
 
   // 2. Change Admin Password
@@ -184,30 +202,51 @@ export default function AdminSettingsModal({
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="w-full btn-primary py-3 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
-              >
-                <Key className="w-4 h-4" />
-                Unlock Settings
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="flex-1 btn-primary py-3 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+                >
+                  <Key className="w-4 h-4" />
+                  Unlock Settings
+                </button>
+                {savedPassword === 'admin123' && (
+                  <button
+                    type="button"
+                    onClick={handleQuickUnlock}
+                    className="px-4 border border-primary/40 text-primary font-label-caps text-[9px] tracking-widest uppercase font-bold hover:bg-primary/5 transition-all"
+                  >
+                    Quick Unlock
+                  </button>
+                )}
+              </div>
             </form>
 
             <p className="text-[10px] text-on-surface-variant/75 mt-4 italic">
-              Hint: Default password is <code className="bg-surface-container px-1 py-0.5 border border-primary/20 text-primary font-mono">admin123</code>
+              Default password: <code className="bg-surface-container px-1 py-0.5 border border-primary/20 text-primary font-mono font-bold">admin123</code>
             </p>
           </div>
         ) : (
           /* --- STEP B: ADMIN SETTINGS PANEL --- */
           <div>
-            <div className="flex items-center gap-3 mb-6 border-b border-primary/20 pb-4">
-              <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
-                <Shield className="w-4 h-4" />
+            <div className="flex items-center justify-between gap-3 mb-6 border-b border-primary/20 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
+                  <Shield className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="font-display-lg text-xl text-on-background font-light uppercase tracking-tight">Studio Settings</h2>
+                  <p className="font-label-caps text-[9px] text-green-700 uppercase tracking-[0.2em] font-bold">🟢 Logged in as Administrator</p>
+                </div>
               </div>
-              <div>
-                <h2 className="font-display-lg text-xl text-on-background font-light uppercase tracking-tight">Studio Settings</h2>
-                <p className="font-label-caps text-[9px] text-primary uppercase tracking-[0.2em]">Admin Configuration Panel</p>
-              </div>
+              <button
+                onClick={handleAdminLogout}
+                className="text-[9px] font-label-caps uppercase tracking-wider text-red-700 border border-red-300 hover:bg-red-50 px-3 py-1.5 font-bold transition-all flex items-center gap-1"
+                title="Lock Admin Session"
+              >
+                <Lock className="w-3 h-3" />
+                Lock
+              </button>
             </div>
 
             {/* Navigation Tabs */}
