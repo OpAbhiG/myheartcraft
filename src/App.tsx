@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Creation, INITIAL_CREATIONS } from './types';
+import { parseCreationFromUrl } from './utils/share';
 import LandingScreen, { LandingAnims } from './components/LandingScreen';
 import ExploreScreen from './components/ExploreScreen';
 import DashboardScreen from './components/DashboardScreen';
@@ -21,36 +22,39 @@ export default function App() {
 
   // 1. Initialize Creations list from Local Storage or default preset creations
   useEffect(() => {
+    let localCreations: Creation[];
     const saved = localStorage.getItem('myheartcraft_creations');
     if (saved) {
       try {
-        setCreations(JSON.parse(saved));
+        localCreations = JSON.parse(saved);
       } catch (e) {
-        setCreations(INITIAL_CREATIONS);
+        localCreations = INITIAL_CREATIONS;
       }
     } else {
+      localCreations = INITIAL_CREATIONS;
       localStorage.setItem('myheartcraft_creations', JSON.stringify(INITIAL_CREATIONS));
-      setCreations(INITIAL_CREATIONS);
     }
+    setCreations(localCreations);
 
-    // 2. Real-time Recipient URL Route detection: e.g. ?giftId=X
-    const params = new URLSearchParams(window.location.search);
-    const giftId = params.get('giftId');
-    if (giftId) {
-      // Find the specific gift creation
-      const localCreations = saved ? JSON.parse(saved) : INITIAL_CREATIONS;
-      const found = localCreations.find((c: Creation) => c.id === giftId);
-      if (found) {
-        // Increment view count since recipient opened it
-        const updated = localCreations.map((c: Creation) => 
-          c.id === giftId ? { ...c, views: c.views + 1 } : c
+    // 2. Real-time Recipient URL Route detection: works for any device/browser!
+    const found = parseCreationFromUrl(localCreations);
+    if (found) {
+      // Save or update in recipient's local storage so they can view it anytime
+      const exists = localCreations.some((c) => c.id === found.id);
+      let updatedList: Creation[];
+      if (exists) {
+        updatedList = localCreations.map((c) =>
+          c.id === found.id ? { ...c, views: (c.views || 0) + 1 } : c
         );
-        localStorage.setItem('myheartcraft_creations', JSON.stringify(updated));
-        setCreations(updated);
-        
-        setActiveCreation(found);
-        setScreen('recipient-flow');
+      } else {
+        const newCard = { ...found, views: (found.views || 0) + 1 };
+        updatedList = [newCard, ...localCreations];
       }
+
+      localStorage.setItem('myheartcraft_creations', JSON.stringify(updatedList));
+      setCreations(updatedList);
+      setActiveCreation(found);
+      setScreen('recipient-flow');
     }
   }, []);
 

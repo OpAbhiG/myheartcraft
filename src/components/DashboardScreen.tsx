@@ -1,6 +1,7 @@
 import React from 'react';
 import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar } from 'lucide-react';
 import { Creation } from '../types';
+import { generateShareableUrl } from '../utils/share';
 
 interface DashboardScreenProps {
   creations: Creation[];
@@ -23,10 +24,17 @@ export default function DashboardScreen({
   const totalViews = creations.reduce((sum, c) => sum + c.views, 0);
 
   const handleCopyLink = (id: string) => {
-    const origin = window.location.origin + window.location.pathname;
-    const shareableUrl = `${origin}?giftId=${id}`;
-    navigator.clipboard.writeText(shareableUrl);
-    alert('Copied shareable link to clipboard!');
+    const found = creations.find(c => c.id === id);
+    if (found) {
+      const shareableUrl = generateShareableUrl(found);
+      navigator.clipboard.writeText(shareableUrl);
+      alert('Copied shareable surprise link to clipboard!');
+    } else {
+      const origin = window.location.origin + window.location.pathname;
+      const shareableUrl = `${origin}?giftId=${id}`;
+      navigator.clipboard.writeText(shareableUrl);
+      alert('Copied shareable link to clipboard!');
+    }
   };
 
   return (

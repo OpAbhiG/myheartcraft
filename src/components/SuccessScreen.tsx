@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Copy, Sparkles, Eye, Share2, ArrowRight, Heart, Send, Check } from 'lucide-react';
 import { Creation } from '../types';
+import { generateShareableUrl } from '../utils/share';
 
 interface SuccessScreenProps {
   creation: Creation;
@@ -15,8 +16,8 @@ export default function SuccessScreen({
 }: SuccessScreenProps) {
   const [copied, setCopied] = useState(false);
 
-  // Generate shareable URL
-  const shareableUrl = `${window.location.origin}${window.location.pathname}?giftId=${creation.id}`;
+  // Generate portable shareable URL that opens on any device
+  const shareableUrl = generateShareableUrl(creation);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareableUrl);
