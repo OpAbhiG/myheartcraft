@@ -24,6 +24,7 @@ export function generateShareableUrl(creation: Creation): string {
 
 /**
  * Decodes a Creation object from current URL parameters if present.
+ * Always resolves to a card experience if giftData or giftId parameter is present in URL.
  */
 export function parseCreationFromUrl(existingList: Creation[]): Creation | null {
   try {
@@ -45,10 +46,61 @@ export function parseCreationFromUrl(existingList: Creation[]): Creation | null 
       }
     }
 
-    // 2. Fallback to giftId match in local storage/defaults
+    // 2. Try matching giftId in local storage or initial creations
     if (giftId) {
-      const found = existingList.find((c) => c.id === giftId);
+      const found = existingList.find(
+        (c) => c.id === giftId || c.id.toLowerCase() === giftId.toLowerCase()
+      );
       if (found) return found;
+
+      // 3. Fallback: Parse giftId dynamically so ANY giftId link opens the wish card experience!
+      let inferredName = 'You';
+      let inferredTemplate = 'birthday';
+
+      const parts = giftId.split('-');
+      if (parts.length >= 2) {
+        if (['birthday', 'anniversary', 'proposal', 'puzzle', 'thank_you'].includes(parts[0])) {
+          inferredTemplate = parts[0];
+          if (parts[1] && parts[1] !== '10th') inferredName = parts[1];
+        } else if (parts[0] === 'creation' && parts[1]) {
+          inferredName = parts[1];
+        }
+      }
+
+      if (inferredName.length > 0) {
+        inferredName = inferredName.charAt(0).toUpperCase() + inferredName.slice(1);
+      }
+
+      const fallbackCreation: Creation = {
+        id: giftId,
+        recipientName: inferredName,
+        creatorName: 'Someone Special',
+        specialDate: new Date().toISOString().split('T')[0],
+        relationship: 'Friend',
+        templateId: inferredTemplate,
+        themeColor: inferredTemplate === 'anniversary' ? 'amethyst' : 'rose_gold',
+        particles: inferredTemplate === 'anniversary' ? 'hearts' : 'confetti',
+        musicTrack: inferredTemplate === 'anniversary' ? 'romantic_piano' : 'birthday_instrumental',
+        messageTitle: `Happy Birthday & Special Surprise for ${inferredName}! 🎂`,
+        messageBody: `${inferredName}, wishing you a day filled with laughter, love, and endless joy. You make every single moment brighter, and I am so grateful to celebrate another amazing year of your life! Keep shining and smiling!`,
+        images: [
+          {
+            url: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80',
+            caption: 'A wonderful moment to celebrate!'
+          },
+          {
+            url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80',
+            caption: 'Warm smiles and sweet memories'
+          }
+        ],
+        interactiveElement: inferredTemplate === 'anniversary' ? 'envelope' : 'cake',
+        createdAt: new Date().toISOString().split('T')[0],
+        views: 1,
+        status: 'LIVE',
+        replies: []
+      };
+
+      return fallbackCreation;
     }
   } catch (e) {
     console.error('Error parsing creation from URL:', e);
