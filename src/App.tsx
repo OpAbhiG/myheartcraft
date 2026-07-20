@@ -16,15 +16,16 @@ import RecipientFlow from './components/RecipientFlow';
 
 export default function App() {
   const [screen, setScreen] = useState<'landing' | 'explore' | 'dashboard' | 'wizard' | 'success' | 'recipient-flow'>('landing');
-  const [creations, setCreations] = useState<Creation[]>([]);
+  const [userCreations, setUserCreations] = useState<Creation[]>([]);
+  const [allGlobalCreations, setAllGlobalCreations] = useState<Creation[]>([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('birthday');
   const [editCreationId, setEditCreationId] = useState<string | undefined>(undefined);
   const [activeCreation, setActiveCreation] = useState<Creation | null>(null);
 
-  // 1. Initialize Creations list from Local Storage + Cloud Sync
+  // 1. Initialize Creations: Local User Creations for Dashboard + Global Cloud Store for Admin
   useEffect(() => {
     let localCreations: Creation[];
-    const saved = localStorage.getItem('myheartcraft_creations');
+    const saved = localStorage.getItem('myheartcraft_user_creations');
     if (saved) {
       try {
         localCreations = JSON.parse(saved);
@@ -33,28 +34,21 @@ export default function App() {
       }
     } else {
       localCreations = INITIAL_CREATIONS;
-      localStorage.setItem('myheartcraft_creations', JSON.stringify(INITIAL_CREATIONS));
+      localStorage.setItem('myheartcraft_user_creations', JSON.stringify(INITIAL_CREATIONS));
     }
-    setCreations(localCreations);
+    setUserCreations(localCreations);
+    setAllGlobalCreations(localCreations);
 
-    // Fetch all user cards from global cloud store
+    // Fetch all user cards from global cloud store ONLY for Admin Dashboard view
     fetchGlobalCreationsFromCloud().then(cloudCards => {
       if (cloudCards && cloudCards.length > 0) {
-        setCreations(prev => {
-          const map = new Map<string, Creation>();
-          prev.forEach(c => map.set(c.id, c));
-          cloudCards.forEach(c => map.set(c.id, c));
-          const merged = Array.from(map.values());
-          localStorage.setItem('myheartcraft_creations', JSON.stringify(merged));
-          return merged;
-        });
+        setAllGlobalCreations(cloudCards);
       }
     });
 
-    // 2. Real-time Recipient URL Route detection: works for any device/browser!
+    // 2. Real-time Recipient URL Route detection
     const found = parseCreationFromUrl(localCreations);
     if (found) {
-      // Save or update in recipient's local storage so they can view it anytime
       const exists = localCreations.some((c) => c.id === found.id);
       let updatedList: Creation[];
       if (exists) {
@@ -66,8 +60,8 @@ export default function App() {
         updatedList = [newCard, ...localCreations];
       }
 
-      localStorage.setItem('myheartcraft_creations', JSON.stringify(updatedList));
-      setCreations(updatedList);
+      localStorage.setItem('myheartcraft_user_creations', JSON.stringify(updatedList));
+      setUserCreations(updatedList);
       setActiveCreation(found);
       setScreen('recipient-flow');
 
@@ -78,24 +72,31 @@ export default function App() {
 
   // Save creations to local storage helper
   const saveCreationsList = (updatedList: Creation[]) => {
-    setCreations(updatedList);
-    localStorage.setItem('myheartcraft_creations', JSON.stringify(updatedList));
+    setUserCreations(updatedList);
+    localStorage.setItem('myheartcraft_user_creations', JSON.stringify(updatedList));
   };
 
   // Callback from Creation Wizard to write a new or edited creation
   const handleSaveCreation = (savedCreation: Creation) => {
     let updatedList: Creation[];
-    const exists = creations.some(c => c.id === savedCreation.id);
+    const exists = userCreations.some(c => c.id === savedCreation.id);
 
     if (exists) {
       // Edit existing
-      updatedList = creations.map(c => c.id === savedCreation.id ? savedCreation : c);
+      updatedList = userCreations.map(c => c.id === savedCreation.id ? savedCreation : c);
     } else {
       // Add new
-      updatedList = [savedCreation, ...creations];
+      updatedList = [savedCreation, ...userCreations];
     }
 
     saveCreationsList(updatedList);
+
+    // Also update global admin list
+    setAllGlobalCreations(prev => {
+      const gExists = prev.some(c => c.id === savedCreation.id);
+      return gExists ? prev.map(c => c.id === savedCreation.id ? savedCreation : c) : [savedCreation, ...prev];
+    });
+
     setActiveCreation(savedCreation);
     setScreen('success');
 
@@ -105,15 +106,15 @@ export default function App() {
 
   // Callback to delete an experience from Dashboard
   const handleDeleteCreation = (id: string) => {
-    if (window.confirm('Are you sure you want to permanently delete this beautiful experience?')) {
-      const updatedList = creations.filter(c => c.id !== id);
+    if (window.confirm('Are you sure you want to permanently delete this experience?')) {
+      const updatedList = userCreations.filter(c => c.id !== id);
       saveCreationsList(updatedList);
     }
   };
 
   // Recipient reply callback updates local storage reply state
   const handleUpdateReplies = (updatedCreation: Creation) => {
-    const updatedList = creations.map(c => c.id === updatedCreation.id ? updatedCreation : c);
+    const updatedList = userCreations.map(c => c.id === updatedCreation.id ? updatedCreation : c);
     saveCreationsList(updatedList);
     setActiveCreation(updatedCreation);
 
@@ -149,11 +150,12 @@ export default function App() {
 
       {screen === 'dashboard' && (
         <DashboardScreen
-          creations={creations}
+          creations={userCreations}
+          allGlobalCreations={allGlobalCreations}
           onNavigateToExplore={() => setScreen('explore')}
           onNavigateToWizard={(tempId, editId) => handleNavigateToWizard(tempId, editId)}
           onPreviewCreation={(id) => {
-            const found = creations.find(c => c.id === id);
+            const found = userCreations.find(c => c.id === id) || allGlobalCreations.find(c => c.id === id);
             if (found) {
               setActiveCreation(found);
               setScreen('recipient-flow');
@@ -168,7 +170,7 @@ export default function App() {
         <WizardScreen
           templateId={selectedTemplateId}
           editCreationId={editCreationId}
-          initialCreations={creations}
+          initialCreations={userCreations}
           onSave={handleSaveCreation}
           onClose={() => setScreen('dashboard')}
         />

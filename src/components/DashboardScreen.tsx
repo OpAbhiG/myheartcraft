@@ -6,6 +6,7 @@ import AdminSettingsModal from './AdminSettingsModal';
 
 interface DashboardScreenProps {
   creations: Creation[];
+  allGlobalCreations?: Creation[];
   onNavigateToExplore: () => void;
   onNavigateToWizard: (templateId?: string, editCreationId?: string) => void;
   onPreviewCreation: (creationId: string) => void;
@@ -15,6 +16,7 @@ interface DashboardScreenProps {
 
 export default function DashboardScreen({
   creations,
+  allGlobalCreations,
   onNavigateToExplore,
   onNavigateToWizard,
   onPreviewCreation,
@@ -467,7 +469,7 @@ export default function DashboardScreen({
       <AdminSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        creations={creations}
+        creations={allGlobalCreations || creations}
         onImportCreations={handleImportCreations}
         onResetCreations={handleResetCreations}
       />
