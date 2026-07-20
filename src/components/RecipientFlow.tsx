@@ -209,7 +209,7 @@ export default function RecipientFlow({
             <div className="w-full animate-fade-in" id="keepsake-locked">
               <InteractiveExperiences
                 type={creation.interactiveElement}
-                imageUrl={creation.images[0]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80'}
+                imageUrl={creation.images?.[0]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80'}
                 recipientName={creation.recipientName}
                 onComplete={handleLockSolved}
               />
@@ -228,7 +228,7 @@ export default function RecipientFlow({
               </div>
 
               {/* 1. MEMORY VAULT IMAGES TIMELINE */}
-              {creation.images.length > 0 && (
+              {(creation.images?.length || 0) > 0 && (
                 <div className="p-6 md:p-8 border border-primary bg-background shadow-none relative" id="recipient-images-timeline">
                   
                   <div className="text-center mb-6">
@@ -239,19 +239,19 @@ export default function RecipientFlow({
                   {/* Polaroid Frame */}
                   <div className="relative aspect-[4/3] w-full bg-background p-4 pb-12 border border-primary/20 rounded-none shadow-none" id="polaroid-view">
                     <img
-                      src={creation.images[activePhotoIdx]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80'}
+                      src={creation.images?.[activePhotoIdx]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80'}
                       alt="Keepsake memories"
                       className="w-full h-full object-cover rounded-none grayscale"
                     />
                     <div className="absolute bottom-3 inset-x-4 text-center">
                       <p className="font-handwritten text-primary font-bold text-sm md:text-base tracking-wide italic">
-                        "{creation.images[activePhotoIdx]?.caption || 'A special moment together'}"
+                        "{creation.images?.[activePhotoIdx]?.caption || 'A special moment together'}"
                       </p>
                     </div>
                   </div>
 
                   {/* Carousel navigation dots */}
-                  {creation.images.length > 1 && (
+                  {(creation.images?.length || 0) > 1 && (
                     <div className="flex items-center justify-between mt-8" id="polaroid-navigation">
                       <button
                         id="btn-polaroid-prev"
@@ -262,7 +262,7 @@ export default function RecipientFlow({
                       </button>
 
                       <div className="flex gap-1.5">
-                        {creation.images.map((_, i) => (
+                        {creation.images?.map((_, i) => (
                           <span
                             key={i}
                             className={`h-1.5 rounded-none transition-all ${

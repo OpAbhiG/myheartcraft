@@ -179,10 +179,12 @@ export default function DashboardScreen({
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8" id="creations-list">
               {creations.map((creation) => {
+                if (!creation) return null;
                 const isLive = creation.status === 'LIVE';
+                const imagesList = Array.isArray(creation.images) ? creation.images : [];
                 
                 // Find template image placeholder if not supplied
-                const defaultImage = creation.images[0]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80';
+                const defaultImage = (imagesList.length > 0 && imagesList[0]?.url) || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80';
 
                 return (
                   <div
