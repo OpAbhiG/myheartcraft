@@ -136,6 +136,7 @@ export default function App() {
             }
           }}
           onDeleteCreation={handleDeleteCreation}
+          onUpdateCreations={(updatedList) => saveCreationsList(updatedList)}
         />
       )}
 

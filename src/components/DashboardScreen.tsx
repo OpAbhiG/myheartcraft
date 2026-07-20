@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar } from 'lucide-react';
-import { Creation } from '../types';
+import { Creation, INITIAL_CREATIONS } from '../types';
 import { generateShareableUrl } from '../utils/share';
+import AdminSettingsModal from './AdminSettingsModal';
 
 interface DashboardScreenProps {
   creations: Creation[];
@@ -9,6 +10,7 @@ interface DashboardScreenProps {
   onNavigateToWizard: (templateId?: string, editCreationId?: string) => void;
   onPreviewCreation: (creationId: string) => void;
   onDeleteCreation: (creationId: string) => void;
+  onUpdateCreations?: (updated: Creation[]) => void;
 }
 
 export default function DashboardScreen({
@@ -16,8 +18,10 @@ export default function DashboardScreen({
   onNavigateToExplore,
   onNavigateToWizard,
   onPreviewCreation,
-  onDeleteCreation
+  onDeleteCreation,
+  onUpdateCreations
 }: DashboardScreenProps) {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   const totalExperiences = creations.length;
   const activeLinks = creations.filter(c => c.status === 'LIVE').length;
@@ -34,6 +38,24 @@ export default function DashboardScreen({
       const shareableUrl = `${origin}?giftId=${id}`;
       navigator.clipboard.writeText(shareableUrl);
       alert('Copied shareable link to clipboard!');
+    }
+  };
+
+  const handleImportCreations = (imported: Creation[]) => {
+    if (onUpdateCreations) {
+      onUpdateCreations(imported);
+    } else {
+      localStorage.setItem('myheartcraft_creations', JSON.stringify(imported));
+      window.location.reload();
+    }
+  };
+
+  const handleResetCreations = () => {
+    if (onUpdateCreations) {
+      onUpdateCreations(INITIAL_CREATIONS);
+    } else {
+      localStorage.setItem('myheartcraft_creations', JSON.stringify(INITIAL_CREATIONS));
+      window.location.reload();
     }
   };
 
@@ -61,7 +83,11 @@ export default function DashboardScreen({
             </button>
           </li>
           <li>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent rounded-none text-left opacity-40 cursor-not-allowed">
+            <button
+              id="sidebar-btn-settings"
+              onClick={() => setIsSettingsOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent hover:border-primary/20 hover:bg-background rounded-none text-left transition-all"
+            >
               <SettingsIcon className="w-4 h-4 text-on-surface-variant/75" />
               <span className="font-sans text-xs uppercase tracking-wider">Studio Settings</span>
             </button>
@@ -240,7 +266,7 @@ export default function DashboardScreen({
       </main>
 
       {/* Mobile Bottom Navigation Menu */}
-      <nav className="lg:hidden fixed bottom-0 w-full z-50 flex justify-between items-center px-8 py-3 bg-background border-t border-primary/20 shadow-lg">
+      <nav className="lg:hidden fixed bottom-0 w-full z-50 flex justify-between items-center px-6 py-3 bg-background border-t border-primary/20 shadow-lg">
         <button className="flex flex-col items-center text-primary">
           <LayoutDashboard className="w-4 h-4" />
           <span className="font-label-caps text-[8px] mt-1 font-bold uppercase tracking-wider">Dashboard</span>
@@ -256,7 +282,23 @@ export default function DashboardScreen({
           <Plus className="w-4 h-4" />
           <span className="font-label-caps text-[8px] mt-1 font-bold uppercase tracking-wider">Create</span>
         </button>
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          className="flex flex-col items-center text-on-surface-variant hover:text-primary transition-colors"
+        >
+          <SettingsIcon className="w-4 h-4" />
+          <span className="font-label-caps text-[8px] mt-1 font-bold uppercase tracking-wider">Settings</span>
+        </button>
       </nav>
+
+      {/* Admin Settings Modal Component */}
+      <AdminSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        creations={creations}
+        onImportCreations={handleImportCreations}
+        onResetCreations={handleResetCreations}
+      />
     </div>
   );
 }
