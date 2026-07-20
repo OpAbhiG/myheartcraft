@@ -40,7 +40,7 @@ export interface ExperienceTemplate {
   interactiveType: 'puzzle' | 'envelope' | 'popup' | 'cake';
   themeColor: string;
   particles: 'hearts' | 'gold_dust' | 'confetti' | 'stars';
-  musicTrack: 'romantic_piano' | 'acoustic_guitar' | 'cinematic_strings' | 'none';
+  musicTrack: 'birthday_instrumental' | 'romantic_piano' | 'acoustic_guitar' | 'cinematic_strings' | 'none';
 }
 
 export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
@@ -55,7 +55,7 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     interactiveType: 'cake',
     themeColor: 'rose_gold',
     particles: 'confetti',
-    musicTrack: 'acoustic_guitar'
+    musicTrack: 'birthday_instrumental'
   },
   {
     id: 'anniversary',
@@ -121,7 +121,7 @@ export const INITIAL_CREATIONS: Creation[] = [
     templateId: 'birthday',
     themeColor: 'rose_gold',
     particles: 'confetti',
-    musicTrack: 'acoustic_guitar',
+    musicTrack: 'birthday_instrumental',
     messageTitle: 'Happy Birthday to my Favorite Person! 🎂',
     messageBody: 'Person, wishing you a day filled with laughter, love, and endless joy. You make every single moment brighter, and I am so grateful to celebrate another amazing year of your life. Keep shining and smiling! Here is a little walk down memory lane to remind you of how much you are loved.',
     images: [

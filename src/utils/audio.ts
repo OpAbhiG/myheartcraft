@@ -9,7 +9,7 @@ class AmbientSynth {
 
   constructor() {}
 
-  public start(type: string = 'romantic_piano') {
+  public start(type: string = 'birthday_instrumental') {
     if (this.isPlaying) return;
     
     try {
@@ -20,17 +20,17 @@ class AmbientSynth {
       
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
-      this.masterGain.gain.linearRampToValueAtTime(0.3, this.ctx.currentTime + 2.0); // Smooth fade in
+      this.masterGain.gain.linearRampToValueAtTime(0.35, this.ctx.currentTime + 1.2); // Smooth fade in
 
       this.filter = this.ctx.createBiquadFilter();
       this.filter.type = 'lowpass';
-      this.filter.frequency.setValueAtTime(600, this.ctx.currentTime); // Soft, warm filter
+      this.filter.frequency.setValueAtTime(900, this.ctx.currentTime); // Crisp, warm filter
 
       // Delay effect for space/ambiance
       const delay = this.ctx.createDelay(1.0);
-      delay.delayTime.setValueAtTime(0.4, this.ctx.currentTime);
+      delay.delayTime.setValueAtTime(0.35, this.ctx.currentTime);
       const delayGain = this.ctx.createGain();
-      delayGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      delayGain.gain.setValueAtTime(0.25, this.ctx.currentTime);
 
       // Connections: Synth Nodes -> Filter -> Delay -> Master -> Output
       this.filter.connect(this.masterGain);
@@ -40,10 +40,114 @@ class AmbientSynth {
       this.masterGain.connect(this.ctx.destination);
 
       this.isPlaying = true;
-      this.playChordProgression(type);
+
+      if (type === 'birthday_instrumental') {
+        this.playBirthdayMelody();
+      } else {
+        this.playChordProgression(type);
+      }
     } catch (e) {
       console.warn('AudioContext failed to start:', e);
     }
+  }
+
+  private playBirthdayMelody() {
+    if (!this.isPlaying || !this.ctx || !this.filter) return;
+
+    // Frequencies (Hz)
+    const C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23, G4 = 392.00, A4 = 440.00, Bb4 = 466.16, C5 = 523.25;
+
+    // Happy Birthday melody notes: [frequency, durationInBeats, backgroundChordFrequencies]
+    const melody: [number, number, number[]][] = [
+      // Line 1: "Hap-py Birth-day to you"
+      [C4, 0.75, [130.81, 196.00]],
+      [C4, 0.25, []],
+      [D4, 1.0,  [130.81, 164.81]],
+      [C4, 1.0,  [130.81, 196.00]],
+      [F4, 1.0,  [174.61, 220.00]],
+      [E4, 2.0,  [130.81, 164.81, 196.00]],
+
+      // Line 2: "Hap-py Birth-day to you"
+      [C4, 0.75, [130.81, 196.00]],
+      [C4, 0.25, []],
+      [D4, 1.0,  [130.81, 164.81]],
+      [C4, 1.0,  [130.81, 196.00]],
+      [G4, 1.0,  [196.00, 246.94]],
+      [F4, 2.0,  [174.61, 220.00, 261.63]],
+
+      // Line 3: "Hap-py Birth-day dear friend..."
+      [C4, 0.75, [130.81, 196.00]],
+      [C4, 0.25, []],
+      [C5, 1.0,  [130.81, 164.81, 261.63]],
+      [A4, 1.0,  [174.61, 220.00]],
+      [F4, 1.0,  [174.61, 220.00]],
+      [E4, 1.0,  [130.81, 164.81]],
+      [D4, 2.0,  [146.83, 174.61, 220.00]],
+
+      // Line 4: "Hap-py Birth-day to you!"
+      [Bb4, 0.75, [174.61, 233.08]],
+      [Bb4, 0.25, []],
+      [A4,  1.0,  [174.61, 220.00]],
+      [F4,  1.0,  [130.81, 164.81, 196.00]],
+      [G4,  1.0,  [196.00, 246.94]],
+      [F4,  2.5,  [130.81, 164.81, 196.00, 261.63]]
+    ];
+
+    const tempoSeconds = 0.52; // 1 beat = 0.52s (~115 BPM)
+    let noteIdx = 0;
+
+    const playNextNote = () => {
+      if (!this.isPlaying || !this.ctx || !this.filter) return;
+
+      const [freq, durationBeats, bassChord] = melody[noteIdx];
+      const now = this.ctx.currentTime;
+      const durationSec = durationBeats * tempoSeconds;
+
+      // Play main melody note (chime/bell + warm acoustic tone)
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle'; // Bright music box / acoustic chime tone
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.04); // Crisp pluck attack
+      gain.gain.exponentialRampToValueAtTime(0.001, now + durationSec * 0.95);
+
+      osc.connect(gain);
+      gain.connect(this.filter);
+      osc.start(now);
+      osc.stop(now + durationSec);
+      this.oscillators.push({ osc, gain });
+
+      // Play background accompaniment chord
+      if (bassChord && bassChord.length > 0) {
+        bassChord.forEach(bFreq => {
+          if (!this.ctx || !this.filter) return;
+          const bOsc = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          bOsc.type = 'sine';
+          bOsc.frequency.setValueAtTime(bFreq, now);
+
+          bGain.gain.setValueAtTime(0, now);
+          bGain.gain.linearRampToValueAtTime(0.06 / bassChord.length, now + 0.1);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + durationSec * 1.2);
+
+          bOsc.connect(bGain);
+          bGain.connect(this.filter);
+          bOsc.start(now);
+          bOsc.stop(now + durationSec * 1.2);
+          this.oscillators.push({ osc: bOsc, gain: bGain });
+        });
+      }
+
+      noteIdx = (noteIdx + 1) % melody.length;
+      const nextDelay = durationSec * 1000;
+
+      // Loop melody continuously
+      this.timeoutId = setTimeout(playNextNote, nextDelay);
+    };
+
+    playNextNote();
   }
 
   private playChordProgression(type: string) {
@@ -142,7 +246,7 @@ class AmbientSynth {
       this.timeoutId = null;
     }
 
-    const fadeTime = 1.5;
+    const fadeTime = 1.0;
     const now = this.ctx ? this.ctx.currentTime : 0;
 
     if (this.masterGain && this.ctx) {

@@ -351,6 +351,7 @@ export default function WizardScreen({
                   </label>
                   <div className="space-y-2">
                     {[
+                      { id: 'birthday_instrumental', label: 'Happy Birthday Instrumental 🎂', desc: 'Upbeat music-box & piano Happy Birthday song melody' },
                       { id: 'romantic_piano', label: 'Romantic Piano', desc: 'Pure calming piano notes' },
                       { id: 'acoustic_guitar', label: 'Acoustic Ambiance', desc: 'Intimate acoustic chords' },
                       { id: 'cinematic_strings', label: 'Cinematic Strings', desc: 'Atmospheric orchestra swell' },
