@@ -435,6 +435,54 @@ export default function AdminSettingsModal({
               </div>
             </div>
 
+            {/* Section 4: All Data Explorer Vault */}
+            <div className="border border-primary/25 p-5 bg-background">
+              <div className="flex items-center gap-2 mb-4 border-b border-primary/10 pb-2">
+                <FileText className="w-4 h-4 text-primary" />
+                <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data Explorer</h3>
+              </div>
+
+              <div className="space-y-4">
+                {creations.map((creation, idx) => (
+                  <div key={creation.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-2 text-xs">
+                    <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                      <span className="font-mono text-[11px] font-bold text-primary">{creation.id}</span>
+                      <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${creation.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {creation.status}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                      <div><strong className="text-on-surface-variant">Recipient:</strong> {creation.recipientName}</div>
+                      <div><strong className="text-on-surface-variant">Creator:</strong> {creation.creatorName}</div>
+                      <div><strong className="text-on-surface-variant">Template:</strong> {creation.templateId}</div>
+                      <div><strong className="text-on-surface-variant">Music:</strong> {creation.musicTrack}</div>
+                      <div><strong className="text-on-surface-variant">Theme:</strong> {creation.themeColor}</div>
+                      <div><strong className="text-on-surface-variant">Particles:</strong> {creation.particles}</div>
+                      <div><strong className="text-on-surface-variant">Views:</strong> {creation.views}</div>
+                      <div><strong className="text-on-surface-variant">Replies:</strong> {creation.replies?.length || 0}</div>
+                    </div>
+
+                    <div className="pt-2 border-t border-primary/10">
+                      <div className="font-bold text-on-background text-xs">{creation.messageTitle}</div>
+                      <div className="text-on-surface-variant text-[11px] mt-1 line-clamp-2">{creation.messageBody}</div>
+                    </div>
+
+                    {creation.replies && creation.replies.length > 0 && (
+                      <div className="p-2 bg-background border border-primary/10 space-y-1">
+                        <div className="font-bold text-[9px] uppercase tracking-wider text-primary">Recipient Replies:</div>
+                        {creation.replies.map((reply, rIdx) => (
+                          <div key={rIdx} className="text-[10px] text-on-surface-variant">
+                            <strong>{reply.sender}</strong> ({reply.date}): "{reply.text}"
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
       </div>
