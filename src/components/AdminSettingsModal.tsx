@@ -437,9 +437,28 @@ export default function AdminSettingsModal({
 
             {/* Section 4: All Data Explorer Vault */}
             <div className="border border-primary/25 p-5 bg-background">
-              <div className="flex items-center gap-2 mb-4 border-b border-primary/10 pb-2">
-                <FileText className="w-4 h-4 text-primary" />
-                <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data Explorer</h3>
+              <div className="flex items-center justify-between gap-2 mb-4 border-b border-primary/10 pb-2">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data Explorer</h3>
+                </div>
+                <button
+                  onClick={async () => {
+                    const { fetchGlobalCreationsFromCloud } = await import('../utils/cloudSync');
+                    const cloudCards = await fetchGlobalCreationsFromCloud();
+                    if (cloudCards && cloudCards.length > 0) {
+                      onImportCreations(cloudCards);
+                      alert(`Cloud Sync Complete: Synchronized ${cloudCards.length} global user cards!`);
+                    } else {
+                      alert('Cloud sync completed: Workspace up to date.');
+                    }
+                  }}
+                  className="btn-primary py-1 px-3 text-[9px] font-label-caps uppercase tracking-widest font-bold flex items-center gap-1.5"
+                  title="Fetch all user cards created globally across devices"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  Sync Global Cloud Cards
+                </button>
               </div>
 
               <div className="space-y-4">

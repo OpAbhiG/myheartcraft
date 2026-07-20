@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Creation, INITIAL_CREATIONS } from './types';
 import { parseCreationFromUrl } from './utils/share';
+import { fetchGlobalCreationsFromCloud, syncCreationToCloud } from './utils/cloudSync';
 import LandingScreen, { LandingAnims } from './components/LandingScreen';
 import ExploreScreen from './components/ExploreScreen';
 import DashboardScreen from './components/DashboardScreen';
@@ -20,7 +21,7 @@ export default function App() {
   const [editCreationId, setEditCreationId] = useState<string | undefined>(undefined);
   const [activeCreation, setActiveCreation] = useState<Creation | null>(null);
 
-  // 1. Initialize Creations list from Local Storage or default preset creations
+  // 1. Initialize Creations list from Local Storage + Cloud Sync
   useEffect(() => {
     let localCreations: Creation[];
     const saved = localStorage.getItem('myheartcraft_creations');
@@ -35,6 +36,20 @@ export default function App() {
       localStorage.setItem('myheartcraft_creations', JSON.stringify(INITIAL_CREATIONS));
     }
     setCreations(localCreations);
+
+    // Fetch all user cards from global cloud store
+    fetchGlobalCreationsFromCloud().then(cloudCards => {
+      if (cloudCards && cloudCards.length > 0) {
+        setCreations(prev => {
+          const map = new Map<string, Creation>();
+          prev.forEach(c => map.set(c.id, c));
+          cloudCards.forEach(c => map.set(c.id, c));
+          const merged = Array.from(map.values());
+          localStorage.setItem('myheartcraft_creations', JSON.stringify(merged));
+          return merged;
+        });
+      }
+    });
 
     // 2. Real-time Recipient URL Route detection: works for any device/browser!
     const found = parseCreationFromUrl(localCreations);
@@ -55,6 +70,9 @@ export default function App() {
       setCreations(updatedList);
       setActiveCreation(found);
       setScreen('recipient-flow');
+
+      // Sync to cloud so admin sees card view count & recipient opens
+      syncCreationToCloud(found);
     }
   }, []);
 
@@ -80,6 +98,9 @@ export default function App() {
     saveCreationsList(updatedList);
     setActiveCreation(savedCreation);
     setScreen('success');
+
+    // Sync to global cloud store so admin sees it in real-time
+    syncCreationToCloud(savedCreation);
   };
 
   // Callback to delete an experience from Dashboard
@@ -95,6 +116,9 @@ export default function App() {
     const updatedList = creations.map(c => c.id === updatedCreation.id ? updatedCreation : c);
     saveCreationsList(updatedList);
     setActiveCreation(updatedCreation);
+
+    // Sync reply to global cloud store so admin sees recipient response
+    syncCreationToCloud(updatedCreation);
   };
 
   const handleNavigateToWizard = (templateId: string = 'birthday', editId?: string) => {
