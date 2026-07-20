@@ -1,22 +1,63 @@
 import { Creation } from '../types';
 
+const IMAGE_ALIASES: { [alias: string]: string } = {
+  '@b1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2gKeuk37Re3mdRB03EhAasFmdGa0DI45HJGYcTWAkkZ9R7rW7n4sMua1N9pqJu9AAeHrWpfLiQqkulbCUjE6LfWl9I3yQNFh03cNmpQc-WZTKfyuLtsgcbc0zcWbxewMUhCgkVUPGmi2ha1XwHRMIDo5UF6fEbz3X1JoT8GWzOYkv2gR5ZcyZkOELPeTdbV09IbP3uGxiubxlSgDxQbfRVgRY8lwlnZKdHWY8Fh_NnE2qE5ptedy4uw',
+  '@a1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBrBpdoe62kpjzOXe3Z_ycB62AjevXEi-hVS6XvMbrk98iPzrq3R3a3W7m7VGJK9pSruhANqqcBiGh1AFMyh-GjnaBkJVDzcqDW43jL7Ymf5Y8eZrXriP7CYIwUrC9SgYEPVRyg7bYiNkSOsm09LgE-nrTx3jCbFtQzCo_oL3xAv107yrUu5VwbXN3nPE_faVPMQZcvUvPj8MBEO7haICV00l7mhIUjCLaKDvfBOJwlufnzs-6CogmPow',
+  '@p1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAkEPYzZgR3Lj9yGfZ2mte-B43nW2T9K2xkRxvj6NKFdKqtNolXoffs8ZHzhEglfNNIIz9eWrdDIEtDoXanzYsqsjCqE5lgw2_snUFcl0_7Rk7464D3V7gDY_aDSoA2PCY-nuXKPHlK_WtDSLzcNAbX2D7kkWWkYKKUNArmkCS306aKSb3mkXn7XuCQcv_mQPmRAqJAwPlGo8EU9LL3JB64t7wt0VJD96a1SlgyXRd6KsWv5-JLkXg7-g',
+  '@pr1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuATDNiv2lg4T0PHhICts2h_dKmFFEfWuReW2Pu7vtLI8JYdrQfIbHdvEKSdpi8X-z0vLbtBiyMzAwDIB2elk0OUj4eI0CBNyyBj1XHEuFpOnSsIEh-z6-WooroxWNjYCxdjX_OaEG635aXKcPtLSkdkbkInExAx8vzhGWcx2dgfIIIsVhwZqq6uN2icP29LAoFNdZ-ZGR86k3-A-BMeW-OXmY6Yax4PJW4c9eueoMlyMfmuVT2LreLiyw',
+  '@t1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDNMJlj69BUL6mpzGf-hECa3wLwpyw6zMm6_eQKzqQEEcA_ODxI4_t9dBUGTbWK0RmnNuMEduPRsmASJdsW-wgt-1S2piRHRTeQsEW4d8LZKjim8jHaazWSWEQsZUEgPnDJBhUxVYq8q7Zml8sfUiV0ZGjbMewcwUaxCNcXzbbFW75aCe3-1nVpZChGG_N3CsSEJxLtfNWdq1F2zFSwD9AmgmxdkSd1jRfupYAxAwczCgGga4ybmrzDbg',
+  '@g1': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDeis4xurkuDvw7heB3Sg_ocw2ZjY0tbwM3tWxpz4F-OpqGkDMn-hHdIF4IcPwiQ5LPkgcxoOX03PojfJa-eJ1BAwfqcL4NRCPcr6mCUTqoqy6WIeOaQ82F_lHTqkk-EpkeFhqSXMm_Q_RMXqOvzzzYZl9vlLL2yZWtFYx2S7baLRvA_y494EghYI5eP_ZsXXSdMfnP77uxAhgtvs0j0Q4NYmmYDHhXIjOMr9gfQM_sJu_mSnyBs-EIA',
+  '@g2': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqFee02yy1lI_WruPT3mZBWxOo0s0udZMVpA-9NEWpnVfaI3t4shIZQfZ_wYBmtmW9x0qJ8RYOakw-V3AktYJIUXl3FGvyUNOMDv45X2qgGksCEugtmG5ksCgs5Y5IPVaAt8VeY3JKUUfdJejJnlfXFIWoRwpPA7MjCdWNdGFj-maeMW9d_phk3RU8LgHSC_1vI2YQyITyMEszmbUkCSA7Kv2Q0ldSBaGiArlAndLZYP7daKVOQOIHeA',
+  '@g3': 'https://lh3.googleusercontent.com/aida-public/AB6AXuArR3ashizzHw_39rTPZTPeF7QeKNRT_l4E_aZ9x7JiMh94Gt3lpqLaH3cxALhgdZeN4TmOoMZ8ibgeuFk1XcN6rABWCWEAcfTkGlkoLHzazAoq-qSy5kTEGOoj0RDg5tm7enbec07NJ5V6PJtlwniQtUghYiaLKjqvwq0A-dsRwWiGZWuQiqjXzG4ckPJAS_RR-6rQHMRVwXVkWrUakEB1TyL2koXm8IwpQkAHaRDXFRzvEBGpjMFQVQ',
+  '@u1': 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80',
+  '@u2': 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80'
+};
+
 /**
- * Encodes a Creation object into a portable, URL-safe Base64 payload link.
- * This guarantees that ANY recipient on ANY device/browser can open the shared link.
+ * Encodes a Creation object into an ultra-compact, short URL payload string.
  */
 export function generateShareableUrl(creation: Creation): string {
   try {
-    const jsonStr = JSON.stringify(creation);
-    // Convert UTF-8 string to URL-safe Base64
+    // 1. Map images to aliases if matched
+    const compactImgs = creation.images.map((img) => {
+      let u = img.url;
+      for (const [alias, fullUrl] of Object.entries(IMAGE_ALIASES)) {
+        if (fullUrl === u) {
+          u = alias;
+          break;
+        }
+      }
+      return { u, c: img.caption };
+    });
+
+    // 2. Compact key mapping
+    const compactObj = {
+      i: creation.id,
+      r: creation.recipientName,
+      c: creation.creatorName,
+      d: creation.specialDate,
+      l: creation.relationship,
+      t: creation.templateId,
+      tc: creation.themeColor,
+      p: creation.particles,
+      m: creation.musicTrack,
+      mt: creation.messageTitle,
+      mb: creation.messageBody,
+      ie: creation.interactiveElement,
+      imgs: compactImgs
+    };
+
+    const jsonStr = JSON.stringify(compactObj);
     const base64Str = btoa(
       encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_, p1) =>
         String.fromCharCode(parseInt(p1, 16))
       )
     );
+
     const origin = window.location.origin + window.location.pathname;
-    return `${origin}?giftData=${encodeURIComponent(base64Str)}`;
+    return `${origin}?g=${encodeURIComponent(base64Str)}`;
   } catch (e) {
-    console.error('Failed to encode creation for portable sharing:', e);
+    console.error('Failed to encode short URL:', e);
     const origin = window.location.origin + window.location.pathname;
     return `${origin}?giftId=${creation.id}`;
   }
@@ -24,15 +65,65 @@ export function generateShareableUrl(creation: Creation): string {
 
 /**
  * Decodes a Creation object from current URL parameters if present.
- * Always resolves to a card experience if giftData or giftId parameter is present in URL.
+ * Supports short ?g=..., legacy ?giftData=..., and ?giftId=...
  */
 export function parseCreationFromUrl(existingList: Creation[]): Creation | null {
   try {
     const params = new URLSearchParams(window.location.search);
+    const shortData = params.get('g');
     const giftData = params.get('giftData') || params.get('c');
     const giftId = params.get('giftId');
 
-    // 1. Try decoding full giftData URL payload
+    // 1. Try decoding short ?g= payload
+    if (shortData) {
+      const decodedJson = decodeURIComponent(
+        atob(decodeURIComponent(shortData))
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const cObj = JSON.parse(decodedJson);
+
+      if (cObj && (cObj.r || cObj.i)) {
+        // Expand image aliases back to full URLs
+        const expandedImgs = (cObj.imgs || []).map((img: any) => {
+          let u = img.u || '';
+          if (IMAGE_ALIASES[u]) {
+            u = IMAGE_ALIASES[u];
+          }
+          return { url: u, caption: img.c || '' };
+        });
+
+        const creation: Creation = {
+          id: cObj.i || `creation-${Date.now()}`,
+          recipientName: cObj.r || 'Friend',
+          creatorName: cObj.c || 'Someone Special',
+          specialDate: cObj.d || new Date().toISOString().split('T')[0],
+          relationship: cObj.l || 'Friend',
+          templateId: cObj.t || 'birthday',
+          themeColor: cObj.tc || 'rose_gold',
+          particles: cObj.p || 'confetti',
+          musicTrack: cObj.m || 'birthday_instrumental',
+          messageTitle: cObj.mt || `Happy Birthday to my Favorite Person! 🎂`,
+          messageBody: cObj.mb || `Wishing you a day filled with laughter and endless joy!`,
+          interactiveElement: cObj.ie || 'cake',
+          images: expandedImgs.length > 0 ? expandedImgs : [
+            {
+              url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80',
+              caption: 'A wonderful memory'
+            }
+          ],
+          createdAt: new Date().toISOString().split('T')[0],
+          views: 1,
+          status: 'LIVE',
+          replies: []
+        };
+
+        return creation;
+      }
+    }
+
+    // 2. Try decoding legacy full ?giftData= payload
     if (giftData) {
       const decodedJson = decodeURIComponent(
         atob(decodeURIComponent(giftData))
@@ -46,14 +137,14 @@ export function parseCreationFromUrl(existingList: Creation[]): Creation | null 
       }
     }
 
-    // 2. Try matching giftId in local storage or initial creations
+    // 3. Try matching giftId in local storage or initial creations
     if (giftId) {
       const found = existingList.find(
         (c) => c.id === giftId || c.id.toLowerCase() === giftId.toLowerCase()
       );
       if (found) return found;
 
-      // 3. Fallback: Parse giftId dynamically so ANY giftId link opens the wish card experience!
+      // Dynamic fallback for any giftId link
       let inferredName = 'You';
       let inferredTemplate = 'birthday';
 
