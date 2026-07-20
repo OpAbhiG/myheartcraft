@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check } from 'lucide-react';
 import { Creation, INITIAL_CREATIONS } from '../types';
 import { generateShareableUrl } from '../utils/share';
 import AdminSettingsModal from './AdminSettingsModal';
@@ -22,20 +22,25 @@ export default function DashboardScreen({
   onUpdateCreations
 }: DashboardScreenProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [selectedDetailCreation, setSelectedDetailCreation] = useState<Creation | null>(null);
+  const [copiedDetailLink, setCopiedDetailLink] = useState(false);
   
   const totalExperiences = creations.length;
   const activeLinks = creations.filter(c => c.status === 'LIVE').length;
-  const totalViews = creations.reduce((sum, c) => sum + c.views, 0);
+  const totalViews = creations.reduce((sum, c) => sum + (c.views || 0), 0);
+  const uniqueCreatorsCount = new Set(creations.map(c => c.creatorName || 'Anonymous')).size;
 
-  const handleCopyLink = (id: string) => {
-    const found = creations.find(c => c.id === id);
-    if (found) {
-      const shareableUrl = generateShareableUrl(found);
+  const handleCopyLink = (creationOrId: Creation | string) => {
+    const creation = typeof creationOrId === 'string' ? creations.find(c => c.id === creationOrId) : creationOrId;
+    if (creation) {
+      const shareableUrl = generateShareableUrl(creation);
       navigator.clipboard.writeText(shareableUrl);
+      setCopiedDetailLink(true);
       alert('Copied shareable surprise link to clipboard!');
-    } else {
+      setTimeout(() => setCopiedDetailLink(false), 3000);
+    } else if (typeof creationOrId === 'string') {
       const origin = window.location.origin + window.location.pathname;
-      const shareableUrl = `${origin}?giftId=${id}`;
+      const shareableUrl = `${origin}?giftId=${creationOrId}`;
       navigator.clipboard.writeText(shareableUrl);
       alert('Copied shareable link to clipboard!');
     }
@@ -113,11 +118,11 @@ export default function DashboardScreen({
         <div className="mb-12 animate-fade-in">
           <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#999] mb-4">Workspace overview</p>
           <h1 className="font-display-lg text-4xl md:text-6xl text-on-background mb-3 font-light tracking-tight">Creator Studio</h1>
-          <p className="font-body-lg text-on-surface-variant text-sm md:text-base">Welcome back. Here is the catalog of your written and created digital moments.</p>
+          <p className="font-body-lg text-on-surface-variant text-sm md:text-base">Welcome back. Here is the catalog of all created digital moments and recipient details.</p>
         </div>
 
-        {/* Top Stats Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-fade-in delay-75">
+        {/* Top Stats Bento Grid (4 Columns) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-fade-in delay-75">
           {/* Stat 1 */}
           <div className="glass-card rounded-none p-6 flex flex-col justify-between h-36 border border-primary/25">
             <div className="flex items-center gap-4">
@@ -125,7 +130,7 @@ export default function DashboardScreen({
                 <Plus className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Total Experiences</div>
+                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Total Created Cards</div>
                 <div className="font-display-lg text-3xl font-light text-on-background mt-1">{totalExperiences}</div>
               </div>
             </div>
@@ -138,7 +143,7 @@ export default function DashboardScreen({
                 <Link2 className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Active Links</div>
+                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Active Live Links</div>
                 <div className="font-display-lg text-3xl font-light text-on-background mt-1">{activeLinks}</div>
               </div>
             </div>
@@ -151,8 +156,21 @@ export default function DashboardScreen({
                 <Eye className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Total Views</div>
+                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Total Recipient Views</div>
                 <div className="font-display-lg text-3xl font-light text-on-background mt-1">{totalViews}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stat 4 */}
+          <div className="glass-card rounded-none p-6 flex flex-col justify-between h-36 border border-primary/25">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 border border-primary flex items-center justify-center text-primary bg-background">
+                <User className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-[0.2em]">Unique Creators</div>
+                <div className="font-display-lg text-3xl font-light text-on-background mt-1">{uniqueCreatorsCount}</div>
               </div>
             </div>
           </div>
@@ -161,7 +179,10 @@ export default function DashboardScreen({
         {/* Recent Creations Section */}
         <div className="animate-fade-in delay-150">
           <div className="flex justify-between items-end mb-8 border-b border-primary/20 pb-4">
-            <h2 className="font-display-lg text-2xl font-light text-on-background">Your Written Creations</h2>
+            <div>
+              <h2 className="font-display-lg text-2xl font-light text-on-background">All User Created Cards</h2>
+              <p className="text-[11px] text-on-surface-variant mt-1">Inspecting {creations.length} total digital keepsakes created using MyHeartCraft.</p>
+            </div>
             <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.25em]">
               Create New
             </button>
@@ -182,17 +203,15 @@ export default function DashboardScreen({
                 if (!creation) return null;
                 const isLive = creation.status === 'LIVE';
                 const imagesList = Array.isArray(creation.images) ? creation.images : [];
-                
-                // Find template image placeholder if not supplied
                 const defaultImage = (imagesList.length > 0 && imagesList[0]?.url) || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80';
 
                 return (
                   <div
                     id={`creation-card-${creation.id}`}
                     key={creation.id}
-                    className="glass-card rounded-none overflow-hidden group flex flex-col sm:flex-row relative border border-primary/25 bg-background"
+                    className="glass-card rounded-none overflow-hidden group flex flex-col sm:flex-row relative border border-primary/25 bg-background shadow-sm hover:border-primary transition-all duration-300"
                   >
-                    <div className="w-full sm:w-1/3 h-48 sm:h-auto min-h-[160px] bg-primary-container relative overflow-hidden shrink-0">
+                    <div className="w-full sm:w-1/3 h-48 sm:h-auto min-h-[180px] bg-primary-container relative overflow-hidden shrink-0">
                       <div
                         className="bg-cover bg-center w-full h-full absolute inset-0 transition-transform duration-700 group-hover:scale-103 grayscale"
                         style={{ backgroundImage: `url('${defaultImage}')` }}
@@ -202,7 +221,8 @@ export default function DashboardScreen({
 
                     <div className="p-6 flex flex-col justify-between flex-1 relative z-10">
                       <div>
-                        <div className="flex justify-between items-start mb-4">
+                        {/* Top Badges */}
+                        <div className="flex justify-between items-start mb-3">
                           <span className={`px-2.5 py-0.5 border text-[8px] font-bold tracking-[0.25em] uppercase rounded-none ${
                             isLive
                               ? 'bg-primary text-background border-primary'
@@ -216,15 +236,40 @@ export default function DashboardScreen({
                           </span>
                         </div>
 
+                        {/* Creator Info Badge */}
+                        <div className="flex items-center gap-1.5 font-label-caps text-[9px] text-primary font-bold uppercase tracking-wider mb-2">
+                          <User className="w-3 h-3 text-primary" />
+                          <span>Created By: {creation.creatorName || 'Anonymous'}</span>
+                        </div>
+
+                        {/* Recipient & Card Title */}
                         <h3 className="font-display-lg text-xl leading-tight mb-2 font-light group-hover:text-primary transition-colors text-on-background">
-                          For {creation.recipientName}'s {creation.templateId === 'birthday' ? 'Birthday' : 'Celebration'}
+                          For {creation.recipientName} ({creation.relationship || 'Partner'})
                         </h3>
-                        <p className="font-body-lg text-on-surface-variant text-[11px] mb-6 line-clamp-1">
-                          {creation.messageTitle} • {creation.views} Views
+                        
+                        <p className="font-body-lg text-on-surface-variant text-[11px] mb-4 line-clamp-1">
+                          "{creation.messageTitle}"
                         </p>
+
+                        {/* Parameter Details Pills */}
+                        <div className="flex flex-wrap gap-1.5 text-[9px] font-mono text-on-surface-variant mb-6">
+                          <span className="bg-surface-container px-2 py-0.5 border border-primary/10">🎵 {creation.musicTrack || 'music'}</span>
+                          <span className="bg-surface-container px-2 py-0.5 border border-primary/10">👁️ {creation.views || 0} views</span>
+                          <span className="bg-surface-container px-2 py-0.5 border border-primary/10">💬 {creation.replies?.length || 0} replies</span>
+                        </div>
                       </div>
 
+                      {/* Action Buttons */}
                       <div className="flex gap-2 pt-3 border-t border-primary/10">
+                        <button
+                          id={`btn-details-${creation.id}`}
+                          onClick={() => setSelectedDetailCreation(creation)}
+                          className="py-1.5 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary/10 transition-colors flex items-center justify-center gap-1"
+                          title="View Full Details"
+                        >
+                          <Info className="w-3 h-3" />
+                          Details
+                        </button>
                         <button
                           id={`btn-edit-${creation.id}`}
                           onClick={() => onNavigateToWizard(creation.templateId, creation.id)}
@@ -243,7 +288,7 @@ export default function DashboardScreen({
                         </button>
                         <button
                           id={`btn-link-${creation.id}`}
-                          onClick={() => handleCopyLink(creation.id)}
+                          onClick={() => handleCopyLink(creation)}
                           className="py-1.5 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary hover:text-background transition-colors flex items-center justify-center"
                           title="Copy Link"
                         >
@@ -266,6 +311,131 @@ export default function DashboardScreen({
           )}
         </div>
       </main>
+
+      {/* --- CARD FULL DETAIL INSPECTOR MODAL --- */}
+      {selectedDetailCreation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-background border border-primary p-6 md:p-10 w-full max-w-2xl relative shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedDetailCreation(null)}
+              className="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="flex items-center gap-3 border-b border-primary/20 pb-4 mb-6">
+              <div className="w-10 h-10 border border-primary flex items-center justify-center text-primary bg-background">
+                <Info className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Card Inspector</span>
+                <h2 className="font-display-lg text-2xl text-on-background font-light uppercase tracking-tight">
+                  For {selectedDetailCreation.recipientName}
+                </h2>
+              </div>
+            </div>
+
+            {/* Grid Details */}
+            <div className="space-y-6 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-surface-container border border-primary/20 font-mono">
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Created By</span>
+                  <span className="font-bold text-primary">{selectedDetailCreation.creatorName || 'Anonymous'}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Recipient Name</span>
+                  <span className="font-bold text-on-background">{selectedDetailCreation.recipientName}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Relationship</span>
+                  <span className="text-on-background">{selectedDetailCreation.relationship || 'Partner'}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Template ID</span>
+                  <span className="text-on-background">{selectedDetailCreation.templateId}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Ambient Music</span>
+                  <span className="text-on-background">{selectedDetailCreation.musicTrack}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase text-on-surface-variant block font-bold">Theme / Particles</span>
+                  <span className="text-on-background">{selectedDetailCreation.themeColor} / {selectedDetailCreation.particles}</span>
+                </div>
+              </div>
+
+              {/* Message Details */}
+              <div className="p-4 border border-primary/20 bg-background space-y-2">
+                <span className="font-label-caps text-[9px] text-primary font-bold uppercase tracking-wider block">Heartfelt Letter Title & Message</span>
+                <h3 className="font-display-lg text-lg font-light text-on-background">{selectedDetailCreation.messageTitle}</h3>
+                <p className="font-body-lg text-on-surface-variant leading-relaxed text-xs p-3 bg-surface-container border border-primary/10 italic">
+                  "{selectedDetailCreation.messageBody}"
+                </p>
+              </div>
+
+              {/* Attached Photos */}
+              {selectedDetailCreation.images && selectedDetailCreation.images.length > 0 && (
+                <div className="p-4 border border-primary/20 bg-background space-y-3">
+                  <span className="font-label-caps text-[9px] text-primary font-bold uppercase tracking-wider block">Attached Photos ({selectedDetailCreation.images.length})</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {selectedDetailCreation.images.map((img, i) => (
+                      <div key={i} className="border border-primary/10 p-2 bg-surface-container text-center">
+                        <img src={img.url} alt={`Photo ${i+1}`} className="w-full h-24 object-cover mb-1.5" />
+                        <span className="text-[10px] text-on-surface-variant line-clamp-1 italic">{img.caption || 'Memory photo'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recipient Replies */}
+              <div className="p-4 border border-primary/20 bg-background space-y-2">
+                <span className="font-label-caps text-[9px] text-primary font-bold uppercase tracking-wider block">Recipient Replies ({selectedDetailCreation.replies?.length || 0})</span>
+                {selectedDetailCreation.replies && selectedDetailCreation.replies.length > 0 ? (
+                  <div className="space-y-2">
+                    {selectedDetailCreation.replies.map((reply, rIdx) => (
+                      <div key={rIdx} className="p-3 bg-surface-container border border-primary/10 text-xs">
+                        <div className="flex justify-between items-center mb-1">
+                          <strong className="text-primary">{reply.sender}</strong>
+                          <span className="text-[9px] font-mono text-on-surface-variant">{reply.date}</span>
+                        </div>
+                        <p className="text-on-surface-variant italic">"{reply.text}"</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-on-surface-variant italic">No replies recorded yet.</p>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-primary/20">
+                <button
+                  onClick={() => handleCopyLink(selectedDetailCreation)}
+                  className="flex-1 btn-primary py-3 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+                >
+                  <Link2 className="w-4 h-4" />
+                  {copiedDetailLink ? 'Copied Link!' : 'Copy Share Link'}
+                </button>
+                <button
+                  onClick={() => {
+                    onPreviewCreation(selectedDetailCreation.id);
+                    setSelectedDetailCreation(null);
+                  }}
+                  className="border border-primary text-primary hover:bg-primary/10 py-3 px-6 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  Preview Card
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Bottom Navigation Menu */}
       <nav className="lg:hidden fixed bottom-0 w-full z-50 flex justify-between items-center px-6 py-3 bg-background border-t border-primary/20 shadow-lg">
