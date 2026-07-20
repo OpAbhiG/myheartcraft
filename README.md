@@ -6,7 +6,7 @@
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/0acf26fd-79aa-4865-96c3-df6efb20e251
+live: [https://ai.studio/apps/0acf26fd-79aa-4865-96c3-df6efb20e251](https://myheartcraft-five.vercel.app/)
 
 ## Run Locally
 
