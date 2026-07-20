@@ -31,7 +31,7 @@ export default function WizardScreen({
   const [relationship, setRelationship] = useState('');
   const [themeColor, setThemeColor] = useState(template.themeColor);
   const [particles, setParticles] = useState<'hearts' | 'gold_dust' | 'confetti' | 'stars'>(template.particles);
-  const [musicTrack, setMusicTrack] = useState('romantic_piano');
+  const [musicTrack, setMusicTrack] = useState(template.musicTrack || 'romantic_piano');
   const [messageTitle, setMessageTitle] = useState('');
   const [messageBody, setMessageBody] = useState('');
   const [interactiveElement, setInteractiveElement] = useState<'puzzle' | 'envelope' | 'popup' | 'cake'>(template.interactiveType);

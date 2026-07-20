@@ -40,6 +40,7 @@ export interface ExperienceTemplate {
   interactiveType: 'puzzle' | 'envelope' | 'popup' | 'cake';
   themeColor: string;
   particles: 'hearts' | 'gold_dust' | 'confetti' | 'stars';
+  musicTrack: 'romantic_piano' | 'acoustic_guitar' | 'cinematic_strings' | 'none';
 }
 
 export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
@@ -53,7 +54,8 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2gKeuk37Re3mdRB03EhAasFmdGa0DI45HJGYcTWAkkZ9R7rW7n4sMua1N9pqJu9AAeHrWpfLiQqkulbCUjE6LfWl9I3yQNFh03cNmpQc-WZTKfyuLtsgcbc0zcWbxewMUhCgkVUPGmi2ha1XwHRMIDo5UF6fEbz3X1JoT8GWzOYkv2gR5ZcyZkOELPeTdbV09IbP3uGxiubxlSgDxQbfRVgRY8lwlnZKdHWY8Fh_NnE2qE5ptedy4uw',
     interactiveType: 'cake',
     themeColor: 'rose_gold',
-    particles: 'confetti'
+    particles: 'confetti',
+    musicTrack: 'acoustic_guitar'
   },
   {
     id: 'anniversary',
@@ -65,7 +67,8 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBrBpdoe62kpjzOXe3Z_ycB62AjevXEi-hVS6XvMbrk98iPzrq3R3a3W7m7VGJK9pSruhANqqcBiGh1AFMyh-GjnaBkJVDzcqDW43jL7Ymf5Y8eZrXriP7CYIwUrC9SgYEPVRyg7bYiNkSOsm09LgE-nrTx3jCbFtQzCo_oL3xAv107yrUu5VwbXN3nPE_faVPMQZcvUvPj8MBEO7haICV00l7mhIUjCLaKDvfBOJwlufnzs-6CogmPow',
     interactiveType: 'envelope',
     themeColor: 'amethyst',
-    particles: 'hearts'
+    particles: 'hearts',
+    musicTrack: 'romantic_piano'
   },
   {
     id: 'puzzle',
@@ -77,7 +80,8 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAkEPYzZgR3Lj9yGfZ2mte-B43nW2T9K2xkRxvj6NKFdKqtNolXoffs8ZHzhEglfNNIIz9eWrdDIEtDoXanzYsqsjCqE5lgw2_snUFcl0_7Rk7464D3V7gDY_aDSoA2PCY-nuXKPHlK_WtDSLzcNAbX2D7kkWWkYKKUNArmkCS306aKSb3mkXn7XuCQcv_mQPmRAqJAwPlGo8EU9LL3JB64t7wt0VJD96a1SlgyXRd6KsWv5-JLkXg7-g',
     interactiveType: 'puzzle',
     themeColor: 'emerald',
-    particles: 'stars'
+    particles: 'stars',
+    musicTrack: 'acoustic_guitar'
   },
   {
     id: 'proposal',
@@ -89,7 +93,8 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATDNiv2lg4T0PHhICts2h_dKmFFEfWuReW2Pu7vtLI8JYdrQfIbHdvEKSdpi8X-z0vLbtBiyMzAwDIB2elk0OUj4eI0CBNyyBj1XHEuFpOnSsIEh-z6-WooroxWNjYCxdjX_OaEG635aXKcPtLSkdkbkInExAx8vzhGWcx2dgfIIIsVhwZqq6uN2icP29LAoFNdZ-ZGR86k3-A-BMeW-OXmY6Yax4PJW4c9eueoMlyMfmuVT2LreLiyw',
     interactiveType: 'popup',
     themeColor: 'golden_twilight',
-    particles: 'gold_dust'
+    particles: 'gold_dust',
+    musicTrack: 'cinematic_strings'
   },
   {
     id: 'thank_you',
@@ -101,7 +106,8 @@ export const EXPERIENCE_TEMPLATES: ExperienceTemplate[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDNMJlj69BUL6mpzGf-hECa3wLwpyw6zMm6_eQKzqQEEcA_ODxI4_t9dBUGTbWK0RmnNuMEduPRsmASJdsW-wgt-1S2piRHRTeQsEW4d8LZKjim8jHaazWSWEQsZUEgPnDJBhUxVYq8q7Zml8sfUiV0ZGjbMewcwUaxCNcXzbbFW75aCe3-1nVpZChGG_N3CsSEJxLtfNWdq1F2zFSwD9AmgmxdkSd1jRfupYAxAwczCgGga4ybmrzDbg',
     interactiveType: 'envelope',
     themeColor: 'rose_gold',
-    particles: 'gold_dust'
+    particles: 'gold_dust',
+    musicTrack: 'acoustic_guitar'
   }
 ];
 
@@ -115,7 +121,7 @@ export const INITIAL_CREATIONS: Creation[] = [
     templateId: 'birthday',
     themeColor: 'rose_gold',
     particles: 'confetti',
-    musicTrack: 'romantic_piano',
+    musicTrack: 'acoustic_guitar',
     messageTitle: 'Happy Birthday to my Favorite Person! 🎂',
     messageBody: 'Person, wishing you a day filled with laughter, love, and endless joy. You make every single moment brighter, and I am so grateful to celebrate another amazing year of your life. Keep shining and smiling! Here is a little walk down memory lane to remind you of how much you are loved.',
     images: [
@@ -153,7 +159,7 @@ export const INITIAL_CREATIONS: Creation[] = [
     templateId: 'anniversary',
     themeColor: 'amethyst',
     particles: 'hearts',
-    musicTrack: 'cinematic_strings',
+    musicTrack: 'romantic_piano',
     messageTitle: 'Happy 10th Anniversary, My Love 💍',
     messageBody: 'Sarah, ten years ago we promised to build a life together, and every single day since has been an absolute dream. Through all the laughter, the challenges, the quiet mornings, and the grand adventures, you have been my rock. Here is a timeline of our first decade together. I cannot wait for the next fifty.',
     images: [
