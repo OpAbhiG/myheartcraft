@@ -73,6 +73,7 @@ export default function LandingScreen({
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-80">
           <button onClick={onNavigateToExplore} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Experiences</button>
           <button onClick={onNavigateToDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Creator Studio</button>
+          <a href="#how-it-works" className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">How It Works</a>
           <a href="#faq-section" className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">FAQ</a>
           <button onClick={() => setActiveModal('about')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">About Us</button>
         </nav>
@@ -212,6 +213,80 @@ export default function LandingScreen({
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-20 px-6 md:px-16 max-w-7xl mx-auto border-t border-primary/10 bg-surface-container/50">
+          <div className="text-center mb-16">
+            <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Simple 3-Step Surprise</span>
+            <h2 className="font-display-lg text-3xl md:text-5xl text-on-background font-light mt-2">How It Works</h2>
+            <p className="text-xs text-on-surface-variant mt-2 max-w-lg mx-auto">Create, customize, and deliver an unforgettable digital gift keepsake in under 2 minutes.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">01</span>
+                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                </div>
+                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Pick & Customize</h3>
+                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                  Select a template (Virtual Birthday Bash, Proposal, Anniversary, or Love Letter). Write your heartfelt message, upload memory photos, and pick a synthesized music track.
+                </p>
+              </div>
+              <div className="mt-8 pt-4 border-t border-primary/10">
+                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 1 — Craft</span>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">02</span>
+                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
+                    <Gift className="w-5 h-5" />
+                  </div>
+                </div>
+                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Copy & Share Link</h3>
+                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                  Click "Copy Link" to generate a self-contained portable URL payload (?g=...). Send it directly to your recipient via WhatsApp, iMessage, SMS, or Email.
+                </p>
+              </div>
+              <div className="mt-8 pt-4 border-t border-primary/10">
+                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 2 — Share</span>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">03</span>
+                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                </div>
+                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Unlock & Receive Reply</h3>
+                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                  Your recipient opens the link, breaks the wax seal or solves the memory puzzle, experiences your surprise, and can write a sweet thank-you reply back to your Studio!
+                </p>
+              </div>
+              <div className="mt-8 pt-4 border-t border-primary/10">
+                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 3 — Cherish</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <button onClick={onNavigateToExplore} className="btn-primary py-3 px-8 text-xs font-label-caps uppercase tracking-widest font-bold">
+              Start Building Now →
+            </button>
           </div>
         </section>
 
