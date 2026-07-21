@@ -16,7 +16,7 @@ export default function ExploreScreen({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = ['All', 'Romantic', 'Celebration', 'Playful', 'Appreciation', 'Milestone'];
+  const categories = ['All', 'Romantic', 'Birthday', 'Appreciation', 'Interactive'];
 
   // Filter templates
   const filteredTemplates = EXPERIENCE_TEMPLATES.filter(template => {
