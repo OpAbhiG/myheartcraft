@@ -9,8 +9,16 @@ class AmbientSynth {
 
   constructor() {}
 
+  public getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
   public start(type: string = 'birthday_instrumental') {
-    if (this.isPlaying) return;
+    if (this.isPlaying) {
+      this.stop(0.05);
+      if (this.timeoutId) clearTimeout(this.timeoutId);
+      this.isPlaying = false;
+    }
     
     try {
       // Lazy initialize AudioContext on user interaction
