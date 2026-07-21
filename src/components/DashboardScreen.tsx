@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check, Search } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check, Search, Globe, RefreshCw } from 'lucide-react';
 import { Creation, INITIAL_CREATIONS } from '../types';
 import { generateShareableUrl } from '../utils/share';
+import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
 import AdminSettingsModal from './AdminSettingsModal';
 
 interface DashboardScreenProps {
@@ -29,22 +30,60 @@ export default function DashboardScreen({
   const [selectedDetailCreation, setSelectedDetailCreation] = useState<Creation | null>(null);
   const [copiedDetailLink, setCopiedDetailLink] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const totalExperiences = creations.length;
-  const activeLinks = creations.filter(c => c.status === 'LIVE').length;
-  const totalViews = creations.reduce((sum, c) => sum + (c.views || 0), 0);
-  const uniqueCreatorsCount = new Set(creations.map(c => c.creatorName || 'Anonymous')).size;
+  const [viewTab, setViewTab] = useState<'all' | 'local'>('all');
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  const filteredCreations = creations.filter(c => {
+  // Merged cards list taking priority from all global cloud cards
+  const displaySource = React.useMemo(() => {
+    if (viewTab === 'local') return creations;
+    
+    const map = new Map<string, Creation>();
+    (creations || []).forEach(c => { if (c && c.id) map.set(c.id, c); });
+    (allGlobalCreations || []).forEach(c => {
+      if (c && c.id) {
+        const existing = map.get(c.id);
+        if (existing) {
+          const views = Math.max(c.views || 0, existing.views || 0);
+          const replies = (c.replies?.length || 0) >= (existing.replies?.length || 0) ? (c.replies || []) : (existing.replies || []);
+          map.set(c.id, { ...existing, ...c, views, replies });
+        } else {
+          map.set(c.id, c);
+        }
+      }
+    });
+    return Array.from(map.values());
+  }, [creations, allGlobalCreations, viewTab]);
+
+  const totalExperiences = displaySource.length;
+  const activeLinks = displaySource.filter(c => c.status === 'LIVE').length;
+  const totalViews = displaySource.reduce((sum, c) => sum + (c.views || 0), 0);
+  const uniqueCreatorsCount = new Set(displaySource.map(c => c.creatorName || 'Anonymous')).size;
+
+  const filteredCreations = displaySource.filter(c => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     return (
       (c.recipientName && c.recipientName.toLowerCase().includes(q)) ||
       (c.creatorName && c.creatorName.toLowerCase().includes(q)) ||
       (c.messageTitle && c.messageTitle.toLowerCase().includes(q)) ||
-      (c.templateId && c.templateId.toLowerCase().includes(q))
+      (c.templateId && c.templateId.toLowerCase().includes(q)) ||
+      (c.id && c.id.toLowerCase().includes(q))
     );
   });
+
+  const handleSyncGlobalCards = async () => {
+    setIsSyncing(true);
+    try {
+      const cloudCards = await fetchGlobalCreationsFromCloud();
+      if (cloudCards && cloudCards.length > 0 && onUpdateGlobalCreations) {
+        onUpdateGlobalCreations(cloudCards);
+      }
+    } catch (e) {
+      console.warn('Sync error:', e);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const handleCopyLink = (creationOrId: Creation | string) => {
     const creation = typeof creationOrId === 'string' ? creations.find(c => c.id === creationOrId) : creationOrId;
@@ -192,15 +231,52 @@ export default function DashboardScreen({
 
         {/* Recent Creations Section */}
         <div className="animate-fade-in delay-150">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 border-b border-primary/20 pb-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 mb-6 border-b border-primary/20 pb-4">
             <div>
-              <h2 className="font-display-lg text-2xl font-light text-on-background">Your Created Keepsakes</h2>
-              <p className="text-[11px] text-on-surface-variant mt-1">Showing {filteredCreations.length} of {creations.length} total digital keepsakes.</p>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="font-display-lg text-2xl font-light text-on-background">Digital Keepsakes Vault</h2>
+                <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold uppercase tracking-wider">
+                  Live Cloud Database
+                </span>
+              </div>
+              <p className="text-[11px] text-on-surface-variant">Showing {filteredCreations.length} of {displaySource.length} total digital keepsakes.</p>
             </div>
             
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+              {/* Tab Selector */}
+              <div className="flex border border-primary/30 p-0.5 bg-surface-container">
+                <button
+                  onClick={() => setViewTab('all')}
+                  className={`px-3 py-1 text-[9px] font-label-caps uppercase font-bold transition-all flex items-center gap-1 ${
+                    viewTab === 'all' ? 'bg-primary text-background' : 'text-on-surface-variant hover:text-primary'
+                  }`}
+                >
+                  <Globe className="w-3 h-3" />
+                  All Global Cards ({allGlobalCreations?.length || displaySource.length})
+                </button>
+                <button
+                  onClick={() => setViewTab('local')}
+                  className={`px-3 py-1 text-[9px] font-label-caps uppercase font-bold transition-all flex items-center gap-1 ${
+                    viewTab === 'local' ? 'bg-primary text-background' : 'text-on-surface-variant hover:text-primary'
+                  }`}
+                >
+                  <User className="w-3 h-3" />
+                  My Device Cards ({creations.length})
+                </button>
+              </div>
+
+              {/* Live Refresh Button */}
+              <button
+                onClick={handleSyncGlobalCards}
+                className="py-1.5 px-3 border border-primary/30 text-primary font-label-caps text-[9px] uppercase font-bold hover:bg-primary hover:text-background transition-all flex items-center gap-1"
+                title="Fetch latest user cards from cloud store"
+              >
+                <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Syncing...' : 'Sync Cloud Cards'}
+              </button>
+
               {/* Search Bar */}
-              <div className="relative flex-1 sm:w-64">
+              <div className="relative flex-1 sm:w-56">
                 <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-on-surface-variant" />
                 <input
                   type="text"
@@ -211,7 +287,7 @@ export default function DashboardScreen({
                 />
               </div>
 
-              <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.25em] whitespace-nowrap">
+              <button onClick={onNavigateToExplore} className="btn-primary py-2 px-4 text-[9px] font-label-caps uppercase tracking-widest font-bold whitespace-nowrap">
                 Create New
               </button>
             </div>
