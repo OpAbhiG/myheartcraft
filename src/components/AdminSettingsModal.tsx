@@ -210,7 +210,7 @@ export default function AdminSettingsModal({
                       setPasswordInput(e.target.value);
                       setAuthError('');
                     }}
-                    placeholder="Enter password (default: admin123)"
+                    placeholder="Enter admin passcode"
                     className="w-full bg-surface-container border border-primary/30 py-3 px-3 pr-10 text-xs font-mono focus:outline-none focus:border-primary text-on-background"
                     autoFocus
                   />
@@ -231,27 +231,14 @@ export default function AdminSettingsModal({
                 </div>
               )}
 
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="flex-1 btn-primary py-3 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
-                >
-                  <Key className="w-4 h-4" />
-                  Unlock Admin Settings
-                </button>
-                {savedPassword === 'admin123' && (
-                  <button
-                    type="button"
-                    onClick={handleQuickUnlock}
-                    className="px-4 border border-primary/40 text-primary font-label-caps text-[9px] tracking-widest uppercase font-bold hover:bg-primary hover:text-background transition-all"
-                  >
-                    Quick Unlock
-                  </button>
-                )}
-              </div>
+              <button
+                type="submit"
+                className="w-full btn-primary py-3 font-label-caps text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+              >
+                <Key className="w-4 h-4" />
+                Unlock Admin Settings
+              </button>
             </form>
-
-    
           </div>
         ) : (
           /* --- STEP B: FULL ADMIN CONTROL DASHBOARD --- */
