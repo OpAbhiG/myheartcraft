@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe } from 'lucide-react';
 import { Creation } from '../types';
+import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
 
 interface AdminSettingsModalProps {
   isOpen: boolean;
@@ -25,6 +26,10 @@ export default function AdminSettingsModal({
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
 
+  // Global Cards State
+  const [allGlobalCards, setAllGlobalCards] = useState<Creation[]>(creations);
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // Settings state
   const savedPassword = localStorage.getItem('myheartcraft_admin_passcode') || 'admin123';
   const [newPassword, setNewPassword] = useState('');
@@ -35,12 +40,33 @@ export default function AdminSettingsModal({
   const [defaultMusic, setDefaultMusic] = useState(localStorage.getItem('myheartcraft_default_music') || 'birthday_instrumental');
   const [profileSavedMsg, setProfileSavedMsg] = useState('');
 
+  // Auto-fetch ALL user cards from global cloud store whenever modal opens or mounts
+  useEffect(() => {
+    if (isOpen) {
+      setIsSyncing(true);
+      fetchGlobalCreationsFromCloud()
+        .then((cloudCards) => {
+          setIsSyncing(false);
+          if (cloudCards && cloudCards.length > 0) {
+            const map = new Map<string, Creation>();
+            creations.forEach((c) => map.set(c.id, c));
+            cloudCards.forEach((c) => map.set(c.id, c));
+            const merged = Array.from(map.values());
+            setAllGlobalCards(merged);
+          } else {
+            setAllGlobalCards(creations);
+          }
+        })
+        .catch(() => setIsSyncing(false));
+    }
+  }, [isOpen, creations]);
+
   if (!isOpen) return null;
 
-  // Stats
-  const totalExperiences = creations.length;
-  const activeLinks = creations.filter(c => c.status === 'LIVE').length;
-  const totalViews = creations.reduce((sum, c) => sum + c.views, 0);
+  // Stats computed from all global cards across all users & devices
+  const totalExperiences = allGlobalCards.length;
+  const activeLinks = allGlobalCards.filter((c) => c.status === 'LIVE').length;
+  const totalViews = allGlobalCards.reduce((sum, c) => sum + (c.views || 0), 0);
 
   // 1. Password Auth Handler
   const handleAuthenticate = (e: React.FormEvent) => {
@@ -225,9 +251,7 @@ export default function AdminSettingsModal({
               </div>
             </form>
 
-            <p className="text-[10px] text-on-surface-variant/75 mt-4 italic">
-              Default password: <code className="bg-surface-container px-1.5 py-0.5 border border-primary/20 text-primary font-mono font-bold">admin123</code>
-            </p>
+    
           </div>
         ) : (
           /* --- STEP B: FULL ADMIN CONTROL DASHBOARD --- */
@@ -462,7 +486,7 @@ export default function AdminSettingsModal({
               </div>
 
               <div className="space-y-4">
-                {creations.map((creation, idx) => (
+                {allGlobalCards.map((creation, idx) => (
                   <div key={creation.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-2 text-xs">
                     <div className="flex justify-between items-center border-b border-primary/10 pb-2">
                       <span className="font-mono text-[11px] font-bold text-primary">{creation.id}</span>
