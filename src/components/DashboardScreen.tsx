@@ -12,6 +12,7 @@ interface DashboardScreenProps {
   onPreviewCreation: (creationId: string) => void;
   onDeleteCreation: (creationId: string) => void;
   onUpdateCreations?: (updated: Creation[]) => void;
+  onUpdateGlobalCreations?: (updated: Creation[]) => void;
 }
 
 export default function DashboardScreen({
@@ -21,7 +22,8 @@ export default function DashboardScreen({
   onNavigateToWizard,
   onPreviewCreation,
   onDeleteCreation,
-  onUpdateCreations
+  onUpdateCreations,
+  onUpdateGlobalCreations
 }: DashboardScreenProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedDetailCreation, setSelectedDetailCreation] = useState<Creation | null>(null);
@@ -61,20 +63,18 @@ export default function DashboardScreen({
   };
 
   const handleImportCreations = (imported: Creation[]) => {
-    if (onUpdateCreations) {
+    if (onUpdateGlobalCreations) {
+      onUpdateGlobalCreations(imported);
+    } else if (onUpdateCreations) {
       onUpdateCreations(imported);
-    } else {
-      localStorage.setItem('myheartcraft_creations', JSON.stringify(imported));
-      window.location.reload();
     }
   };
 
   const handleResetCreations = () => {
-    if (onUpdateCreations) {
+    if (onUpdateGlobalCreations) {
+      onUpdateGlobalCreations(INITIAL_CREATIONS);
+    } else if (onUpdateCreations) {
       onUpdateCreations(INITIAL_CREATIONS);
-    } else {
-      localStorage.setItem('myheartcraft_creations', JSON.stringify(INITIAL_CREATIONS));
-      window.location.reload();
     }
   };
 
