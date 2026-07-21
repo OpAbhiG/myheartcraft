@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check, Search } from 'lucide-react';
 import { Creation, INITIAL_CREATIONS } from '../types';
 import { generateShareableUrl } from '../utils/share';
 import AdminSettingsModal from './AdminSettingsModal';
@@ -26,11 +26,23 @@ export default function DashboardScreen({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedDetailCreation, setSelectedDetailCreation] = useState<Creation | null>(null);
   const [copiedDetailLink, setCopiedDetailLink] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const totalExperiences = creations.length;
   const activeLinks = creations.filter(c => c.status === 'LIVE').length;
   const totalViews = creations.reduce((sum, c) => sum + (c.views || 0), 0);
   const uniqueCreatorsCount = new Set(creations.map(c => c.creatorName || 'Anonymous')).size;
+
+  const filteredCreations = creations.filter(c => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (c.recipientName && c.recipientName.toLowerCase().includes(q)) ||
+      (c.creatorName && c.creatorName.toLowerCase().includes(q)) ||
+      (c.messageTitle && c.messageTitle.toLowerCase().includes(q)) ||
+      (c.templateId && c.templateId.toLowerCase().includes(q))
+    );
+  });
 
   const handleCopyLink = (creationOrId: Creation | string) => {
     const creation = typeof creationOrId === 'string' ? creations.find(c => c.id === creationOrId) : creationOrId;
@@ -180,28 +192,53 @@ export default function DashboardScreen({
 
         {/* Recent Creations Section */}
         <div className="animate-fade-in delay-150">
-          <div className="flex justify-between items-end mb-8 border-b border-primary/20 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 border-b border-primary/20 pb-4">
             <div>
-              <h2 className="font-display-lg text-2xl font-light text-on-background">All User Created Cards</h2>
-              <p className="text-[11px] text-on-surface-variant mt-1">Inspecting {creations.length} total digital keepsakes created using MyHeartCraft.</p>
+              <h2 className="font-display-lg text-2xl font-light text-on-background">Your Created Keepsakes</h2>
+              <p className="text-[11px] text-on-surface-variant mt-1">Showing {filteredCreations.length} of {creations.length} total digital keepsakes.</p>
             </div>
-            <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.25em]">
-              Create New
-            </button>
+            
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              {/* Search Bar */}
+              <div className="relative flex-1 sm:w-64">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-on-surface-variant" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search recipient or title..."
+                  className="w-full bg-surface-container border border-primary/25 py-1.5 pl-9 pr-3 text-xs focus:outline-none focus:border-primary text-on-background"
+                />
+              </div>
+
+              <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.25em] whitespace-nowrap">
+                Create New
+              </button>
+            </div>
           </div>
 
-          {creations.length === 0 ? (
+          {filteredCreations.length === 0 ? (
             <div className="text-center p-16 glass-card rounded-none border border-dashed border-primary/40">
               <BookOpen className="w-10 h-10 mx-auto text-primary mb-4" />
-              <h3 className="font-display-lg text-xl font-light mb-2">No experiences crafted yet</h3>
-              <p className="font-body-lg text-on-surface-variant text-xs mb-8">Start building your first digital gift surprise for someone special.</p>
-              <button onClick={onNavigateToExplore} className="btn-primary">
-                Browse Templates
-              </button>
+              <h3 className="font-display-lg text-xl font-light mb-2">
+                {searchQuery ? `No cards match "${searchQuery}"` : "No experiences crafted yet"}
+              </h3>
+              <p className="font-body-lg text-on-surface-variant text-xs mb-8">
+                {searchQuery ? "Try clearing your search query." : "Start building your first digital gift surprise for someone special."}
+              </p>
+              {searchQuery ? (
+                <button onClick={() => setSearchQuery('')} className="btn-primary">
+                  Clear Search
+                </button>
+              ) : (
+                <button onClick={onNavigateToExplore} className="btn-primary">
+                  Browse Templates
+                </button>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8" id="creations-list">
-              {creations.map((creation) => {
+              {filteredCreations.map((creation) => {
                 if (!creation) return null;
                 const isLive = creation.status === 'LIVE';
                 const imagesList = Array.isArray(creation.images) ? creation.images : [];
