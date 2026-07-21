@@ -4,6 +4,7 @@ import { Creation } from '../types';
 import ParticleBackground from './ParticleBackground';
 import InteractiveExperiences from './InteractiveExperiences';
 import ambientMusic from '../utils/audio';
+import { sanitizeText } from '../utils/security';
 
 interface RecipientFlowProps {
   creation: Creation;
@@ -64,8 +65,8 @@ export default function RecipientFlow({
     if (!replyText.trim() || !replySender.trim()) return;
 
     const newReply = {
-      sender: replySender,
-      text: replyText,
+      sender: sanitizeText(replySender),
+      text: sanitizeText(replyText),
       date: new Date().toISOString().split('T')[0]
     };
 

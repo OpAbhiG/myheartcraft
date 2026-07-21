@@ -3,6 +3,9 @@ import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, 
 import { Creation } from '../types';
 import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
 import { generateShareableUrl } from '../utils/share';
+import { verifyAdminPasscode, updateAdminPasscode, RateLimiter } from '../utils/security';
+
+const rateLimiter = new RateLimiter();
 
 interface AdminSettingsModalProps {
   isOpen: boolean;
@@ -26,6 +29,7 @@ export default function AdminSettingsModal({
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [lockoutRemaining, setLockoutRemaining] = useState(0);
 
   // Global Cards State
   const [allGlobalCards, setAllGlobalCards] = useState<Creation[]>(creations);
@@ -33,7 +37,6 @@ export default function AdminSettingsModal({
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
 
   // Settings state
-  const savedPassword = localStorage.getItem('myheartcraft_admin_passcode') || 'admin123';
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordSuccessMsg, setPasswordSuccessMsg] = useState('');
@@ -41,6 +44,24 @@ export default function AdminSettingsModal({
   const [defaultCreator, setDefaultCreator] = useState(localStorage.getItem('myheartcraft_default_creator') || 'Abhishek');
   const [defaultMusic, setDefaultMusic] = useState(localStorage.getItem('myheartcraft_default_music') || 'birthday_instrumental');
   const [profileSavedMsg, setProfileSavedMsg] = useState('');
+
+  // Rate Limiting Countdown Timer
+  useEffect(() => {
+    let timer: any;
+    if (lockoutRemaining > 0) {
+      timer = setInterval(() => {
+        setLockoutRemaining(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            rateLimiter.reset();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [lockoutRemaining]);
 
   // Auto-fetch ALL user cards from global cloud store whenever modal opens or mounts
   useEffect(() => {
@@ -70,24 +91,33 @@ export default function AdminSettingsModal({
   const activeLinks = allGlobalCards.filter((c) => c.status === 'LIVE').length;
   const totalViews = allGlobalCards.reduce((sum, c) => sum + (c.views || 0), 0);
 
-  // 1. Password Auth Handler
-  const handleAuthenticate = (e: React.FormEvent) => {
+  // 1. Password Auth Handler with Cryptographic Hash Check
+  const handleAuthenticate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === savedPassword) {
+
+    if (rateLimiter.isLocked()) {
+      const remaining = rateLimiter.getRemainingSeconds();
+      setLockoutRemaining(remaining);
+      setAuthError(`Too many failed attempts! Security lockout active for ${remaining} seconds.`);
+      return;
+    }
+
+    const isValid = await verifyAdminPasscode(passwordInput);
+    if (isValid) {
       setIsAuthenticated(true);
       sessionStorage.setItem('myheartcraft_admin_session', 'true');
       setAuthError('');
+      rateLimiter.reset();
     } else {
-      setAuthError('Incorrect admin password. Please try again.');
+      rateLimiter.recordFailedAttempt();
+      if (rateLimiter.isLocked()) {
+        const remaining = rateLimiter.getRemainingSeconds();
+        setLockoutRemaining(remaining);
+        setAuthError(`Security Alert: Maximum attempts exceeded! Lockout active for ${remaining}s.`);
+      } else {
+        setAuthError('Incorrect admin passcode. Access denied.');
+      }
     }
-  };
-
-  // Quick Unlock for default passcode
-  const handleQuickUnlock = () => {
-    setPasswordInput(savedPassword);
-    setIsAuthenticated(true);
-    sessionStorage.setItem('myheartcraft_admin_session', 'true');
-    setAuthError('');
   };
 
   // Lock / Logout Admin
@@ -97,20 +127,24 @@ export default function AdminSettingsModal({
     setPasswordInput('');
   };
 
-  // 2. Change Admin Password
-  const handleChangePassword = (e: React.FormEvent) => {
+  // 2. Change Admin Password (Cryptographically Hashed)
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPassword.trim()) {
-      alert('Please enter a valid new password.');
+      alert('Please enter a valid new passcode.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      alert('Security recommendation: Admin passcode should be at least 6 characters long.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      alert('New password and confirm password do not match!');
+      alert('New passcode and confirm passcode do not match!');
       return;
     }
 
-    localStorage.setItem('myheartcraft_admin_passcode', newPassword);
-    setPasswordSuccessMsg('Admin password updated successfully!');
+    await updateAdminPasscode(newPassword);
+    setPasswordSuccessMsg('Admin passcode cryptographically updated & saved!');
     setNewPassword('');
     setConfirmPassword('');
     setTimeout(() => setPasswordSuccessMsg(''), 3000);
