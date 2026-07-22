@@ -77,7 +77,7 @@ export const TEMPLATE_EXPERIENCES: ExperienceTemplate[] = [
     categoryLabel: 'Memory, Playful',
     description: 'Hide your beautiful picture and secret letter behind an interactive memory puzzle that your recipient swaps tiles to solve and unlock.',
     duration: 'Interactive',
-    image: 'https://images.unsplash.com/photo-1586075010923-2dd45e9b2d4f?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1501684691657-cf30226364d8?auto=format&fit=crop&w=600&q=80',
     interactiveType: 'puzzle',
     themeColor: 'emerald',
     particles: 'stars',
