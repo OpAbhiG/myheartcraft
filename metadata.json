@@ -1,5 +1,5 @@
 {
-  "name": "Wishora",
+  "name": "Memora",
   "description": "Create something special for someone special. Turn your memories, feelings, wishes, and love into beautiful, interactive digital experiences.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

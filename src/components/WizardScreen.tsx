@@ -204,7 +204,7 @@ export default function WizardScreen({
           <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
             <Heart className="w-4 h-4 fill-current text-primary" />
           </div>
-          <span className="font-display-lg text-xl font-bold tracking-tight text-primary uppercase italic">Wishora Studio</span>
+          <span className="font-display-lg text-xl font-bold tracking-tight text-primary uppercase italic">Memora Studio</span>
         </div>
         <button id="btn-close-wizard" onClick={() => { ambientMusic.stop(0.1); onClose(); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1.5 font-label-caps text-[10px] tracking-wider uppercase font-bold">
           <X className="w-4 h-4" />

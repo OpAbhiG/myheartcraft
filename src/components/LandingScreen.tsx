@@ -50,8 +50,8 @@ export default function LandingScreen({
       a: "We synthesize real-time ambient web audio loops (such as Romantic Piano, Birthday Instrumental, or Acoustic Guitar) alongside floating star, confetti, or heart particle effects."
     },
     {
-      q: "Is Wishora free to create and share?",
-      a: "Yes! Wishora is 100% free to design, customize, and share unlimited digital gift surprises for your loved ones."
+      q: "Is Memora free to create and share?",
+      a: "Yes! Memora is 100% free to design, customize, and share unlimited digital gift surprises for your loved ones."
     }
   ];
 
@@ -67,7 +67,7 @@ export default function LandingScreen({
           <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
             <Heart className="w-4 h-4 fill-current text-primary" />
           </div>
-          <span className="font-display-lg text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Wishora</span>
+          <span className="font-display-lg text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Memora</span>
         </div>
 
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-80">
@@ -335,7 +335,7 @@ export default function LandingScreen({
               <div className="w-7 h-7 border border-primary flex items-center justify-center text-primary bg-background">
                 <Heart className="w-3.5 h-3.5 fill-current" />
               </div>
-              <span className="font-display-lg font-black text-lg tracking-wider uppercase italic text-primary">Wishora</span>
+              <span className="font-display-lg font-black text-lg tracking-wider uppercase italic text-primary">Memora</span>
             </div>
             <p className="text-xs text-on-surface-variant leading-relaxed">
               Archival digital keepsakes designed to convert feelings, letters, and memory timelines into timeless interactive experiences.
@@ -386,7 +386,7 @@ export default function LandingScreen({
         </div>
 
         <div className="max-w-7xl mx-auto pt-10 mt-10 border-t border-primary/10 flex flex-col sm:flex-row justify-between items-center text-[10px] uppercase tracking-[0.15em] font-mono text-on-surface-variant/70">
-          <div>© 2026 Wishora. All rights reserved.</div>
+          <div>© 2026 Memora. All rights reserved.</div>
           <div className="mt-2 sm:mt-0">Designed for timeless emotional connection.</div>
         </div>
       </footer>
@@ -407,10 +407,10 @@ export default function LandingScreen({
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Info className="w-5 h-5" />
-                  <h3 className="font-display-lg text-2xl font-light text-on-background">Know About Us — Wishora</h3>
+                  <h3 className="font-display-lg text-2xl font-light text-on-background">Know About Us — Memora</h3>
                 </div>
                 <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
-                  Wishora was born from a simple belief: in a world dominated by instant messages and temporary social posts, true emotion deserves a permanent, beautiful form.
+                  Memora was born from a simple belief: in a world dominated by instant messages and temporary social posts, true emotion deserves a permanent, beautiful form.
                 </p>
                 <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
                   Our platform empowers creators to craft archival digital keepsakes—combining handwritten letter typography, custom memory scrapbooks, interactive photo puzzles, and synthesized audio ambiances into unforgettable experiences.
@@ -425,7 +425,7 @@ export default function LandingScreen({
                   <h3 className="font-display-lg text-2xl font-light text-on-background">Privacy Policy & Grievance Redressal</h3>
                 </div>
                 <div className="text-xs text-on-surface-variant leading-relaxed space-y-3 font-body-lg">
-                  <p><strong>1. Information Collection & Storage:</strong> Wishora prioritizes user privacy. Creations built on our platform are stored on the creator's local device and rendered through unique encoded URL payloads.</p>
+                  <p><strong>1. Information Collection & Storage:</strong> Memora prioritizes user privacy. Creations built on our platform are stored on the creator's local device and rendered through unique encoded URL payloads.</p>
                   <p><strong>2. Recipient Replies:</strong> Thank you messages and replies submitted by recipients are encrypted and stored solely for the creator and recipient of that card.</p>
                   <p><strong>3. Grievance Redressal Officer:</strong> In compliance with applicable digital privacy standards, for any complaints, content concerns, or grievance redressal, please write directly to <strong>gholapabhishek9@gmail.com</strong>.</p>
                 </div>
@@ -439,7 +439,7 @@ export default function LandingScreen({
                   <h3 className="font-display-lg text-2xl font-light text-on-background">Terms & Conditions of Use</h3>
                 </div>
                 <div className="text-xs text-on-surface-variant leading-relaxed space-y-3 font-body-lg">
-                  <p><strong>1. Acceptance of Terms:</strong> By creating or viewing experiences on Wishora, you agree to comply with these terms of use.</p>
+                  <p><strong>1. Acceptance of Terms:</strong> By creating or viewing experiences on Memora, you agree to comply with these terms of use.</p>
                   <p><strong>2. User Conduct:</strong> Users agree not to create, upload, or transmit any unlawful, offensive, or harassing content through digital keepsakes.</p>
                   <p><strong>3. Intellectual Property:</strong> Users retain ownership of their personal photographs and handwritten messages created on the platform.</p>
                 </div>

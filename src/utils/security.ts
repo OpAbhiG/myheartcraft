@@ -33,7 +33,7 @@ export async function hashString(str: string): Promise<string> {
  * Verifies if an entered password matches the stored admin SHA-256 hash.
  */
 export async function verifyAdminPasscode(inputPassword: string): Promise<boolean> {
-  const storedHash = localStorage.getItem('wishora_admin_hash') || localStorage.getItem('myheartcraft_admin_hash') || DEFAULT_ADMIN_HASH;
+  const storedHash = localStorage.getItem('memora_admin_hash') || localStorage.getItem('wishora_admin_hash') || localStorage.getItem('myheartcraft_admin_hash') || DEFAULT_ADMIN_HASH;
   const inputHash = await hashString(inputPassword);
   return inputHash === storedHash;
 }
@@ -43,8 +43,9 @@ export async function verifyAdminPasscode(inputPassword: string): Promise<boolea
  */
 export async function updateAdminPasscode(newPassword: string): Promise<void> {
   const newHash = await hashString(newPassword);
-  localStorage.setItem('wishora_admin_hash', newHash);
+  localStorage.setItem('memora_admin_hash', newHash);
   // Remove plain text if present
+  localStorage.removeItem('memora_admin_passcode');
   localStorage.removeItem('wishora_admin_passcode');
   localStorage.removeItem('myheartcraft_admin_passcode');
 }

@@ -1,8 +1,8 @@
-# Wishora 💌 — Digital Keepsakes & Experiences
+# Memora 💌 — Digital Keepsakes & Experiences
 
-Wishora is a premium web platform designed to convert raw emotions, personal letters, and cherished memories into beautiful, interactive digital keepsakes. It allows creators to build custom, private surprise cards with ambient synthesized music, floating particle effects, memory scrapbooks, and interactive unlocking minigames for their loved ones.
+Memora is a premium web platform designed to convert raw emotions, personal letters, and cherished memories into beautiful, interactive digital keepsakes. It allows creators to build custom, private surprise cards with ambient synthesized music, floating particle effects, memory scrapbooks, and interactive unlocking minigames for their loved ones.
 
-**Live Website:** [https://wishora.vercel.app/](https://wishora.vercel.app/)
+**Live Website:** [https://memora.vercel.app/](https://memora.vercel.app/)
 
 ---
 

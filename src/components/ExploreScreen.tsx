@@ -37,7 +37,7 @@ export default function ExploreScreen({
           <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
             <Heart className="w-4 h-4 fill-current text-primary" />
           </div>
-          <span className="font-display-lg text-2xl font-black tracking-tighter uppercase italic text-primary">Wishora</span>
+          <span className="font-display-lg text-2xl font-black tracking-tighter uppercase italic text-primary">Memora</span>
         </div>
         
         <nav className="hidden md:flex gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-75">
