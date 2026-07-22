@@ -67,7 +67,10 @@ export default function LandingScreen({
           <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
             <Heart className="w-4 h-4 fill-current text-primary" />
           </div>
-          <span className="font-display-lg text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Memora</span>
+          <div className="flex flex-col justify-center">
+            <span className="font-display-lg text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary leading-none">Memora</span>
+            <span className="hidden sm:inline text-[7px] text-on-surface-variant/80 tracking-widest uppercase font-bold mt-1">Create moments. Keep memories.</span>
+          </div>
         </div>
 
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-80">
@@ -117,8 +120,11 @@ export default function LandingScreen({
             <h1 className="font-display-lg text-4xl md:text-8xl text-primary mb-6 font-light tracking-[-0.04em] leading-[0.85] drop-shadow-sm">
               Stillness <br/> <span className="italic font-normal">as</span> Sentiment
             </h1>
-            <p className="font-body-lg text-primary/85 mb-8 text-base md:text-xl max-w-xl">
+            <p className="font-body-lg text-primary/85 mb-4 text-base md:text-xl max-w-xl">
               Turn memories, emotions, and unspoken words into beautiful digital experiences designed to be treasured forever.
+            </p>
+            <p className="text-xs text-primary font-bold tracking-[0.25em] uppercase font-sans mb-8 border border-primary/20 bg-primary/5 py-1 px-4">
+              Create moments. Keep memories.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in delay-150">
@@ -335,7 +341,10 @@ export default function LandingScreen({
               <div className="w-7 h-7 border border-primary flex items-center justify-center text-primary bg-background">
                 <Heart className="w-3.5 h-3.5 fill-current" />
               </div>
-              <span className="font-display-lg font-black text-lg tracking-wider uppercase italic text-primary">Memora</span>
+              <div className="flex flex-col">
+                <span className="font-display-lg font-black text-lg tracking-wider uppercase italic text-primary leading-none">Memora</span>
+                <span className="text-[7px] text-primary/75 tracking-wider uppercase font-bold mt-1">Create moments. Keep memories.</span>
+              </div>
             </div>
             <p className="text-xs text-on-surface-variant leading-relaxed">
               Archival digital keepsakes designed to convert feelings, letters, and memory timelines into timeless interactive experiences.
