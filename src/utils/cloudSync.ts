@@ -1,6 +1,6 @@
 import { Creation } from '../types';
 
-const PRIMARY_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019f8309-7738-7b6a-b7ba-e534f314f687';
+const PRIMARY_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019f8884-e333-7b41-9ab0-dd4db87a8c5d';
 const SECONDARY_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019f7ec5a940010f';
 const LOCAL_VAULT_KEY = 'memora_global_admin_vault';
 
