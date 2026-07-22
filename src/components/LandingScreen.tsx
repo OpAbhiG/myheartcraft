@@ -114,17 +114,14 @@ export default function LandingScreen({
           <div className="relative z-10 text-center px-6 md:px-16 max-w-4xl mx-auto flex flex-col items-center">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-none font-label-caps text-[9px] tracking-[0.25em] uppercase mb-6">
               <Sparkles className="w-3 h-3 text-primary" />
-              Gifting re-imagined as form
+              Create moments. Keep memories.
             </span>
             
             <h1 className="font-display-lg text-4xl md:text-8xl text-primary mb-6 font-light tracking-[-0.04em] leading-[0.85] drop-shadow-sm">
               Stillness <br/> <span className="italic font-normal">as</span> Sentiment
             </h1>
-            <p className="font-body-lg text-primary/85 mb-4 text-base md:text-xl max-w-xl">
+            <p className="font-body-lg text-primary/85 mb-8 text-base md:text-xl max-w-xl">
               Turn memories, emotions, and unspoken words into beautiful digital experiences designed to be treasured forever.
-            </p>
-            <p className="text-xs text-primary font-bold tracking-[0.25em] uppercase font-sans mb-8 border border-primary/20 bg-primary/5 py-1 px-4">
-              Create moments. Keep memories.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in delay-150">
