@@ -162,7 +162,7 @@ export default function LandingScreen({
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
                 alt="Birthday bash card"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2gKeuk37Re3mdRB03EhAasFmdGa0DI45HJGYcTWAkkZ9R7rW7n4sMua1N9pqJu9AAeHrWpfLiQqkulbCUjE6LfWl9I3yQNFh03cNmpQc-WZTKfyuLtsgcbc0zcWbxewMUhCgkVUPGmi2ha1XwHRMIDo5UF6fEbz3X1JoT8GWzOYkv2gR5ZcyZkOELPeTdbV09IbP3uGxiubxlSgDxQbfRVgRY8lwlnZKdHWY8Fh_NnE2qE5ptedy4uw"
+                src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=600&q=80"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
@@ -182,7 +182,7 @@ export default function LandingScreen({
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
                 alt="Anniversary keepsake"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuATsaQXfMAL1yDdmppTa7zwI1ttjFqNy0IbuWTzi_k8tRi4gYDkkqez403sDHDANY-aPWpc1c-gRdR-9_LFGieLTP43aeyv9fwHmjPPRODX2eHcGvQ9NzR3iBVzq2psiFvvaPbdhBNvBk-4-AaMXnE9Qnp-fsnv_qKQHhWPuLiXWqb9B_DPVFsAcUSGJTSLAxJj0ievDvT0tjf7GDzZCA81ClHxJ3QczgxcWgWdXGEeapP356SjEAI2Sg"
+                src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
@@ -202,7 +202,7 @@ export default function LandingScreen({
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
                 alt="Proposal sequence"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4Q5RseBiyneYnUPcGwiClJi4xVMJPPhRT9h4tOVGgvf2bhur22Etl1ZHDM0MVUKpuz9LilAwwIIRmpzZKIjLoFup4gff3KtzB2xJMxnOTbrg7ZtTyp2ESRCj6Na_0rvYkOhUDeoHzz_jf9tqzyH2luMHNQ_Js422LfYla4g5py-E_f3f6lj6Pj6UrbdDdau4uvjtqCQRk9sylp_xCvUcx_6c5nYu-UAQ3DALwQrwNjfH78Jk5As5L4Q"
+                src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
