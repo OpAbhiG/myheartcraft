@@ -390,7 +390,6 @@ export default function LandingScreen({
               <li><button onClick={() => setActiveModal('about')} className="hover:text-primary transition-colors">Know about us</button></li>
               <li><button onClick={() => setActiveModal('privacy')} className="hover:text-primary transition-colors">Privacy Policy</button></li>
               <li><button onClick={() => setActiveModal('terms')} className="hover:text-primary transition-colors">Terms & Conditions of Use</button></li>
-              <li><button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors flex items-center gap-1 font-bold text-primary">🔒 Admin & Creator Studio</button></li>
             </ul>
           </div>
 
