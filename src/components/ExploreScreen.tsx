@@ -160,7 +160,7 @@ export default function ExploreScreen({
             <div className="h-52 relative overflow-hidden bg-primary-container">
               <div
                 className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
-                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80')` }}
+                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80')` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
               <div className="absolute top-4 left-4 bg-background border border-primary px-3 py-1 rounded-none text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest">
