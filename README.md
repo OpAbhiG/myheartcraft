@@ -6,7 +6,7 @@
 
 This contains everything you need to run your app locally.
 
-live: https://myheartcraft-five.vercel.app/
+live: https://wishora.vercel.app/
 
 ## Run Locally
 
