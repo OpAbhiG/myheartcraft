@@ -2,7 +2,7 @@
 
 Memora is a premium web platform designed to convert raw emotions, personal letters, and cherished memories into beautiful, interactive digital keepsakes. It allows creators to build custom, private surprise cards with ambient synthesized music, floating particle effects, memory scrapbooks, and interactive unlocking minigames for their loved ones.
 
-**Live Website:** [https://memora.vercel.app/](https://memora.vercel.app/)
+**Live Website:** [https://myheartcraft-five.vercel.app/](https://myheartcraft-five.vercel.app/)
 
 ---
 
