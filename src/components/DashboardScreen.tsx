@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LayoutDashboard, BookOpen, Settings as SettingsIcon, Plus, Eye, Link2, Edit3, Trash2, Calendar, User, Info, MessageSquare, Music, Sparkles, Heart, X, Copy, Check, Search, Globe, RefreshCw } from 'lucide-react';
-import { Creation, INITIAL_CREATIONS } from '../types';
+import { Creation, INITIAL_CREATIONS, TEMPLATE_EXPERIENCES } from '../types';
 import { generateShareableUrl } from '../utils/share';
 import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
 import AdminSettingsModal from './AdminSettingsModal';
@@ -256,8 +256,10 @@ export default function DashboardScreen({
               {filteredCreations.map((creation) => {
                 if (!creation) return null;
                 const isLive = creation.status === 'LIVE';
+                const matchedTemplate = TEMPLATE_EXPERIENCES.find(t => t.id === creation.templateId);
+                const templateFallbackImg = matchedTemplate?.image || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80';
                 const imagesList = Array.isArray(creation.images) ? creation.images : [];
-                const defaultImage = (imagesList.length > 0 && imagesList[0]?.url) || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80';
+                const defaultImage = (imagesList.length > 0 && imagesList[0]?.url) || templateFallbackImg;
 
                 return (
                   <div
