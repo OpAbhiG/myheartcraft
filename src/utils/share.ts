@@ -13,54 +13,9 @@ const IMAGE_ALIASES: { [alias: string]: string } = {
   '@u2': 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80'
 };
 
-/**
- * Encodes a Creation object into an ultra-compact, short URL payload string.
- */
 export function generateShareableUrl(creation: Creation): string {
-  try {
-    // 1. Map images to aliases if matched
-    const compactImgs = creation.images.map((img) => {
-      let u = img.url;
-      for (const [alias, fullUrl] of Object.entries(IMAGE_ALIASES)) {
-        if (fullUrl === u) {
-          u = alias;
-          break;
-        }
-      }
-      return { u, c: img.caption };
-    });
-
-    // 2. Compact key mapping
-    const compactObj = {
-      i: creation.id,
-      r: creation.recipientName,
-      c: creation.creatorName,
-      d: creation.specialDate,
-      l: creation.relationship,
-      t: creation.templateId,
-      tc: creation.themeColor,
-      p: creation.particles,
-      m: creation.musicTrack,
-      mt: creation.messageTitle,
-      mb: creation.messageBody,
-      ie: creation.interactiveElement,
-      imgs: compactImgs
-    };
-
-    const jsonStr = JSON.stringify(compactObj);
-    const base64Str = btoa(
-      encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_, p1) =>
-        String.fromCharCode(parseInt(p1, 16))
-      )
-    );
-
-    const origin = window.location.origin + window.location.pathname;
-    return `${origin}?g=${encodeURIComponent(base64Str)}`;
-  } catch (e) {
-    console.error('Failed to encode short URL:', e);
-    const origin = window.location.origin + window.location.pathname;
-    return `${origin}?giftId=${creation.id}`;
-  }
+  const origin = window.location.origin + window.location.pathname;
+  return `${origin}?c=${creation.id}`;
 }
 
 /**

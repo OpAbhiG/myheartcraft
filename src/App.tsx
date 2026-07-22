@@ -46,9 +46,8 @@ export default function App() {
       }
     });
 
-    // 2. Real-time Recipient URL Route detection
-    const found = parseCreationFromUrl(localCreations);
-    if (found) {
+    // 2. Real-time Recipient URL Route detection with short URL support
+    const loadCreation = (found: Creation) => {
       const exists = localCreations.some((c) => c.id === found.id);
       let updatedList: Creation[];
       if (exists) {
@@ -66,7 +65,33 @@ export default function App() {
       setScreen('recipient-flow');
 
       // Sync to cloud so admin sees card view count & recipient opens
-      syncCreationToCloud(found);
+      syncCreationToCloud({ ...found, views: (found.views || 0) + 1 });
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const shortData = params.get('g');
+    const giftId = params.get('c') || params.get('giftId');
+
+    if (shortData) {
+      const found = parseCreationFromUrl(localCreations);
+      if (found) loadCreation(found);
+    } else if (giftId) {
+      const localFound = localCreations.find(c => c.id === giftId);
+      if (localFound) {
+        loadCreation(localFound);
+      } else {
+        // Fetch from global cloud database
+        fetchGlobalCreationsFromCloud().then(cloudCards => {
+          const cloudFound = cloudCards.find(c => c.id === giftId);
+          if (cloudFound) {
+            loadCreation(cloudFound);
+          } else {
+            // Inferred fallback if not found in database (e.g. offline/private link)
+            const fallback = parseCreationFromUrl(localCreations);
+            if (fallback) loadCreation(fallback);
+          }
+        });
+      }
     }
   }, []);
 
