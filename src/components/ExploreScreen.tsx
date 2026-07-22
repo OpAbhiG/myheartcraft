@@ -155,18 +155,37 @@ export default function ExploreScreen({
           <div
             id="template-card-custom"
             onClick={() => onNavigateToWizard('birthday')}
-            className="glass-card rounded-none overflow-hidden group cursor-pointer border border-dashed border-primary/40 flex flex-col justify-center items-center text-center p-8 bg-surface-container-low hover:bg-surface-container-high transition-all duration-300 min-h-[350px]"
+            className="glass-card rounded-none overflow-hidden group cursor-pointer border border-primary/20 hover:border-primary bg-background transition-all duration-300"
           >
-            <div className="w-12 h-12 border border-primary flex items-center justify-center mb-6 text-primary bg-background transition-all">
-              <Sparkles className="w-5 h-5" />
+            <div className="h-52 relative overflow-hidden bg-primary-container">
+              <div
+                className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              <div className="absolute top-4 left-4 bg-background border border-primary px-3 py-1 rounded-none text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest">
+                Creative
+              </div>
             </div>
-            <h3 className="font-display-lg text-xl font-light text-on-background mb-2">Custom Surprise</h3>
-            <p className="font-body-lg text-on-surface-variant text-xs mb-8 max-w-xs leading-relaxed">
-              Build your own completely custom experience from scratch using our premium layout engines.
-            </p>
-            <button className="btn-primary py-2 px-5 font-label-caps text-[9px] tracking-widest uppercase font-bold">
-              Start Blank
-            </button>
+
+            <div className="p-6">
+              <h3 className="font-display-lg text-xl font-light text-on-background mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                Custom Surprise <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              </h3>
+              <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
+                Build your own completely custom surprise experience from scratch using our premium layout tools.
+              </p>
+              <div className="flex items-center justify-between pt-3 border-t border-primary/10">
+                <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
+                  <Clock className="w-3 h-3" />
+                  Blank Canvas
+                </span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
+                  Start Blank
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
