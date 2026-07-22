@@ -27,6 +27,7 @@ export interface Creation {
   views: number;
   status: 'LIVE' | 'DRAFT';
   replies?: Reply[];
+  feedback?: { text: string; date: string }[];
 }
 
 export interface ExperienceTemplate {

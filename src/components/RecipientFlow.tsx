@@ -27,6 +27,10 @@ export default function RecipientFlow({
   const [replySender, setReplySender] = useState(creation.recipientName);
   const [replySubmitted, setReplySubmitted] = useState(false);
 
+  // Private admin feedback state
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
   // Phase A to B Auto Transition after 2.5 seconds
   useEffect(() => {
     if (phase === 'loading') {
@@ -79,6 +83,27 @@ export default function RecipientFlow({
       onUpdateCreation(updatedCreation);
     }
     setReplySubmitted(true);
+  };
+
+  const handleSubmitFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackText.trim()) return;
+
+    const newFeedback = {
+      text: sanitizeText(feedbackText),
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    const updatedCreation: Creation = {
+      ...creation,
+      feedback: [...(creation.feedback || []), newFeedback]
+    };
+
+    if (onUpdateCreation) {
+      onUpdateCreation(updatedCreation);
+    }
+    setFeedbackText('');
+    setFeedbackSubmitted(true);
   };
 
   // Cleanup audio when component unmounts
@@ -368,6 +393,43 @@ export default function RecipientFlow({
                     </button>
                   </form>
                 )}
+
+                {/* Private Feedback to Admin */}
+                <div className="border-t border-primary/20 pt-6 mt-6 text-left">
+                  {feedbackSubmitted ? (
+                    <div className="text-center py-4 bg-primary/5 border border-primary/20 rounded-none animate-fade-in" id="feedback-success">
+                      <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Review Sent Privately to Admin!</p>
+                      <p className="text-[9px] text-on-surface-variant mt-1">Thank you for sharing your experience with us.</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmitFeedback} className="space-y-3">
+                      <div>
+                        <h5 className="font-bold text-[10px] uppercase tracking-wider text-on-background">Share Platform Feedback / Review</h5>
+                        <p className="text-[9px] text-on-surface-variant mt-0.5">Write a simple, short review. This is sent privately to the administrators.</p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <input
+                          id="feedback-input-text"
+                          type="text"
+                          value={feedbackText}
+                          onChange={(e) => setFeedbackText(e.target.value)}
+                          placeholder="What did you think of Memora? (Max 200 chars)"
+                          maxLength={200}
+                          className="flex-grow bg-transparent border-b border-primary/25 py-1 text-xs focus:outline-none focus:border-primary font-sans text-on-background"
+                          required
+                        />
+                        <button
+                          id="btn-submit-feedback"
+                          type="submit"
+                          className="btn-primary py-1 px-4 text-[9px] font-bold tracking-widest uppercase font-sans border border-primary"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
 
               </div>
 

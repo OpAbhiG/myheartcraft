@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe, Search, Link2, MessageSquare } from 'lucide-react';
+import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe, Search, Link2, MessageSquare, Star } from 'lucide-react';
 import { Creation } from '../types';
 import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
 import { generateShareableUrl } from '../utils/share';
@@ -609,6 +609,29 @@ export default function AdminSettingsModal({
                             </div>
                           ) : (
                             <p className="text-[10px] text-on-surface-variant italic">No recipient replies received yet.</p>
+                          )}
+                        </div>
+
+                        {/* Admin-Only Private Reviews & Feedback Box */}
+                        <div className="p-3 bg-[#FCFBF9] border border-primary/20 space-y-2 mt-2">
+                          <div className="flex items-center gap-1.5 font-bold text-[9px] uppercase tracking-wider text-primary border-b border-primary/10 pb-1">
+                            <Star className="w-3 h-3 text-primary" />
+                            Admin-Only Reviews & Platform Feedback ({(creation.feedback || []).length}):
+                          </div>
+                          {creation.feedback && creation.feedback.length > 0 ? (
+                            <div className="space-y-1.5">
+                              {creation.feedback.map((fItem, fIdx) => (
+                                <div key={fIdx} className="p-2 bg-background border border-primary/10 text-[10px] text-on-surface-variant">
+                                  <div className="flex justify-between items-center mb-0.5">
+                                    <strong className="text-primary font-mono">Review #{fIdx + 1}</strong>
+                                    <span className="text-[8px] text-on-surface-variant font-mono">{fItem.date}</span>
+                                  </div>
+                                  <p className="italic font-bold text-primary">"{fItem.text}"</p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-[10px] text-on-surface-variant italic">No platform reviews submitted yet.</p>
                           )}
                         </div>
 
