@@ -5,14 +5,33 @@ const SECONDARY_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10a
 const LOCAL_VAULT_KEY = 'memora_global_admin_vault';
 
 /**
+ * Robust fetch utility with exponential backoff retries.
+ */
+async function fetchWithRetry(url: string, options?: RequestInit, retries = 3, delay = 500): Promise<Response> {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok && retries > 0) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
+    return res;
+  } catch (e) {
+    if (retries > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchWithRetry(url, options, retries - 1, delay * 2);
+    }
+    throw e;
+  }
+}
+
+/**
  * Fetches all global creations created by all users from the cloud store & local admin cache.
  */
 export async function fetchGlobalCreationsFromCloud(): Promise<Creation[]> {
   let cloudCards: Creation[] = [];
 
-  // 1. Try Primary Unlimited Store (JSONBlob)
+  // 1. Try Primary Unlimited Store (JSONBlob) with retries
   try {
-    const res = await fetch(PRIMARY_CLOUD_URL, { cache: 'no-cache' });
+    const res = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
     if (res.ok) {
       const json = await res.json();
       if (json && Array.isArray(json.creations)) {
@@ -26,14 +45,16 @@ export async function fetchGlobalCreationsFromCloud(): Promise<Creation[]> {
   // 2. If Primary was empty/failed, try Secondary Backup Store
   if (cloudCards.length === 0) {
     try {
-      const res2 = await fetch(SECONDARY_CLOUD_URL, { cache: 'no-cache' });
+      const res2 = await fetchWithRetry(SECONDARY_CLOUD_URL, { cache: 'no-cache' }, 2, 500);
       if (res2.ok) {
         const json2 = await res2.json();
         if (json2 && json2.data && Array.isArray(json2.data.creations)) {
           cloudCards = json2.data.creations;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Secondary cloud store warning:', e);
+    }
   }
 
   // 3. Read local admin vault cache to ensure zero data loss
@@ -101,15 +122,15 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
       updatedList = [creation, ...currentCloudCards];
     }
 
-    // 3. Push to Primary Unlimited Cloud Database
-    await fetch(PRIMARY_CLOUD_URL, {
+    // 3. Push to Primary Unlimited Cloud Database with retries
+    await fetchWithRetry(PRIMARY_CLOUD_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: 'Memora Cloud Store',
         creations: updatedList
       })
-    });
+    }, 3, 500);
   } catch (e) {
     console.warn('Cloud sync error:', e);
   }
@@ -121,14 +142,14 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
 export async function syncAllCreationsToCloud(creations: Creation[]): Promise<void> {
   try {
     localStorage.setItem(LOCAL_VAULT_KEY, JSON.stringify(creations));
-    await fetch(PRIMARY_CLOUD_URL, {
+    await fetchWithRetry(PRIMARY_CLOUD_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: 'Memora Cloud Store',
         creations
       })
-    });
+    }, 3, 500);
   } catch (e) {
     console.warn('Sync all creations error:', e);
   }
