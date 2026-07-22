@@ -25,7 +25,7 @@ export default function App() {
   // 1. Initialize Creations: Local User Creations for Dashboard + Global Cloud Store for Admin
   useEffect(() => {
     let localCreations: Creation[];
-    const saved = localStorage.getItem('myheartcraft_user_creations');
+    const saved = localStorage.getItem('wishora_user_creations') || localStorage.getItem('myheartcraft_user_creations');
     if (saved) {
       try {
         localCreations = JSON.parse(saved);
@@ -34,8 +34,8 @@ export default function App() {
       }
     } else {
       localCreations = INITIAL_CREATIONS;
-      localStorage.setItem('myheartcraft_user_creations', JSON.stringify(INITIAL_CREATIONS));
     }
+    localStorage.setItem('wishora_user_creations', JSON.stringify(localCreations));
     setUserCreations(localCreations);
     setAllGlobalCreations(localCreations);
 
@@ -60,7 +60,7 @@ export default function App() {
         updatedList = [newCard, ...localCreations];
       }
 
-      localStorage.setItem('myheartcraft_user_creations', JSON.stringify(updatedList));
+      localStorage.setItem('wishora_user_creations', JSON.stringify(updatedList));
       setUserCreations(updatedList);
       setActiveCreation(found);
       setScreen('recipient-flow');
@@ -73,7 +73,7 @@ export default function App() {
   // Save creations to local storage helper
   const saveCreationsList = (updatedList: Creation[]) => {
     setUserCreations(updatedList);
-    localStorage.setItem('myheartcraft_user_creations', JSON.stringify(updatedList));
+    localStorage.setItem('wishora_user_creations', JSON.stringify(updatedList));
   };
 
   // Callback from Creation Wizard to write a new or edited creation

@@ -2,7 +2,7 @@ import { Creation } from '../types';
 
 const PRIMARY_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019f8309-7738-7b6a-b7ba-e534f314f687';
 const SECONDARY_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019f7ec5a940010f';
-const LOCAL_VAULT_KEY = 'myheartcraft_global_admin_vault';
+const LOCAL_VAULT_KEY = 'wishora_global_admin_vault';
 
 /**
  * Fetches all global creations created by all users from the cloud store & local admin cache.
@@ -39,7 +39,7 @@ export async function fetchGlobalCreationsFromCloud(): Promise<Creation[]> {
   // 3. Read local admin vault cache to ensure zero data loss
   let localVault: Creation[] = [];
   try {
-    const savedVault = localStorage.getItem(LOCAL_VAULT_KEY);
+    const savedVault = localStorage.getItem(LOCAL_VAULT_KEY) || localStorage.getItem('myheartcraft_global_admin_vault');
     if (savedVault) {
       localVault = JSON.parse(savedVault);
     }
@@ -106,7 +106,7 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: 'MyHeartCraft Cloud Store',
+        name: 'Wishora Cloud Store',
         creations: updatedList
       })
     });
@@ -125,7 +125,7 @@ export async function syncAllCreationsToCloud(creations: Creation[]): Promise<vo
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: 'MyHeartCraft Cloud Store',
+        name: 'Wishora Cloud Store',
         creations
       })
     });

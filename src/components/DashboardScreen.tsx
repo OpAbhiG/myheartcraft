@@ -99,7 +99,7 @@ export default function DashboardScreen({
       {/* Sidebar - Desktop */}
       <nav className="hidden lg:flex flex-col h-screen p-8 bg-surface-container w-64 fixed left-0 top-0 z-40 border-r border-primary/25">
         <div className="mb-12">
-          <div className="font-display-lg text-2xl text-primary font-bold tracking-tight uppercase italic">MyHeartCraft</div>
+          <div className="font-display-lg text-2xl text-primary font-bold tracking-tight uppercase italic">Wishora</div>
           <div className="font-label-caps text-[9px] text-on-surface-variant mt-1.5 uppercase tracking-[0.25em] opacity-75">Creator Studio</div>
         </div>
 

@@ -24,7 +24,7 @@ export default function AdminSettingsModal({
 }: AdminSettingsModalProps) {
   // Auth state with session memory
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('myheartcraft_admin_session') === 'true';
+    return (sessionStorage.getItem('wishora_admin_session') || sessionStorage.getItem('myheartcraft_admin_session')) === 'true';
   });
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,8 +41,12 @@ export default function AdminSettingsModal({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordSuccessMsg, setPasswordSuccessMsg] = useState('');
 
-  const [defaultCreator, setDefaultCreator] = useState(localStorage.getItem('myheartcraft_default_creator') || 'Abhishek');
-  const [defaultMusic, setDefaultMusic] = useState(localStorage.getItem('myheartcraft_default_music') || 'birthday_instrumental');
+  const [defaultCreator, setDefaultCreator] = useState(
+    localStorage.getItem('wishora_default_creator') || localStorage.getItem('myheartcraft_default_creator') || 'Abhishek'
+  );
+  const [defaultMusic, setDefaultMusic] = useState(
+    localStorage.getItem('wishora_default_music') || localStorage.getItem('myheartcraft_default_music') || 'birthday_instrumental'
+  );
   const [profileSavedMsg, setProfileSavedMsg] = useState('');
 
   // Rate Limiting Countdown Timer
@@ -105,7 +109,7 @@ export default function AdminSettingsModal({
     const isValid = await verifyAdminPasscode(passwordInput);
     if (isValid) {
       setIsAuthenticated(true);
-      sessionStorage.setItem('myheartcraft_admin_session', 'true');
+      sessionStorage.setItem('wishora_admin_session', 'true');
       setAuthError('');
       rateLimiter.reset();
     } else {
@@ -122,7 +126,7 @@ export default function AdminSettingsModal({
 
   // Lock / Logout Admin
   const handleAdminLogout = () => {
-    sessionStorage.removeItem('myheartcraft_admin_session');
+    sessionStorage.removeItem('wishora_admin_session');
     setIsAuthenticated(false);
     setPasswordInput('');
   };
@@ -153,8 +157,8 @@ export default function AdminSettingsModal({
   // 3. Save Profile & Preferences
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('myheartcraft_default_creator', defaultCreator);
-    localStorage.setItem('myheartcraft_default_music', defaultMusic);
+    localStorage.setItem('wishora_default_creator', defaultCreator);
+    localStorage.setItem('wishora_default_music', defaultMusic);
     setProfileSavedMsg('Creator profile & preferences updated successfully!');
     setTimeout(() => setProfileSavedMsg(''), 3000);
   };
@@ -164,7 +168,7 @@ export default function AdminSettingsModal({
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(creations, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `myheartcraft_backup_${new Date().toISOString().split('T')[0]}.json`);
+    downloadAnchor.setAttribute("download", `wishora_backup_${new Date().toISOString().split('T')[0]}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
