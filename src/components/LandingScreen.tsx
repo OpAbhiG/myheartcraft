@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles, Heart, Gift, MessageSquare, ChevronDown, ChevronUp, Mail, ShieldCheck, FileText, Info, X } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart, Gift, MessageSquare, ChevronDown, ChevronUp, Mail, ShieldCheck, FileText, Info, X, Send } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
+import { submitSiteReviewToCloud } from '../utils/cloudSync';
+import { sanitizeText } from '../utils/security';
 
 interface LandingScreenProps {
   onNavigateToExplore: () => void;
@@ -15,6 +17,25 @@ export default function LandingScreen({
 }: LandingScreenProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<'about' | 'privacy' | 'terms' | null>(null);
+
+  // Landing Feedback State
+  const [landingFeedbackSender, setLandingFeedbackSender] = useState('');
+  const [landingFeedbackText, setLandingFeedbackText] = useState('');
+  const [landingFeedbackSubmitted, setLandingFeedbackSubmitted] = useState(false);
+
+  const handleLandingSubmitFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!landingFeedbackText.trim() || !landingFeedbackSender.trim()) return;
+
+    submitSiteReviewToCloud({
+      sender: sanitizeText(landingFeedbackSender),
+      text: sanitizeText(landingFeedbackText)
+    }).then(() => {
+      setLandingFeedbackText('');
+      setLandingFeedbackSender('');
+      setLandingFeedbackSubmitted(true);
+    });
+  };
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -326,6 +347,63 @@ export default function LandingScreen({
           </div>
         </section>
 
+        {/* Share Your Feedback & Review Section */}
+        <section className="py-20 px-6 md:px-16 border-t border-primary/10 bg-surface-container-low relative" id="feedback-section">
+          <div className="max-w-xl mx-auto text-center space-y-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-none font-label-caps text-[8px] tracking-[0.2em] uppercase">
+              <Sparkles className="w-2.5 h-2.5" />
+              Your Voice Matters
+            </span>
+            <h2 className="font-display-lg text-3xl font-light text-on-background tracking-tight">Share Your Feedback & Review</h2>
+            <p className="font-body-lg text-on-surface-variant text-xs leading-relaxed max-w-md mx-auto">
+              Help us make Memora even more magical. Write a quick, simple review about your experience. Your feedback is sent directly and privately to our administrator panel.
+            </p>
+
+            {landingFeedbackSubmitted ? (
+              <div className="p-6 bg-primary/5 border border-primary/20 rounded-none animate-fade-in text-center space-y-2">
+                <Heart className="w-6 h-6 text-primary mx-auto animate-pulse" />
+                <h4 className="font-bold text-xs uppercase tracking-wider text-on-background">Thank You for Your Feedback!</h4>
+                <p className="text-[10px] text-on-surface-variant">Your review has been successfully stored in the admin control center.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleLandingSubmitFeedback} className="space-y-4 text-left p-6 bg-background border border-primary/15 shadow-sm">
+                <div className="flex flex-col group">
+                  <label className="text-[9px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Your Name</label>
+                  <input
+                    type="text"
+                    value={landingFeedbackSender}
+                    onChange={(e) => setLandingFeedbackSender(e.target.value)}
+                    className="w-full bg-transparent border-b border-primary/20 py-1.5 text-xs focus:outline-none focus:border-primary font-sans text-on-background"
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col group">
+                  <label className="text-[9px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Your Review / Message</label>
+                  <textarea
+                    rows={3}
+                    value={landingFeedbackText}
+                    onChange={(e) => setLandingFeedbackText(e.target.value)}
+                    className="w-full bg-transparent border border-primary/20 rounded-none p-3 focus:outline-none focus:border-primary text-xs leading-relaxed font-body-lg text-on-background"
+                    placeholder="What do you think of Memora? (Max 200 characters)..."
+                    maxLength={200}
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-primary py-2.5 px-6 rounded-none font-label-caps text-[9px] tracking-widest uppercase font-bold w-full flex items-center justify-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  Submit Review
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+
       </main>
 
       {/* Footer Section */}
@@ -369,6 +447,7 @@ export default function LandingScreen({
               <li><button onClick={() => setActiveModal('about')} className="hover:text-primary transition-colors">Know about us</button></li>
               <li><button onClick={() => setActiveModal('privacy')} className="hover:text-primary transition-colors">Privacy Policy</button></li>
               <li><button onClick={() => setActiveModal('terms')} className="hover:text-primary transition-colors">Terms & Conditions of Use</button></li>
+              <li><button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors flex items-center gap-1 font-bold text-primary">🔒 Admin & Creator Studio</button></li>
             </ul>
           </div>
 

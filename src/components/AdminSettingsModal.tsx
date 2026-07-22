@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe, Search, Link2, MessageSquare, Star } from 'lucide-react';
 import { Creation } from '../types';
-import { fetchGlobalCreationsFromCloud } from '../utils/cloudSync';
+import { fetchGlobalCreationsFromCloud, fetchSiteReviewsFromCloud, SiteReview } from '../utils/cloudSync';
 import { generateShareableUrl } from '../utils/share';
 import { verifyAdminPasscode, updateAdminPasscode, RateLimiter } from '../utils/security';
 
@@ -35,6 +35,18 @@ export default function AdminSettingsModal({
   const [allGlobalCards, setAllGlobalCards] = useState<Creation[]>(creations);
   const [isSyncing, setIsSyncing] = useState(false);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
+
+  // Global Reviews State
+  const [siteReviews, setSiteReviews] = useState<SiteReview[]>([]);
+  const [isSyncingReviews, setIsSyncingReviews] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchSiteReviewsFromCloud().then(reviews => {
+        if (reviews) setSiteReviews(reviews);
+      });
+    }
+  }, [isAuthenticated]);
 
   // Settings state
   const [newPassword, setNewPassword] = useState('');
@@ -654,6 +666,58 @@ export default function AdminSettingsModal({
                     );
                   })}
               </div>
+            </div>
+
+            {/* Section 5: Global Website Feedback & Reviews Explorer */}
+            <div className="border border-primary/25 p-5 bg-background mt-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 border-b border-primary/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-primary" />
+                  <div>
+                    <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">5. Platform-Wide Reviews & Feedback ({siteReviews.length})</h3>
+                    <p className="text-[9px] text-on-surface-variant">Feedback and reviews submitted by visitors from the website homepage.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={async () => {
+                      setIsSyncingReviews(true);
+                      const reviews = await fetchSiteReviewsFromCloud();
+                      setIsSyncingReviews(false);
+                      if (reviews) {
+                        setSiteReviews(reviews);
+                        alert(`Synchronized ${reviews.length} platform feedback reviews!`);
+                      }
+                    }}
+                    className="btn-primary py-1.5 px-3 text-[9px] font-label-caps uppercase tracking-widest font-bold flex items-center gap-1.5 whitespace-nowrap"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isSyncingReviews ? 'animate-spin' : ''}`} />
+                    {isSyncingReviews ? 'Syncing...' : 'Sync Reviews'}
+                  </button>
+                </div>
+              </div>
+
+              {siteReviews.length > 0 ? (
+                <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                  {siteReviews.map((review, rIdx) => (
+                    <div key={rIdx} className="p-3 bg-surface-container border border-primary/15 text-xs flex flex-col gap-1.5 shadow-sm">
+                      <div className="flex justify-between items-center text-[10px] font-mono border-b border-primary/10 pb-1">
+                        <span className="font-bold text-primary flex items-center gap-1">
+                          <User className="w-3 h-3 text-primary" />
+                          {review.sender}
+                        </span>
+                        <span className="text-on-surface-variant opacity-75">{review.date}</span>
+                      </div>
+                      <p className="text-xs text-on-background italic font-semibold">"{review.text}"</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 border border-dashed border-primary/25 bg-surface-container-low text-xs text-on-surface-variant italic">
+                  No website feedback or platform reviews recorded yet.
+                </div>
+              )}
             </div>
 
           </div>

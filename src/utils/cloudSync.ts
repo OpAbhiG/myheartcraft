@@ -4,6 +4,12 @@ const PRIMARY_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019f8884-e333-7b41-
 const SECONDARY_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019f7ec5a940010f';
 const LOCAL_VAULT_KEY = 'memora_global_admin_vault';
 
+export interface SiteReview {
+  sender: string;
+  text: string;
+  date: string;
+}
+
 /**
  * Robust fetch utility with exponential backoff retries.
  */
@@ -111,8 +117,19 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
     }
     localStorage.setItem(LOCAL_VAULT_KEY, JSON.stringify(currentVault));
 
-    // 2. Fetch latest cloud cards and merge
-    const currentCloudCards = await fetchGlobalCreationsFromCloud();
+    // 2. Fetch latest cloud database state
+    let currentReviews: SiteReview[] = [];
+    let currentCloudCards: Creation[] = [];
+
+    const dbRes = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (dbRes.ok) {
+      const json = await dbRes.json();
+      if (json) {
+        if (Array.isArray(json.creations)) currentCloudCards = json.creations;
+        if (Array.isArray(json.siteReviews)) currentReviews = json.siteReviews;
+      }
+    }
+
     const existsIndex = currentCloudCards.findIndex(c => c.id === creation.id);
     let updatedList: Creation[];
     if (existsIndex >= 0) {
@@ -122,13 +139,14 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
       updatedList = [creation, ...currentCloudCards];
     }
 
-    // 3. Push to Primary Unlimited Cloud Database with retries
+    // 3. Push to Primary Cloud Database preserving siteReviews
     await fetchWithRetry(PRIMARY_CLOUD_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: 'Memora Cloud Store',
-        creations: updatedList
+        creations: updatedList,
+        siteReviews: currentReviews
       })
     }, 3, 500);
   } catch (e) {
@@ -142,15 +160,83 @@ export async function syncCreationToCloud(creation: Creation): Promise<void> {
 export async function syncAllCreationsToCloud(creations: Creation[]): Promise<void> {
   try {
     localStorage.setItem(LOCAL_VAULT_KEY, JSON.stringify(creations));
+    
+    // Fetch latest reviews first to prevent wiping them out
+    let currentReviews: SiteReview[] = [];
+    const dbRes = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (dbRes.ok) {
+      const json = await dbRes.json();
+      if (json && Array.isArray(json.siteReviews)) {
+        currentReviews = json.siteReviews;
+      }
+    }
+
     await fetchWithRetry(PRIMARY_CLOUD_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: 'Memora Cloud Store',
-        creations
+        creations,
+        siteReviews: currentReviews
       })
     }, 3, 500);
   } catch (e) {
     console.warn('Sync all creations error:', e);
+  }
+}
+
+/**
+ * Fetches all global platform feedback/reviews from the cloud database.
+ */
+export async function fetchSiteReviewsFromCloud(): Promise<SiteReview[]> {
+  try {
+    const res = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (res.ok) {
+      const json = await res.json();
+      if (json && Array.isArray(json.siteReviews)) {
+        return json.siteReviews;
+      }
+    }
+  } catch (e) {
+    console.warn('Fetch site reviews warning:', e);
+  }
+  return [];
+}
+
+/**
+ * Appends a new user feedback/review to the global cloud database.
+ */
+export async function submitSiteReviewToCloud(review: { sender: string; text: string }): Promise<void> {
+  try {
+    let currentCreations: Creation[] = [];
+    let currentReviews: SiteReview[] = [];
+
+    const res = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (res.ok) {
+      const json = await res.json();
+      if (json) {
+        if (Array.isArray(json.creations)) currentCreations = json.creations;
+        if (Array.isArray(json.siteReviews)) currentReviews = json.siteReviews;
+      }
+    }
+
+    const newReviewItem: SiteReview = {
+      sender: review.sender,
+      text: review.text,
+      date: new Date().toISOString().split('T')[0]
+    };
+    const updatedReviews = [newReviewItem, ...currentReviews];
+
+    await fetchWithRetry(PRIMARY_CLOUD_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Memora Cloud Store',
+        creations: currentCreations,
+        siteReviews: updatedReviews
+      })
+    }, 3, 500);
+  } catch (e) {
+    console.warn('Submit site review error:', e);
   }
 }
