@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, Sparkles, Heart, Gift, MessageSquare, ChevronDown, ChevronUp, Mail, ShieldCheck, FileText, Info, X, Send } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
 import { submitSiteReviewToCloud } from '../utils/cloudSync';
@@ -36,6 +36,28 @@ export default function LandingScreen({
       setLandingFeedbackSubmitted(true);
     });
   };
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      revealElements.forEach((el) => observer.unobserve(el));
+      observer.disconnect();
+    };
+  }, []);
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -167,7 +189,7 @@ export default function LandingScreen({
 
         {/* Featured Experiences Section */}
         <section className="py-20 px-6 md:px-16 max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12 border-b border-primary/20 pb-4">
+          <div className="flex justify-between items-end mb-12 border-b border-primary/20 pb-4 reveal">
             <div>
               <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-on-surface-variant font-bold">Curated Catalog</span>
               <h2 className="font-display-lg text-3xl md:text-4xl text-on-background font-light mt-1">Featured Experiences</h2>
@@ -181,7 +203,7 @@ export default function LandingScreen({
             {/* Virtual Birthday Bash */}
             <div
               onClick={() => onNavigateToWizard('birthday')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3]"
+              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-1"
             >
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
@@ -201,7 +223,7 @@ export default function LandingScreen({
             {/* Anniversary Special */}
             <div
               onClick={() => onNavigateToWizard('anniversary')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3]"
+              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-2"
             >
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
@@ -221,7 +243,7 @@ export default function LandingScreen({
             {/* Perfect Proposal */}
             <div
               onClick={() => onNavigateToWizard('proposal')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3]"
+              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-3"
             >
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
@@ -242,7 +264,7 @@ export default function LandingScreen({
 
         {/* How It Works Section */}
         <section id="how-it-works" className="py-20 px-6 md:px-16 max-w-7xl mx-auto border-t border-primary/10 bg-surface-container/50">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 reveal">
             <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Simple 3-Step Surprise</span>
             <h2 className="font-display-lg text-3xl md:text-5xl text-on-background font-light mt-2">How It Works</h2>
             <p className="text-xs text-on-surface-variant mt-2 max-w-lg mx-auto">Create, customize, and deliver an unforgettable digital gift keepsake in under 2 minutes.</p>
@@ -250,7 +272,7 @@ export default function LandingScreen({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-1">
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">01</span>
@@ -269,7 +291,7 @@ export default function LandingScreen({
             </div>
 
             {/* Step 2 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-2">
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">02</span>
@@ -288,7 +310,7 @@ export default function LandingScreen({
             </div>
 
             {/* Step 3 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all">
+            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-3">
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">03</span>
@@ -307,7 +329,7 @@ export default function LandingScreen({
             </div>
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 reveal">
             <button onClick={onNavigateToExplore} className="btn-primary py-3 px-8 text-xs font-label-caps uppercase tracking-widest font-bold">
               Start Building Now →
             </button>
@@ -316,7 +338,7 @@ export default function LandingScreen({
 
         {/* FAQ Section */}
         <section id="faq-section" className="py-20 px-6 md:px-16 max-w-4xl mx-auto border-t border-primary/10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 reveal">
             <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Questions & Answers</span>
             <h2 className="font-display-lg text-3xl md:text-5xl text-on-background font-light mt-2">Frequently Asked Questions</h2>
             <p className="text-xs text-on-surface-variant mt-2">Everything you need to know about creating, customizing, and sharing digital gift surprises.</p>
@@ -528,5 +550,18 @@ export const LandingAnims = () => (
     @keyframes fadeInUp {
       to { opacity: 1; transform: translateY(0); }
     }
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.85s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.85s cubic-bezier(0.215, 0.61, 0.355, 1);
+      will-change: transform, opacity;
+    }
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 80ms; }
+    .reveal-delay-2 { transition-delay: 160ms; }
+    .reveal-delay-3 { transition-delay: 240ms; }
   `}</style>
 );
