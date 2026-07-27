@@ -397,6 +397,9 @@ export default function App() {
           onNavigateToWizard={(id) => handleNavigateToWizard(id)}
           onNavigateToHome={() => setScreen('landing')}
           onNavigateToDashboard={() => setScreen('dashboard')}
+          onNavigateToScrapbookWizard={() => setScreen('scrapbook-wizard')}
+          onNavigateToMagazineWizard={() => setScreen('magazine-wizard')}
+          onNavigateToOpenWhenWizard={() => setScreen('openwhen-wizard')}
         />
       )}
 

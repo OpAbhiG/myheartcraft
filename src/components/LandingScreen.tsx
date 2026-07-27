@@ -401,14 +401,14 @@ export default function LandingScreen({
           {/* EXPERIENCES Col */}
           <div>
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-4">EXPERIENCES</h4>
-            <ul className="space-y-2 text-xs text-on-surface-variant">
-              <li><button onClick={() => onNavigateToWizard('thank_you')} className="hover:text-primary transition-colors">Sorry Card</button></li>
-              <li><button onClick={() => onNavigateToWizard('birthday')} className="hover:text-primary transition-colors">Virtual Birthday Bash</button></li>
-              <li><button onClick={() => onNavigateToWizard('proposal')} className="hover:text-primary transition-colors">Perfect Proposal</button></li>
-              <li><button onClick={() => onNavigateToWizard('puzzle')} className="hover:text-primary transition-colors">Surprise Photo Puzzle</button></li>
-              <li><button onClick={() => onNavigateToWizard('thank_you')} className="hover:text-primary transition-colors">Mother's Day</button></li>
-              <li><button onClick={() => onNavigateToWizard('anniversary')} className="hover:text-primary transition-colors">Anniversary Special</button></li>
-              <li><button onClick={() => onNavigateToWizard('thank_you')} className="hover:text-primary transition-colors">Love Letter</button></li>
+            <ul className="space-y-2 text-xs text-on-surface-variant text-left">
+              <li><button onClick={() => onNavigateToWizard('birthday')} className="hover:text-primary transition-colors cursor-pointer">Greeting Cards</button></li>
+              <li><button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">AI Magazine Maker</button></li>
+              <li><button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">Collage Story Scrapbook</button></li>
+              <li><button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">"Open When..." Envelopes</button></li>
+              <li><button onClick={() => onNavigateToWizard('proposal')} className="hover:text-primary transition-colors cursor-pointer">Perfect Proposal</button></li>
+              <li><button onClick={() => onNavigateToWizard('puzzle')} className="hover:text-primary transition-colors cursor-pointer">Photo Puzzle Card</button></li>
+              <li><button onClick={() => onNavigateToWizard('anniversary')} className="hover:text-primary transition-colors cursor-pointer">Anniversary Special</button></li>
             </ul>
           </div>
 

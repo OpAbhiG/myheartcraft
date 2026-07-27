@@ -6,12 +6,18 @@ interface ExploreScreenProps {
   onNavigateToWizard: (templateId: string) => void;
   onNavigateToHome: () => void;
   onNavigateToDashboard: () => void;
+  onNavigateToScrapbookWizard?: () => void;
+  onNavigateToMagazineWizard?: () => void;
+  onNavigateToOpenWhenWizard?: () => void;
 }
 
 export default function ExploreScreen({
   onNavigateToWizard,
   onNavigateToHome,
-  onNavigateToDashboard
+  onNavigateToDashboard,
+  onNavigateToScrapbookWizard,
+  onNavigateToMagazineWizard,
+  onNavigateToOpenWhenWizard
 }: ExploreScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -173,7 +179,7 @@ export default function ExploreScreen({
                 Custom Surprise <Sparkles className="w-4 h-4 text-primary shrink-0" />
               </h3>
               <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
-                Build your own completely custom surprise experience from scratch using our premium layout tools.
+                Build your own completely custom surprise greeting card experience from scratch using our premium layout tools.
               </p>
               <div className="flex items-center justify-between pt-3 border-t border-primary/10">
                 <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
@@ -182,6 +188,114 @@ export default function ExploreScreen({
                 </span>
                 <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
                   Start Blank
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Editorial Magazine Card */}
+          <div
+            onClick={onNavigateToMagazineWizard}
+            className="glass-card rounded-none overflow-hidden group cursor-pointer border border-primary/20 hover:border-primary bg-background transition-all duration-300"
+          >
+            <div className="h-52 relative overflow-hidden bg-primary-container">
+              <div
+                className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=600&q=80')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              <div className="absolute top-4 left-4 bg-background border border-primary px-3 py-1 rounded-none text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest">
+                Magazine Maker
+              </div>
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-display-lg text-xl font-light text-on-background mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                AI-Editorial Magazine <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              </h3>
+              <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
+                Convert 5-40 photos and stories into a professionally laid out publication. Generates articles, captions, and headlines.
+              </p>
+              <div className="flex items-center justify-between pt-3 border-t border-primary/10">
+                <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
+                  <Clock className="w-3 h-3" />
+                  Auto-Layout & AI
+                </span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
+                  Generate
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Story Scrapbook Card */}
+          <div
+            onClick={onNavigateToScrapbookWizard}
+            className="glass-card rounded-none overflow-hidden group cursor-pointer border border-primary/20 hover:border-primary bg-background transition-all duration-300"
+          >
+            <div className="h-52 relative overflow-hidden bg-primary-container">
+              <div
+                className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              <div className="absolute top-4 left-4 bg-background border border-primary px-3 py-1 rounded-none text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest">
+                Scrapbook Studio
+              </div>
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-display-lg text-xl font-light text-on-background mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                Tactile Story Scrapbook <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              </h3>
+              <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
+                Create a handmade visual keepsake with stickers, handwritten memories, washi tapes, paper cuts, and polaroid frame borders.
+              </p>
+              <div className="flex items-center justify-between pt-3 border-t border-primary/10">
+                <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
+                  <Clock className="w-3 h-3" />
+                  Freeform Collage
+                </span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
+                  Create
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Open When Card */}
+          <div
+            onClick={onNavigateToOpenWhenWizard}
+            className="glass-card rounded-none overflow-hidden group cursor-pointer border border-primary/20 hover:border-primary bg-background transition-all duration-300"
+          >
+            <div className="h-52 relative overflow-hidden bg-primary-container">
+              <div
+                className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1473186578172-c141e6798cf4?auto=format&fit=crop&w=600&q=80')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              <div className="absolute top-4 left-4 bg-background border border-primary px-3 py-1 rounded-none text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest">
+                Open When Envelopes
+              </div>
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-display-lg text-xl font-light text-on-background mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                "Open When..." Series <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              </h3>
+              <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
+                Compile a series of sealed digital envelopes with messages, photos, voice notes, and keepsake gifts that open in future moments.
+              </p>
+              <div className="flex items-center justify-between pt-3 border-t border-primary/10">
+                <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
+                  <Clock className="w-3 h-3" />
+                  Moment Locks
+                </span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
+                  Assemble
                   <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
