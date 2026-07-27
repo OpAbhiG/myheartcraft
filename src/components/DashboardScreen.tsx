@@ -14,6 +14,9 @@ interface DashboardScreenProps {
   onDeleteCreation: (creationId: string) => void;
   onUpdateCreations?: (updated: Creation[]) => void;
   onUpdateGlobalCreations?: (updated: Creation[]) => void;
+  onNavigateToScrapbookDashboard?: () => void;
+  onNavigateToMagazineDashboard?: () => void;
+  onNavigateToOpenWhenDashboard?: () => void;
 }
 
 export default function DashboardScreen({
@@ -24,9 +27,13 @@ export default function DashboardScreen({
   onPreviewCreation,
   onDeleteCreation,
   onUpdateCreations,
-  onUpdateGlobalCreations
+  onUpdateGlobalCreations,
+  onNavigateToScrapbookDashboard,
+  onNavigateToMagazineDashboard,
+  onNavigateToOpenWhenDashboard
 }: DashboardScreenProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [selectedDetailCreation, setSelectedDetailCreation] = useState<Creation | null>(null);
   const [copiedDetailLink, setCopiedDetailLink] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -107,13 +114,31 @@ export default function DashboardScreen({
           <li>
             <button className="w-full flex items-center gap-3 px-4 py-3 text-primary font-bold border border-primary bg-background rounded-none text-left">
               <LayoutDashboard className="w-4 h-4 text-primary" />
-              <span className="font-sans text-xs uppercase tracking-wider font-bold">Dashboard</span>
+              <span className="font-sans text-xs uppercase tracking-wider font-bold">Greeting Cards</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={onNavigateToMagazineDashboard} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent hover:border-primary/20 hover:bg-background rounded-none text-left transition-all">
+              <BookOpen className="w-4 h-4 text-on-surface-variant/75" />
+              <span className="font-sans text-xs uppercase tracking-wider">Magazine Maker</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={onNavigateToScrapbookDashboard} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent hover:border-primary/20 hover:bg-background rounded-none text-left transition-all">
+              <BookOpen className="w-4 h-4 text-on-surface-variant/75" />
+              <span className="font-sans text-xs uppercase tracking-wider">Scrapbook Studio</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={onNavigateToOpenWhenDashboard} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent hover:border-primary/20 hover:bg-background rounded-none text-left transition-all">
+              <BookOpen className="w-4 h-4 text-on-surface-variant/75" />
+              <span className="font-sans text-xs uppercase tracking-wider">Open When...</span>
             </button>
           </li>
           <li>
             <button onClick={onNavigateToExplore} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant border border-transparent hover:border-primary/20 hover:bg-background rounded-none text-left transition-all">
               <BookOpen className="w-4 h-4 text-on-surface-variant/75" />
-              <span className="font-sans text-xs uppercase tracking-wider">Explore Templates</span>
+              <span className="font-sans text-xs uppercase tracking-wider">Explore Card Templates</span>
             </button>
           </li>
           <li>

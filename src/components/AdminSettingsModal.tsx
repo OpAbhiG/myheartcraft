@@ -36,6 +36,12 @@ export default function AdminSettingsModal({
   const [isSyncing, setIsSyncing] = useState(false);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
 
+  // Magazines, Scrapbooks, and Open Whens States
+  const [adminMagazines, setAdminMagazines] = useState<any[]>([]);
+  const [adminScrapbooks, setAdminScrapbooks] = useState<any[]>([]);
+  const [adminOpenWhens, setAdminOpenWhens] = useState<any[]>([]);
+  const [explorerTab, setExplorerTab] = useState<'cards' | 'magazines' | 'scrapbooks' | 'openwhens'>('cards');
+
   // Global Reviews State
   const [siteReviews, setSiteReviews] = useState<SiteReview[]>([]);
   const [isSyncingReviews, setIsSyncingReviews] = useState(false);
@@ -97,6 +103,24 @@ export default function AdminSettingsModal({
           }
         })
         .catch(() => setIsSyncing(false));
+
+      // Fetch Magazines
+      const savedMags = localStorage.getItem('memora_magazine_projects');
+      if (savedMags) {
+        try { setAdminMagazines(JSON.parse(savedMags)); } catch(e) {}
+      }
+
+      // Fetch Scrapbooks
+      const savedScraps = localStorage.getItem('memora_scrapbook_projects');
+      if (savedScraps) {
+        try { setAdminScrapbooks(JSON.parse(savedScraps)); } catch(e) {}
+      }
+
+      // Fetch Open Whens
+      const savedOpenWhens = localStorage.getItem('memora_open_when_projects');
+      if (savedOpenWhens) {
+        try { setAdminOpenWhens(JSON.parse(savedOpenWhens)); } catch(e) {}
+      }
     }
   }, [isOpen, creations]);
 
@@ -318,18 +342,31 @@ export default function AdminSettingsModal({
             </div>
 
             {/* Quick Stats Overview */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="p-3 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Total Experiences</div>
-                <div className="font-display-lg text-xl font-bold text-primary mt-1">{totalExperiences}</div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Greeting Cards</div>
+                <div className="font-display-lg text-lg font-bold text-primary mt-1">{totalExperiences}</div>
               </div>
-              <div className="p-3 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Live Active Links</div>
-                <div className="font-display-lg text-xl font-bold text-green-700 mt-1">{activeLinks}</div>
+              <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Magazines</div>
+                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminMagazines.length}</div>
               </div>
-              <div className="p-3 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Recipient Views</div>
-                <div className="font-display-lg text-xl font-bold text-primary mt-1">{totalViews}</div>
+              <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Scrapbooks</div>
+                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminScrapbooks.length}</div>
+              </div>
+              <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Open Whens</div>
+                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminOpenWhens.length}</div>
+              </div>
+              <div className="p-2.5 bg-surface-container border border-primary/20 text-center col-span-2 md:col-span-1">
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Combined Views</div>
+                <div className="font-display-lg text-lg font-bold text-green-700 mt-1">
+                  {totalViews + 
+                   adminMagazines.reduce((s: number, m: any) => s + (m.views || 0), 0) + 
+                   adminScrapbooks.reduce((s: number, sc: any) => s + (sc.views || 0), 0) + 
+                   adminOpenWhens.reduce((s: number, o: any) => s + (o.views || 0), 0)}
+                </div>
               </div>
             </div>
 
@@ -504,8 +541,8 @@ export default function AdminSettingsModal({
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-primary" />
                   <div>
-                    <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data & Replies Explorer</h3>
-                    <p className="text-[9px] text-on-surface-variant">Live inspection of all cards created by users across all devices.</p>
+                    <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data Explorer Center</h3>
+                    <p className="text-[9px] text-on-surface-variant">Live inspection of all Memora keepsake modules (Cards, Magazines, Scrapbooks, Open Whens).</p>
                   </div>
                 </div>
 
@@ -527,9 +564,27 @@ export default function AdminSettingsModal({
                     title="Fetch all user cards created globally across devices"
                   >
                     <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
-                    {isSyncing ? 'Syncing Cloud...' : 'Sync Cloud Database'}
+                    {isSyncing ? 'Syncing Cloud...' : 'Sync Cloud Cards'}
                   </button>
                 </div>
+              </div>
+
+              {/* Tab Selector */}
+              <div className="flex border border-primary p-0.5 bg-background mb-4 overflow-x-auto gap-1">
+                {(['cards', 'magazines', 'scrapbooks', 'openwhens'] as const).map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setExplorerTab(tab)}
+                    className={`px-4 py-2 font-mono text-[9px] uppercase tracking-widest transition-all whitespace-nowrap ${
+                      explorerTab === tab ? 'bg-primary text-background font-bold' : 'text-on-surface-variant hover:text-primary'
+                    }`}
+                  >
+                    {tab === 'cards' && `Cards (${allGlobalCards.length})`}
+                    {tab === 'magazines' && `Magazines (${adminMagazines.length})`}
+                    {tab === 'scrapbooks' && `Scrapbooks (${adminScrapbooks.length})`}
+                    {tab === 'openwhens' && `Open Whens (${adminOpenWhens.length})`}
+                  </button>
+                ))}
               </div>
 
               {/* Admin Search Filter Input */}
@@ -539,132 +594,242 @@ export default function AdminSettingsModal({
                   type="text"
                   value={adminSearchQuery}
                   onChange={(e) => setAdminSearchQuery(e.target.value)}
-                  placeholder="Filter by Creator, Recipient, or Message..."
+                  placeholder={`Search ${explorerTab}...`}
                   className="w-full bg-surface-container border border-primary/20 py-1.5 pl-9 pr-3 text-xs focus:outline-none focus:border-primary text-on-background"
                 />
               </div>
 
-              {/* Cards Explorer List */}
-              <div className="space-y-4">
-                {allGlobalCards
-                  .filter(creation => {
-                    if (!adminSearchQuery.trim()) return true;
-                    const q = adminSearchQuery.toLowerCase();
-                    return (
-                      (creation.recipientName && creation.recipientName.toLowerCase().includes(q)) ||
-                      (creation.creatorName && creation.creatorName.toLowerCase().includes(q)) ||
-                      (creation.messageTitle && creation.messageTitle.toLowerCase().includes(q)) ||
-                      (creation.id && creation.id.toLowerCase().includes(q))
-                    );
-                  })
-                  .map((creation, idx) => {
-                    const isLive = creation.status === 'LIVE';
-                    const repliesList = creation.replies || [];
-                    const viewsCount = creation.views || 0;
+              {/* Explorer List */}
+              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                {/* 1. Cards Tab */}
+                {explorerTab === 'cards' && (
+                  <>
+                    {allGlobalCards
+                      .filter(creation => {
+                        if (!adminSearchQuery.trim()) return true;
+                        const q = adminSearchQuery.toLowerCase();
+                        return (
+                          (creation.recipientName && creation.recipientName.toLowerCase().includes(q)) ||
+                          (creation.creatorName && creation.creatorName.toLowerCase().includes(q)) ||
+                          (creation.messageTitle && creation.messageTitle.toLowerCase().includes(q)) ||
+                          (creation.id && creation.id.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((creation, idx) => {
+                        const isLive = creation.status === 'LIVE';
+                        const repliesList = creation.replies || [];
+                        const viewsCount = creation.views || 0;
 
-                    return (
-                      <div key={creation.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
-                        
-                        {/* Top Info Bar */}
-                        <div className="flex justify-between items-center border-b border-primary/10 pb-2">
-                          <span className="font-mono text-[11px] font-bold text-primary flex items-center gap-1.5">
-                            <Globe className="w-3 h-3 text-primary" />
-                            {creation.id}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
-                              👁️ {viewsCount} Views
-                            </span>
-                            <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${isLive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                              {creation.status || 'LIVE'}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Parameter Grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
-                          <div><strong className="text-on-surface-variant">Recipient:</strong> <span className="text-primary font-bold">{creation.recipientName || 'Friend'}</span></div>
-                          <div><strong className="text-on-surface-variant">Creator:</strong> <span className="text-on-background font-bold">{creation.creatorName || 'Anonymous'}</span></div>
-                          <div><strong className="text-on-surface-variant">Occasion:</strong> {creation.relationship || 'Partner'} ({creation.specialDate || 'No Date'})</div>
-                          <div><strong className="text-on-surface-variant">Template:</strong> {creation.templateId}</div>
-                          <div><strong className="text-on-surface-variant">Music:</strong> {creation.musicTrack}</div>
-                          <div><strong className="text-on-surface-variant">Theme/FX:</strong> {creation.themeColor} / {creation.particles}</div>
-                          <div><strong className="text-on-surface-variant">Lock Game:</strong> {creation.interactiveElement}</div>
-                          <div><strong className="text-on-surface-variant">Replies Count:</strong> <span className="font-bold text-primary">{repliesList.length}</span></div>
-                        </div>
-
-                        {/* Heartfelt Letter Text */}
-                        <div className="pt-1">
-                          <div className="font-bold text-on-background text-xs">{creation.messageTitle}</div>
-                          <div className="text-on-surface-variant text-[11px] mt-1 italic p-2 bg-background border border-primary/10">
-                            "{creation.messageBody}"
-                          </div>
-                        </div>
-
-                        {/* Recipient Replies Box */}
-                        <div className="p-3 bg-background border border-primary/20 space-y-2">
-                          <div className="flex items-center gap-1.5 font-bold text-[9px] uppercase tracking-wider text-primary border-b border-primary/10 pb-1">
-                            <MessageSquare className="w-3 h-3 text-primary" />
-                            Recipient Replies & Thank You Messages ({repliesList.length}):
-                          </div>
-                          {repliesList.length > 0 ? (
-                            <div className="space-y-1.5">
-                              {repliesList.map((reply, rIdx) => (
-                                <div key={rIdx} className="p-2 bg-surface-container border border-primary/10 text-[10px] text-on-surface-variant">
-                                  <div className="flex justify-between items-center mb-0.5">
-                                    <strong className="text-primary font-mono">{reply.sender}</strong>
-                                    <span className="text-[8px] text-on-surface-variant font-mono">{reply.date}</span>
-                                  </div>
-                                  <p className="italic">"{reply.text}"</p>
-                                </div>
-                              ))}
+                        return (
+                          <div key={creation.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
+                            <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                              <span className="font-mono text-[11px] font-bold text-primary flex items-center gap-1.5">
+                                <Globe className="w-3 h-3 text-primary" />
+                                {creation.id}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
+                                  👁️ {viewsCount} Views
+                                </span>
+                                <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${isLive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                  {creation.status || 'LIVE'}
+                                </span>
+                              </div>
                             </div>
-                          ) : (
-                            <p className="text-[10px] text-on-surface-variant italic">No recipient replies received yet.</p>
-                          )}
-                        </div>
 
-                        {/* Admin-Only Private Reviews & Feedback Box */}
-                        <div className="p-3 bg-[#FCFBF9] border border-primary/20 space-y-2 mt-2">
-                          <div className="flex items-center gap-1.5 font-bold text-[9px] uppercase tracking-wider text-primary border-b border-primary/10 pb-1">
-                            <Star className="w-3 h-3 text-primary" />
-                            Admin-Only Reviews & Platform Feedback ({(creation.feedback || []).length}):
-                          </div>
-                          {creation.feedback && creation.feedback.length > 0 ? (
-                            <div className="space-y-1.5">
-                              {creation.feedback.map((fItem, fIdx) => (
-                                <div key={fIdx} className="p-2 bg-background border border-primary/10 text-[10px] text-on-surface-variant">
-                                  <div className="flex justify-between items-center mb-0.5">
-                                    <strong className="text-primary font-mono">Review #{fIdx + 1}</strong>
-                                    <span className="text-[8px] text-on-surface-variant font-mono">{fItem.date}</span>
-                                  </div>
-                                  <p className="italic font-bold text-primary">"{fItem.text}"</p>
-                                </div>
-                              ))}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
+                              <div><strong className="text-on-surface-variant">Recipient:</strong> <span className="text-primary font-bold">{creation.recipientName || 'Friend'}</span></div>
+                              <div><strong className="text-on-surface-variant">Creator:</strong> <span className="text-on-background font-bold">{creation.creatorName || 'Anonymous'}</span></div>
+                              <div><strong className="text-on-surface-variant">Occasion:</strong> {creation.relationship || 'Partner'} ({creation.specialDate || 'No Date'})</div>
+                              <div><strong className="text-on-surface-variant">Template:</strong> {creation.templateId}</div>
+                              <div><strong className="text-on-surface-variant">Music:</strong> {creation.musicTrack}</div>
+                              <div><strong className="text-on-surface-variant">Theme/FX:</strong> {creation.themeColor} / {creation.particles}</div>
+                              <div><strong className="text-on-surface-variant">Lock Game:</strong> {creation.interactiveElement}</div>
+                              <div><strong className="text-on-surface-variant">Replies Count:</strong> <span className="font-bold text-primary">{repliesList.length}</span></div>
                             </div>
-                          ) : (
-                            <p className="text-[10px] text-on-surface-variant italic">No platform reviews submitted yet.</p>
-                          )}
-                        </div>
 
-                        {/* Admin Action Buttons */}
-                        <div className="flex gap-2 pt-2">
-                          <button
-                            onClick={() => {
-                              const shareableUrl = generateShareableUrl(creation);
-                              navigator.clipboard.writeText(shareableUrl);
-                              alert('Copied share link to clipboard!');
-                            }}
-                            className="py-1 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary hover:text-background transition-colors flex items-center gap-1"
-                          >
-                            <Link2 className="w-3 h-3" />
-                            Copy Link
-                          </button>
-                        </div>
+                            <div className="pt-1">
+                              <div className="font-bold text-on-background text-xs">{creation.messageTitle}</div>
+                              <div className="text-on-surface-variant text-[11px] mt-1 italic p-2 bg-background border border-primary/10">
+                                "{creation.messageBody}"
+                              </div>
+                            </div>
 
-                      </div>
-                    );
-                  })}
+                            <div className="p-3 bg-background border border-primary/20 space-y-2">
+                              <div className="flex items-center gap-1.5 font-bold text-[9px] uppercase tracking-wider text-primary border-b border-primary/10 pb-1">
+                                <MessageSquare className="w-3 h-3 text-primary" />
+                                Recipient Replies & Thank You Messages ({repliesList.length}):
+                              </div>
+                              {repliesList.length > 0 ? (
+                                <div className="space-y-1.5">
+                                  {repliesList.map((reply, rIdx) => (
+                                    <div key={rIdx} className="p-2 bg-surface-container border border-primary/10 text-[10px] text-on-surface-variant">
+                                      <div className="flex justify-between items-center mb-0.5">
+                                        <strong className="text-primary font-mono">{reply.sender}</strong>
+                                        <span className="text-[8px] text-on-surface-variant font-mono">{reply.date}</span>
+                                      </div>
+                                      <p className="italic">"{reply.text}"</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-[10px] text-on-surface-variant italic">No recipient replies received yet.</p>
+                              )}
+                            </div>
+
+                            <div className="flex gap-2 pt-2">
+                              <button
+                                onClick={() => {
+                                  const shareableUrl = generateShareableUrl(creation);
+                                  navigator.clipboard.writeText(shareableUrl);
+                                  alert('Copied share link to clipboard!');
+                                }}
+                                className="py-1 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary hover:text-background transition-colors flex items-center gap-1"
+                              >
+                                <Link2 className="w-3 h-3" />
+                                Copy Link
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </>
+                )}
+
+                {/* 2. Magazines Tab */}
+                {explorerTab === 'magazines' && (
+                  <>
+                    {adminMagazines
+                      .filter(m => {
+                        if (!adminSearchQuery.trim()) return true;
+                        const q = adminSearchQuery.toLowerCase();
+                        return (
+                          (m.title && m.title.toLowerCase().includes(q)) ||
+                          (m.creatorName && m.creatorName.toLowerCase().includes(q)) ||
+                          (m.recipientName && m.recipientName.toLowerCase().includes(q)) ||
+                          (m.id && m.id.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((mag, idx) => (
+                        <div key={mag.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
+                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                            <span className="font-mono text-[11px] font-bold text-primary">{mag.id}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
+                                👁️ {mag.views || 0} Views
+                              </span>
+                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${mag.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                                {mag.status}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
+                            <div><strong>Title:</strong> {mag.title}</div>
+                            <div><strong>Creator:</strong> {mag.creatorName}</div>
+                            <div><strong>Recipient:</strong> {mag.recipientName}</div>
+                            <div><strong>Occasion:</strong> {mag.occasion}</div>
+                            <div><strong>Style:</strong> {mag.style}</div>
+                            <div><strong>Size:</strong> {mag.size}</div>
+                            <div><strong>Pages Count:</strong> {mag.pages?.length || 0}</div>
+                          </div>
+                        </div>
+                      ))}
+                  </>
+                )}
+
+                {/* 3. Scrapbooks Tab */}
+                {explorerTab === 'scrapbooks' && (
+                  <>
+                    {adminScrapbooks
+                      .filter(s => {
+                        if (!adminSearchQuery.trim()) return true;
+                        const q = adminSearchQuery.toLowerCase();
+                        return (
+                          (s.title && s.title.toLowerCase().includes(q)) ||
+                          (s.creatorName && s.creatorName.toLowerCase().includes(q)) ||
+                          (s.recipientName && s.recipientName.toLowerCase().includes(q)) ||
+                          (s.id && s.id.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((scrap, idx) => (
+                        <div key={scrap.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
+                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                            <span className="font-mono text-[11px] font-bold text-primary">{scrap.id}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
+                                👁️ {scrap.views || 0} Views
+                              </span>
+                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${scrap.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                                {scrap.status}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
+                            <div><strong>Title:</strong> {scrap.title}</div>
+                            <div><strong>Creator:</strong> {scrap.creatorName}</div>
+                            <div><strong>Recipient:</strong> {scrap.recipientName}</div>
+                            <div><strong>Style:</strong> {scrap.style}</div>
+                            <div><strong>Size:</strong> {scrap.size}</div>
+                            <div><strong>Pages Count:</strong> {scrap.pages?.length || 0}</div>
+                          </div>
+                        </div>
+                      ))}
+                  </>
+                )}
+
+                {/* 4. Open Whens Tab */}
+                {explorerTab === 'openwhens' && (
+                  <>
+                    {adminOpenWhens
+                      .filter(o => {
+                        if (!adminSearchQuery.trim()) return true;
+                        const q = adminSearchQuery.toLowerCase();
+                        return (
+                          (o.title && o.title.toLowerCase().includes(q)) ||
+                          (o.creatorName && o.creatorName.toLowerCase().includes(q)) ||
+                          (o.recipientName && o.recipientName.toLowerCase().includes(q)) ||
+                          (o.id && o.id.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((ow, idx) => (
+                        <div key={ow.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
+                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                            <span className="font-mono text-[11px] font-bold text-primary">{ow.id}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
+                                👁️ {ow.views || 0} Views
+                              </span>
+                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${ow.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                                {ow.status}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
+                            <div><strong>Title:</strong> {ow.title}</div>
+                            <div><strong>Creator:</strong> {ow.creatorName}</div>
+                            <div><strong>Recipient:</strong> {ow.recipientName}</div>
+                            <div><strong>Occasion:</strong> {ow.occasion}</div>
+                            <div><strong>Style:</strong> {ow.style}</div>
+                            <div><strong>Envelopes Count:</strong> {ow.messages?.length || 0}</div>
+                            <div><strong>Envelopes Opened:</strong> {ow.messages?.filter((m: any) => m.status === 'OPENED').length || 0}</div>
+                          </div>
+
+                          <div className="bg-background p-3 border border-primary/10 space-y-1.5">
+                            <div className="font-bold text-[9px] text-primary uppercase border-b border-primary/5 pb-1">Envelopes List:</div>
+                            {ow.messages?.map((m: any, mIdx: number) => (
+                              <div key={mIdx} className="flex justify-between items-center text-[10px] text-on-surface-variant font-mono">
+                                <span>Envelope {mIdx + 1}: "{m.promptTitle}"</span>
+                                <span className="text-[8.5px] px-1.5 bg-primary/10 text-primary font-bold">{m.status} ({m.unlockMode})</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                  </>
+                )}
               </div>
             </div>
 

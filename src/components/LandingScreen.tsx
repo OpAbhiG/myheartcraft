@@ -8,12 +8,18 @@ interface LandingScreenProps {
   onNavigateToExplore: () => void;
   onNavigateToWizard: (templateId: string) => void;
   onNavigateToDashboard: () => void;
+  onNavigateToScrapbookDashboard?: () => void;
+  onNavigateToMagazineDashboard?: () => void;
+  onNavigateToOpenWhenDashboard?: () => void;
 }
 
 export default function LandingScreen({
   onNavigateToExplore,
   onNavigateToWizard,
-  onNavigateToDashboard
+  onNavigateToDashboard,
+  onNavigateToScrapbookDashboard,
+  onNavigateToMagazineDashboard,
+  onNavigateToOpenWhenDashboard
 }: LandingScreenProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<'about' | 'privacy' | 'terms' | null>(null);
@@ -117,11 +123,12 @@ export default function LandingScreen({
         </div>
 
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-80">
-          <button onClick={onNavigateToExplore} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Experiences</button>
+          <button onClick={onNavigateToExplore} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Cards</button>
+          <button onClick={onNavigateToMagazineDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Magazine</button>
+          <button onClick={onNavigateToScrapbookDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Scrapbook</button>
+          <button onClick={onNavigateToOpenWhenDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Open When</button>
           <button onClick={onNavigateToDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Creator Studio</button>
           <a href="#how-it-works" className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">How It Works</a>
-          <a href="#faq-section" className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">FAQ</a>
-          <button onClick={() => setActiveModal('about')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">About Us</button>
         </nav>
 
         <div className="flex items-center gap-3">

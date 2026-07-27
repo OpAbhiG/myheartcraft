@@ -247,20 +247,20 @@ class AmbientSynth {
     triggerNextChord();
   }
 
-  public stop() {
+  public stop(fadeTime: number = 1.0) {
     this.isPlaying = false;
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
       this.timeoutId = null;
     }
 
-    const fadeTime = 1.0;
+    const finalFadeTime = typeof fadeTime === 'number' ? fadeTime : 1.0;
     const now = this.ctx ? this.ctx.currentTime : 0;
 
     if (this.masterGain && this.ctx) {
       try {
         this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
-        this.masterGain.gain.exponentialRampToValueAtTime(0.001, now + fadeTime);
+        this.masterGain.gain.exponentialRampToValueAtTime(0.001, now + finalFadeTime);
       } catch (e) {}
     }
 
@@ -277,7 +277,7 @@ class AmbientSynth {
         } catch (e) {}
         this.ctx = null;
       }
-    }, fadeTime * 1000 + 100);
+    }, finalFadeTime * 1000 + 100);
   }
 }
 
