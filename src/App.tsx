@@ -61,6 +61,8 @@ export default function App() {
   const [magazineProjects, setMagazineProjects] = useState<MagazineProject[]>([]);
   const [activeMagazineId, setActiveMagazineId] = useState<string | null>(null);
   const [printMagazineProject, setPrintMagazineProject] = useState<MagazineProject | null>(null);
+  const [magazinePreviewSource, setMagazinePreviewSource] = useState<'editor' | 'dashboard' | 'external' | null>(null);
+  const [scrapbookPreviewSource, setScrapbookPreviewSource] = useState<'editor' | 'dashboard' | 'external' | null>(null);
 
   // Open When States
   const [openWhenProjects, setOpenWhenProjects] = useState<OpenWhenProject[]>([]);
@@ -244,12 +246,16 @@ export default function App() {
     const exists = scrapbookProjects.some(p => p.id === project.id);
     if (exists) {
       updated = scrapbookProjects.map(p => p.id === project.id ? project : p);
+      setScrapbookProjects(updated);
+      localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+      setScreen('scrapbook-dashboard');
     } else {
       updated = [project, ...scrapbookProjects];
+      setScrapbookProjects(updated);
+      localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+      setActiveScrapbookId(project.id);
+      setScreen('scrapbook-editor');
     }
-    setScrapbookProjects(updated);
-    localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
-    setScreen('scrapbook-dashboard');
   };
 
   const handleDeleteScrapbook = (id: string) => {
@@ -284,12 +290,16 @@ export default function App() {
     const exists = magazineProjects.some(p => p.id === project.id);
     if (exists) {
       updated = magazineProjects.map(p => p.id === project.id ? project : p);
+      setMagazineProjects(updated);
+      localStorage.setItem('memora_magazine_projects', JSON.stringify(updated));
+      setScreen('magazine-dashboard');
     } else {
       updated = [project, ...magazineProjects];
+      setMagazineProjects(updated);
+      localStorage.setItem('memora_magazine_projects', JSON.stringify(updated));
+      setActiveMagazineId(project.id);
+      setScreen('magazine-editor');
     }
-    setMagazineProjects(updated);
-    localStorage.setItem('memora_magazine_projects', JSON.stringify(updated));
-    setScreen('magazine-dashboard');
   };
 
   const handleDeleteMagazine = (id: string) => {
@@ -495,6 +505,7 @@ export default function App() {
           onClose={() => setScreen('scrapbook-dashboard')}
           onPreview={(id) => {
             setActiveScrapbookId(id);
+            setScrapbookPreviewSource('editor');
             setScreen('scrapbook-preview');
           }}
         />
@@ -508,7 +519,11 @@ export default function App() {
             if (params.get('sId') || params.get('s')) {
               window.history.replaceState({}, document.title, window.location.pathname);
             }
-            setScreen('scrapbook-dashboard');
+            if (scrapbookPreviewSource === 'editor') {
+              setScreen('scrapbook-editor');
+            } else {
+              setScreen('scrapbook-dashboard');
+            }
           }}
         />
       )}
@@ -524,6 +539,7 @@ export default function App() {
           }}
           onPreviewProject={(id) => {
             setActiveMagazineId(id);
+            setMagazinePreviewSource('dashboard');
             setScreen('magazine-preview');
           }}
           onDeleteProject={handleDeleteMagazine}
@@ -546,6 +562,7 @@ export default function App() {
           onClose={() => setScreen('magazine-dashboard')}
           onPreview={(id) => {
             setActiveMagazineId(id);
+            setMagazinePreviewSource('editor');
             setScreen('magazine-preview');
           }}
         />
@@ -559,7 +576,11 @@ export default function App() {
             if (params.get('mId') || params.get('m')) {
               window.history.replaceState({}, document.title, window.location.pathname);
             }
-            setScreen('magazine-dashboard');
+            if (magazinePreviewSource === 'editor') {
+              setScreen('magazine-editor');
+            } else {
+              setScreen('magazine-dashboard');
+            }
           }}
         />
       )}
