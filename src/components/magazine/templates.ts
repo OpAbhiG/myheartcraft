@@ -77,6 +77,58 @@ export const MAGAZINE_STYLES: { [key: string]: MagazineStylePreset } = {
   }
 };
 
+export interface MagazinePalette {
+  id: string;
+  name: string;
+  colorBackground: string;
+  colorTheme: string;
+  textColor: string;
+  secondaryColor: string;
+}
+
+export const MAGAZINE_PALETTES: { [key: string]: MagazinePalette } = {
+  'terracotta': {
+    id: 'terracotta',
+    name: 'Warm Terracotta 🏺',
+    colorBackground: '#FDFBF7',
+    colorTheme: '#C05A3E',
+    textColor: '#2E1A16',
+    secondaryColor: '#EEDAC2'
+  },
+  'emerald': {
+    id: 'emerald',
+    name: 'Emerald Luxury 🌿',
+    colorBackground: '#F4F7F4',
+    colorTheme: '#0F5132',
+    textColor: '#1A3324',
+    secondaryColor: '#D1E7DD'
+  },
+  'midnight': {
+    id: 'midnight',
+    name: 'Midnight Gold 🌙',
+    colorBackground: '#121620',
+    colorTheme: '#ECC94B',
+    textColor: '#F7FAFC',
+    secondaryColor: '#1E293B'
+  },
+  'rose': {
+    id: 'rose',
+    name: 'Soft Rose 🌸',
+    colorBackground: '#FFF0F2',
+    colorTheme: '#D81B60',
+    textColor: '#4A1525',
+    secondaryColor: '#FFD1DC'
+  },
+  'ink': {
+    id: 'ink',
+    name: 'Minimal Ink 🖋️',
+    colorBackground: '#FFFFFF',
+    colorTheme: '#111111',
+    textColor: '#111111',
+    secondaryColor: '#E2E8F0'
+  }
+};
+
 // Layout templates definition
 export interface MagazineLayoutBlueprint {
   type: MagazinePage['layoutType'];

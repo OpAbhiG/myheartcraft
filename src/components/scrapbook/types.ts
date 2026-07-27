@@ -36,6 +36,9 @@ export interface ScrapbookElement {
     paperType?: 'torn' | 'sticky' | 'strip' | 'ticket' | 'postcard' | 'envelope';
     doodleType?: 'arrow' | 'heart' | 'star' | 'underline' | 'circle' | 'scribble' | 'hand-drawn-border';
     stampType?: 'date' | 'location' | 'travel' | 'memory' | 'custom';
+    photoCorners?: 'gold' | 'black' | 'vintage' | 'kraft' | 'none';
+    isFlap?: boolean;
+    flapLabel?: string;
   };
 }
 

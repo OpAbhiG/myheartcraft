@@ -86,7 +86,7 @@ export default function ScrapbookPreview({
         {page.elements.map(el => (
           <div
             key={el.id}
-            className="absolute pointer-events-none"
+            className="absolute"
             style={{
               left: `${el.x}%`,
               top: `${el.y}%`,
@@ -94,11 +94,12 @@ export default function ScrapbookPreview({
               height: `${el.height}%`,
               transform: `rotate(${el.rotation}deg)`,
               zIndex: el.zIndex,
-              opacity: el.opacity
+              opacity: el.opacity,
+              pointerEvents: el.styleData.isFlap ? 'auto' : 'none'
             }}
           >
             {el.type === 'photo' && (
-              <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between">
+              <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between relative">
                 <div className="w-full h-[82%] overflow-hidden bg-gray-50 relative">
                   <img
                     src={el.content}
@@ -114,25 +115,63 @@ export default function ScrapbookPreview({
                 <div className="h-[15%] flex items-center justify-center overflow-hidden">
                   <span className="font-mono text-[7px] text-[#555]">Polaroid Print</span>
                 </div>
+
+                {/* Photo Corners overlay */}
+                {el.styleData.photoCorners && el.styleData.photoCorners !== 'none' && (
+                  <div className="absolute inset-0 pointer-events-none z-20">
+                    {/* Top Left */}
+                    <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-[7px] border-l-[7px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                    {/* Top Right */}
+                    <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-[7px] border-r-[7px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderRightColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                    {/* Bottom Left */}
+                    <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-[7px] border-l-[7px] border-transparent" style={{ borderBottomColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                    {/* Bottom Right */}
+                    <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-[7px] border-r-[7px] border-transparent" style={{ borderBottomColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderRightColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                  </div>
+                )}
               </div>
             )}
 
             {el.type === 'text' && (
-              <div 
-                className="w-full h-full p-1 flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap"
-                style={{
-                  fontFamily: el.styleData.fontFamily || 'Inter',
-                  fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
-                  color: el.styleData.color || '#1A1A1A',
-                  backgroundColor: el.styleData.backgroundColor || 'transparent'
-                }}
-              >
-                {el.content}
+              <div className="w-full h-full relative group">
+                {el.styleData.isFlap ? (
+                  <div className="w-full h-full relative" style={{ perspective: '800px' }}>
+                    {/* Flap Cover */}
+                    <div 
+                      className="absolute inset-0 bg-[#e6dfd3] border border-[#d2b48c] p-2 flex items-center justify-center text-center font-mono text-[9px] uppercase tracking-wider text-rose-800 font-bold z-10 origin-top transition-transform duration-700 hover:[transform:rotateX(120deg)] select-none shadow-md cursor-pointer"
+                    >
+                      ✉️ {el.styleData.flapLabel || 'Lift Flap'}
+                    </div>
+                    {/* Text Body */}
+                    <div 
+                      className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap bg-white"
+                      style={{
+                        fontFamily: el.styleData.fontFamily || 'Inter',
+                        fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                        color: el.styleData.color || '#1A1A1A'
+                      }}
+                    >
+                      {el.content}
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="w-full h-full p-1 flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap"
+                    style={{
+                      fontFamily: el.styleData.fontFamily || 'Inter',
+                      fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                      color: el.styleData.color || '#1A1A1A',
+                      backgroundColor: el.styleData.backgroundColor || 'transparent'
+                    }}
+                  >
+                    {el.content}
+                  </div>
+                )}
               </div>
             )}
 
             {el.type === 'sticker' && (
-              <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: SCRAPBOOK_STICKERS.find(s => s.id === el.content)?.svg || '' }} />
+              <div className="w-full h-full font-sans text-on-surface" dangerouslySetInnerHTML={{ __html: SCRAPBOOK_STICKERS.find(s => s.id === el.content)?.svg || '' }} />
             )}
 
             {el.type === 'tape' && (

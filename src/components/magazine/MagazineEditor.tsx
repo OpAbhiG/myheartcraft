@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Eye, Grid, Undo, Redo, Save, Trash2, Plus, Sparkles, Image as ImageIcon, Type, Layout, AlignLeft, RefreshCw, X, Crop, Move } from 'lucide-react';
 import { MagazineProject, MagazinePage, MagazinePhoto } from './types';
-import { MAGAZINE_LAYOUTS, MAGAZINE_STYLES, assembleMagazinePages } from './templates';
+import { MAGAZINE_LAYOUTS, MAGAZINE_STYLES, MAGAZINE_PALETTES, assembleMagazinePages } from './templates';
 import { improveText, generateMagazineText } from '../../utils/aiSimulator';
 
 interface MagazineEditorProps {
@@ -29,7 +29,16 @@ export default function MagazineEditor({
   const [croppingPhoto, setCroppingPhoto] = useState<MagazinePhoto | null>(null);
 
   const currentPage = project.pages[currentPageIndex] || project.pages[0];
-  const stylePreset = MAGAZINE_STYLES[project.style] || MAGAZINE_STYLES['minimal-editorial'];
+  
+  const basePreset = MAGAZINE_STYLES[project.style] || MAGAZINE_STYLES['minimal-editorial'];
+  const palettePreset = project.palette && project.palette !== 'none' ? MAGAZINE_PALETTES[project.palette] : null;
+
+  const stylePreset = {
+    ...basePreset,
+    colorBackground: palettePreset ? palettePreset.colorBackground : basePreset.colorBackground,
+    colorTheme: palettePreset ? palettePreset.colorTheme : basePreset.colorTheme,
+    textColor: palettePreset ? palettePreset.textColor : basePreset.textColor
+  };
 
   const pushState = (nextProject: MagazineProject) => {
     setUndoStack(prev => [...prev, project]);
@@ -514,6 +523,23 @@ export default function MagazineEditor({
               {Object.keys(MAGAZINE_LAYOUTS).map(layKey => (
                 <option key={layKey} value={layKey}>
                   {MAGAZINE_LAYOUTS[layKey].title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Designer Color Palette selection */}
+          <div className="space-y-2.5 border-t border-[#2a2a2a] pt-4">
+            <label className="font-mono text-[9px] uppercase tracking-wider text-[#888] block">Designer Color Palette</label>
+            <select
+              value={project.palette || 'none'}
+              onChange={(e: any) => pushState({ ...project, palette: e.target.value as any })}
+              className="w-full bg-[#222] border border-[#444] px-3 py-2 text-xs text-white focus:outline-none"
+            >
+              <option value="none">Default Theme Style</option>
+              {Object.keys(MAGAZINE_PALETTES).map(palKey => (
+                <option key={palKey} value={palKey}>
+                  {MAGAZINE_PALETTES[palKey].name}
                 </option>
               ))}
             </select>

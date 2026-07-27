@@ -928,7 +928,7 @@ export default function ScrapbookEditor({
                   >
                     {/* Render Content based on element type */}
                     {el.type === 'photo' && (
-                      <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between">
+                      <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between relative">
                         {/* Frame borders */}
                         <div className="w-full h-[82%] overflow-hidden bg-gray-100 relative">
                           <img
@@ -945,21 +945,59 @@ export default function ScrapbookEditor({
                         <div className="h-[15%] flex items-center justify-center overflow-hidden">
                           <span className="font-mono text-[8px] text-[#444] tracking-wide">Polaroid Print</span>
                         </div>
+
+                        {/* Photo Corners overlay */}
+                        {el.styleData.photoCorners && el.styleData.photoCorners !== 'none' && (
+                          <div className="absolute inset-0 pointer-events-none z-20">
+                            {/* Top Left */}
+                            <div className="absolute top-0 left-0 w-3 h-3 border-t-[6px] border-l-[6px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                            {/* Top Right */}
+                            <div className="absolute top-0 right-0 w-3 h-3 border-t-[6px] border-r-[6px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderRightColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                            {/* Bottom Left */}
+                            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-[6px] border-l-[6px] border-transparent" style={{ borderBottomColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                            {/* Bottom Right */}
+                            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-[6px] border-r-[6px] border-transparent" style={{ borderBottomColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderRightColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
+                          </div>
+                        )}
                       </div>
                     )}
 
                     {el.type === 'text' && (
-                      <div 
-                        className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed whitespace-pre-wrap select-text cursor-text"
-                        style={{
-                          fontFamily: el.styleData.fontFamily || 'Inter',
-                          fontSize: el.styleData.fontSize === '2xl' ? '1.5rem' : el.styleData.fontSize === 'lg' ? '1.15rem' : '0.85rem',
-                          textAlign: el.styleData.textAlign || 'center',
-                          color: el.styleData.color || '#1A1A1A',
-                          backgroundColor: el.styleData.backgroundColor || 'transparent'
-                        }}
-                      >
-                        {el.content}
+                      <div className="w-full h-full relative group/flap">
+                        {el.styleData.isFlap ? (
+                          <div className="w-full h-full relative" style={{ perspective: '800px' }}>
+                            {/* Flap Cover */}
+                            <div 
+                              className="absolute inset-0 bg-[#e6dfd3] border border-[#d2b48c] p-2 flex items-center justify-center text-center font-mono text-[9px] uppercase tracking-wider text-rose-800 font-bold z-10 origin-top transition-transform duration-700 hover:[transform:rotateX(120deg)] select-none shadow-md cursor-pointer"
+                            >
+                              ✉️ {el.styleData.flapLabel || 'Lift Flap'}
+                            </div>
+                            {/* Text Body */}
+                            <div 
+                              className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap bg-white"
+                              style={{
+                                fontFamily: el.styleData.fontFamily || 'Inter',
+                                fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                                color: el.styleData.color || '#1A1A1A'
+                              }}
+                            >
+                              {el.content}
+                            </div>
+                          </div>
+                        ) : (
+                          <div 
+                            className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap select-text cursor-text"
+                            style={{
+                              fontFamily: el.styleData.fontFamily || 'Inter',
+                              fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                              textAlign: el.styleData.textAlign || 'center',
+                              color: el.styleData.color || '#1A1A1A',
+                              backgroundColor: el.styleData.backgroundColor || 'transparent'
+                            }}
+                          >
+                            {el.content}
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -1124,6 +1162,31 @@ export default function ScrapbookEditor({
                     ))}
                   </div>
                 </div>
+
+                {/* Secret Lift-the-Flap Option */}
+                <div className="space-y-3 border-t border-[#333] pt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-[#888] font-mono">Secret Lift-the-Flap</span>
+                    <input
+                      type="checkbox"
+                      checked={currentPage.elements.find(e => e.id === selectedElementId)?.styleData.isFlap || false}
+                      onChange={(e) => updateElementProperty(selectedElementId, 'styleData.isFlap', e.target.checked)}
+                      className="w-3.5 h-3.5 accent-primary"
+                    />
+                  </div>
+                  {currentPage.elements.find(e => e.id === selectedElementId)?.styleData.isFlap && (
+                    <div className="space-y-1.5 animate-scale-in">
+                      <span className="text-[9px] text-[#666] block font-mono">Flap Label Cover</span>
+                      <input
+                        type="text"
+                        placeholder="e.g. Lift to read secret memory"
+                        value={currentPage.elements.find(e => e.id === selectedElementId)?.styleData.flapLabel || ''}
+                        onChange={(e) => updateElementProperty(selectedElementId, 'styleData.flapLabel', e.target.value)}
+                        className="w-full bg-[#222] border border-[#444] px-2 py-1 text-xs text-white placeholder-gray-600 focus:outline-none"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1147,7 +1210,19 @@ export default function ScrapbookEditor({
             {/* Photo Crop and Rotation Controls */}
             {currentPage.elements.find(e => e.id === selectedElementId)?.type === 'photo' && (
               <div className="space-y-4 border-t border-[#333] pt-4">
-                <span className="text-[10px] text-[#888] block font-mono">Photo Custom Editor</span>
+                <span className="text-[10px] text-[#888] block font-mono">Photo Corners</span>
+                <select
+                  value={currentPage.elements.find(e => e.id === selectedElementId)?.styleData.photoCorners || 'none'}
+                  onChange={(e) => updateElementProperty(selectedElementId, 'styleData.photoCorners', e.target.value)}
+                  className="w-full bg-[#222] border border-[#444] px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                >
+                  <option value="none">No Corners</option>
+                  <option value="gold">Gold Corners ✨</option>
+                  <option value="black">Black Card Corners</option>
+                  <option value="vintage">Vintage Kraft Corners</option>
+                </select>
+
+                <span className="text-[10px] text-[#888] block font-mono mt-2">Photo Custom Editor</span>
                 <button
                   onClick={() => setEditingPhotoElement(currentPage.elements.find(e => e.id === selectedElementId) || null)}
                   className="w-full py-2 bg-primary text-background font-mono text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5"

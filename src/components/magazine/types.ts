@@ -56,4 +56,5 @@ export interface MagazineProject {
   privacy: 'public' | 'unlisted' | 'private';
   views: number;
   musicTrack?: string;
+  palette?: 'terracotta' | 'emerald' | 'midnight' | 'rose' | 'ink' | 'none';
 }

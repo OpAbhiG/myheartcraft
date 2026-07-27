@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X, Maximize, Play, Square } from 'lucide-react';
 import { MagazineProject, MagazinePage } from './types';
-import { MAGAZINE_STYLES } from './templates';
+import { MAGAZINE_STYLES, MAGAZINE_PALETTES } from './templates';
 import { ambientMusic } from '../../utils/audio';
 
 interface MagazinePreviewProps {
   project: MagazineProject;
   onClose: () => void;
 }
+
+const playPageFlipSound = () => {
+  try {
+    const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const bufferSize = ctx.sampleRate * 0.35;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      const decay = Math.exp(-7 * (i / bufferSize));
+      data[i] = (Math.random() * 2 - 1) * decay * 0.12;
+    }
+    
+    const noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1100;
+    filter.Q.value = 1.6;
+    
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+    
+    noiseNode.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    
+    noiseNode.start();
+  } catch (err) {
+    console.error("Audio page flip error:", err);
+  }
+};
 
 export default function MagazinePreview({
   project,
@@ -17,7 +53,15 @@ export default function MagazinePreview({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const stylePreset = MAGAZINE_STYLES[project.style] || MAGAZINE_STYLES['minimal-editorial'];
+  const basePreset = MAGAZINE_STYLES[project.style] || MAGAZINE_STYLES['minimal-editorial'];
+  const palettePreset = project.palette && project.palette !== 'none' ? MAGAZINE_PALETTES[project.palette] : null;
+
+  const stylePreset = {
+    ...basePreset,
+    colorBackground: palettePreset ? palettePreset.colorBackground : basePreset.colorBackground,
+    colorTheme: palettePreset ? palettePreset.colorTheme : basePreset.colorTheme,
+    textColor: palettePreset ? palettePreset.textColor : basePreset.textColor
+  };
 
   useEffect(() => {
     if (project.musicTrack && project.musicTrack !== 'none' && isPlayingAudio) {
@@ -34,6 +78,7 @@ export default function MagazinePreview({
     const isDesktop = window.innerWidth >= 768;
     const step = isDesktop ? 2 : 1;
     if (currentPageIndex + step < project.pages.length) {
+      playPageFlipSound();
       setCurrentPageIndex(prev => prev + step);
     }
   };
@@ -42,6 +87,7 @@ export default function MagazinePreview({
     const isDesktop = window.innerWidth >= 768;
     const step = isDesktop ? 2 : 1;
     if (currentPageIndex - step >= 0) {
+      playPageFlipSound();
       setCurrentPageIndex(prev => prev - step);
     }
   };

@@ -21,6 +21,7 @@ export default function RecipientOpenView({
   // Animation states
   const [isOpeningAnimation, setIsOpeningAnimation] = useState(false);
   const [selectedEnvelope, setSelectedEnvelope] = useState<OpenWhenMessage | null>(null);
+  const [sealBroken, setSealBroken] = useState(false);
 
   // Styling maps based on project.style
   const getThemeClasses = () => {
@@ -97,8 +98,38 @@ export default function RecipientOpenView({
       setActiveMessage(msg);
     } else {
       setSelectedEnvelope(msg);
+      setSealBroken(false);
       setIsOpeningAnimation(true);
     }
+  };
+
+  const handleBreakSeal = () => {
+    if (sealBroken) return;
+    setSealBroken(true);
+    
+    // Play synthesized crack audio cue
+    try {
+      const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+      if (AudioContextClass) {
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.35, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.16);
+      }
+    } catch {}
+
+    // Advance to full opened letter after flap completes rotation
+    setTimeout(() => {
+      handleFinishAnimation();
+    }, 1500);
   };
 
   const handleFinishAnimation = () => {
@@ -137,7 +168,7 @@ export default function RecipientOpenView({
       
       {/* Top navbar */}
       <header className="h-16 border-b border-primary/10 px-6 flex justify-between items-center bg-background/40 backdrop-blur shrink-0 z-30">
-        <button onClick={onClose} className="text-xs uppercase tracking-wider font-mono hover:underline flex items-center gap-1.5">
+        <button onClick={onClose} className="text-xs uppercase tracking-wider font-mono hover:underline flex items-center gap-1.5 cursor-pointer">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
         </button>
         <span className="font-mono text-[9px] uppercase tracking-widest text-[#999]">{project.title}</span>
@@ -159,7 +190,7 @@ export default function RecipientOpenView({
 
             <button
               onClick={() => setStarted(true)}
-              className={`w-full py-3.5 font-mono text-[10px] uppercase tracking-widest font-bold ${theme.button}`}
+              className={`w-full py-3.5 font-mono text-[10px] uppercase tracking-widest font-bold cursor-pointer ${theme.button}`}
             >
               Reveal Envelopes
             </button>
@@ -220,33 +251,66 @@ export default function RecipientOpenView({
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-6">
           <div className="w-full max-w-sm text-center space-y-6">
             
-            {/* The Sealed Envelope Card */}
-            <div className="bg-[#FAF9F6] border-t-8 border-red-800 p-8 rounded shadow-2xl aspect-[4/3] flex flex-col justify-between text-black relative animate-scale-in">
-              <span className="font-mono text-[8px] uppercase tracking-widest text-[#999]">SEALED LETTER</span>
-              <div>
-                <h3 className="font-serif italic text-lg text-gray-800 font-bold">"Open when... {selectedEnvelope.promptTitle}"</h3>
-                <p className="text-[10px] text-gray-500 mt-2 font-mono">From {project.creatorName}</p>
+            {/* The Sealed Envelope Card Container */}
+            <div className="w-full bg-[#E5DDCB] border border-[#C5BBA6] shadow-2xl relative overflow-hidden flex flex-col justify-between p-6 h-60 aspect-[1.5/1]">
+              
+              {/* Backing paper background layout */}
+              <div className="absolute inset-0 bg-[#E8E1CE] opacity-80" />
+
+              {/* Envelope Tri Top Flap (3D Rotating flap) */}
+              <div 
+                className="absolute top-0 left-0 w-full h-[52%] bg-[#D7CEB5] border-b border-[#C3B89E] origin-top transition-transform duration-[1000ms] ease-in-out z-20 shadow-sm"
+                style={{
+                  transform: sealBroken ? 'rotateX(135deg)' : 'rotateX(0deg)',
+                  perspective: '800px'
+                }}
+              />
+
+              {/* Title display inside/beneath */}
+              <div className="relative z-10 text-center mt-12 px-4">
+                <h3 className="font-serif italic text-base text-gray-800 font-bold leading-snug">"Open when... {selectedEnvelope.promptTitle}"</h3>
+                <p className="text-[9px] text-gray-500 font-mono mt-1">From {project.creatorName}</p>
               </div>
 
-              {/* The Wax Seal wax stamp dot */}
-              <div className="flex justify-center mt-4">
+              {/* Custom Split Wax Seal */}
+              <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 flex gap-0.5">
+                {/* Left Wax Half */}
                 <button
-                  onClick={handleFinishAnimation}
-                  className="w-14 h-14 bg-red-800 hover:bg-red-700 active:scale-95 text-white font-bold rounded-full shadow-lg flex flex-col items-center justify-center cursor-pointer transition-all border-4 border-red-950/20"
+                  onClick={handleBreakSeal}
+                  className={`w-9 h-14 bg-red-800 hover:bg-red-700 active:scale-95 border-r border-red-950/25 rounded-l-full shadow-lg flex items-center justify-end pr-1.5 text-white font-bold transition-all duration-[750ms] cursor-pointer ${
+                    sealBroken ? '-translate-x-10 rotate-[-30deg] opacity-0 scale-90' : ''
+                  }`}
+                  title="Break Seal"
                 >
-                  <span className="text-[8px] tracking-wider uppercase">BREAK</span>
-                  <span className="text-[8px] tracking-wider uppercase">SEAL</span>
+                  <span className="text-[7.5px] tracking-tighter uppercase font-mono">BR</span>
                 </button>
+
+                {/* Right Wax Half */}
+                <button
+                  onClick={handleBreakSeal}
+                  className={`w-9 h-14 bg-red-800 hover:bg-red-700 active:scale-95 border-l border-red-950/25 rounded-r-full shadow-lg flex items-center justify-start pl-1.5 text-white font-bold transition-all duration-[750ms] cursor-pointer ${
+                    sealBroken ? 'translate-x-10 rotate-[30deg] opacity-0 scale-90' : ''
+                  }`}
+                  title="Break Seal"
+                >
+                  <span className="text-[7.5px] tracking-tighter uppercase font-mono">EAK</span>
+                </button>
+              </div>
+
+              {/* Sealed Letter Footer badge */}
+              <div className="relative z-10 flex justify-between items-center text-[#888] text-[8px] font-mono border-t border-black/5 pt-2">
+                <span>MEMORA KEEPSAKE</span>
+                <span>SEALED</span>
               </div>
             </div>
 
-            <p className="text-xs text-[#888] font-mono">Tap the wax seal stamp above to open this message.</p>
+            <p className="text-xs text-[#888] font-mono">Tap the red wax seal above to split it & break open the envelope.</p>
             <button
               onClick={() => {
                 setIsOpeningAnimation(false);
                 setSelectedEnvelope(null);
               }}
-              className="text-xs text-[#aaa] hover:text-white uppercase tracking-wider font-mono"
+              className="text-xs text-[#aaa] hover:text-white uppercase tracking-wider font-mono cursor-pointer"
             >
               Cancel
             </button>
