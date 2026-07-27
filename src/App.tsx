@@ -6,7 +6,16 @@
 import React, { useState, useEffect } from 'react';
 import { Creation, INITIAL_CREATIONS } from './types';
 import { parseCreationFromUrl } from './utils/share';
-import { fetchGlobalCreationsFromCloud, syncCreationToCloud } from './utils/cloudSync';
+import { 
+  fetchGlobalCreationsFromCloud, 
+  syncCreationToCloud,
+  syncMagazineToCloud,
+  fetchMagazineFromCloud,
+  syncScrapbookToCloud,
+  fetchScrapbookFromCloud,
+  syncOpenWhenToCloud,
+  fetchOpenWhenFromCloud
+} from './utils/cloudSync';
 import LandingScreen, { LandingAnims } from './components/LandingScreen';
 import ExploreScreen from './components/ExploreScreen';
 import DashboardScreen from './components/DashboardScreen';
@@ -124,37 +133,72 @@ export default function App() {
     const mId = params.get('mId') || params.get('m');
     const oId = params.get('oId') || params.get('o');
 
-    if (oId) {
-      const found = localOpenWhen.find(p => p.id === oId);
-      if (found) {
-        const updated = { ...found, views: (found.views || 0) + 1 };
-        const list = localOpenWhen.map(p => p.id === oId ? updated : p);
-        setOpenWhenProjects(list);
-        localStorage.setItem('memora_open_when_projects', JSON.stringify(list));
-        setActiveOpenWhenId(oId);
-        setScreen('openwhen-preview');
+    const loadRemoteProject = async () => {
+      if (oId) {
+        const found = localOpenWhen.find(p => p.id === oId);
+        if (found) {
+          const updated = { ...found, views: (found.views || 0) + 1 };
+          const list = localOpenWhen.map(p => p.id === oId ? updated : p);
+          setOpenWhenProjects(list);
+          localStorage.setItem('memora_open_when_projects', JSON.stringify(list));
+          setActiveOpenWhenId(oId);
+          setScreen('openwhen-preview');
+        } else {
+          const cloudProj = await fetchOpenWhenFromCloud(oId);
+          if (cloudProj) {
+            const updated = { ...cloudProj, views: (cloudProj.views || 0) + 1 };
+            const list = [updated, ...localOpenWhen];
+            setOpenWhenProjects(list);
+            localStorage.setItem('memora_open_when_projects', JSON.stringify(list));
+            setActiveOpenWhenId(oId);
+            setScreen('openwhen-preview');
+          }
+        }
+      } else if (sId) {
+        const found = localScrapbooks.find(p => p.id === sId);
+        if (found) {
+          const updated = { ...found, views: (found.views || 0) + 1 };
+          const list = localScrapbooks.map(p => p.id === sId ? updated : p);
+          setScrapbookProjects(list);
+          localStorage.setItem('memora_scrapbook_projects', JSON.stringify(list));
+          setActiveScrapbookId(sId);
+          setScreen('scrapbook-preview');
+        } else {
+          const cloudProj = await fetchScrapbookFromCloud(sId);
+          if (cloudProj) {
+            const updated = { ...cloudProj, views: (cloudProj.views || 0) + 1 };
+            const list = [updated, ...localScrapbooks];
+            setScrapbookProjects(list);
+            localStorage.setItem('memora_scrapbook_projects', JSON.stringify(list));
+            setActiveScrapbookId(sId);
+            setScreen('scrapbook-preview');
+          }
+        }
+      } else if (mId) {
+        const found = localMagazines.find(p => p.id === mId);
+        if (found) {
+          const updated = { ...found, views: (found.views || 0) + 1 };
+          const list = localMagazines.map(p => p.id === mId ? updated : p);
+          setMagazineProjects(list);
+          localStorage.setItem('memora_magazine_projects', JSON.stringify(list));
+          setActiveMagazineId(mId);
+          setScreen('magazine-preview');
+        } else {
+          const cloudProj = await fetchMagazineFromCloud(mId);
+          if (cloudProj) {
+            const updated = { ...cloudProj, views: (cloudProj.views || 0) + 1 };
+            const list = [updated, ...localMagazines];
+            setMagazineProjects(list);
+            localStorage.setItem('memora_magazine_projects', JSON.stringify(list));
+            setActiveMagazineId(mId);
+            setScreen('magazine-preview');
+          }
+        }
       }
-    } else if (sId) {
-      const found = localScrapbooks.find(p => p.id === sId);
-      if (found) {
-        const updated = { ...found, views: (found.views || 0) + 1 };
-        const list = localScrapbooks.map(p => p.id === sId ? updated : p);
-        setScrapbookProjects(list);
-        localStorage.setItem('memora_scrapbook_projects', JSON.stringify(list));
-        setActiveScrapbookId(sId);
-        setScreen('scrapbook-preview');
-      }
-    } else if (mId) {
-      const found = localMagazines.find(p => p.id === mId);
-      if (found) {
-        const updated = { ...found, views: (found.views || 0) + 1 };
-        const list = localMagazines.map(p => p.id === mId ? updated : p);
-        setMagazineProjects(list);
-        localStorage.setItem('memora_magazine_projects', JSON.stringify(list));
-        setActiveMagazineId(mId);
-        setScreen('magazine-preview');
-      }
-    } else if (shortData) {
+    };
+    loadRemoteProject();
+
+    if (shortData) {
       const found = parseCreationFromUrl(localCreations);
       if (found) loadCreation(found);
     } else if (giftId) {
@@ -256,6 +300,7 @@ export default function App() {
       setActiveScrapbookId(project.id);
       setScreen('scrapbook-editor');
     }
+    syncScrapbookToCloud(project);
   };
 
   const handleDeleteScrapbook = (id: string) => {
@@ -281,6 +326,7 @@ export default function App() {
       const updated = [dup, ...scrapbookProjects];
       setScrapbookProjects(updated);
       localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+      syncScrapbookToCloud(dup);
     }
   };
 
@@ -300,6 +346,7 @@ export default function App() {
       setActiveMagazineId(project.id);
       setScreen('magazine-editor');
     }
+    syncMagazineToCloud(project);
   };
 
   const handleDeleteMagazine = (id: string) => {
@@ -322,6 +369,7 @@ export default function App() {
     setOpenWhenProjects(updated);
     localStorage.setItem('memora_open_when_projects', JSON.stringify(updated));
     setScreen('openwhen-dashboard');
+    syncOpenWhenToCloud(project);
   };
 
   const handleDeleteOpenWhen = (id: string) => {
@@ -347,6 +395,7 @@ export default function App() {
       const updated = [dup, ...openWhenProjects];
       setOpenWhenProjects(updated);
       localStorage.setItem('memora_open_when_projects', JSON.stringify(updated));
+      syncOpenWhenToCloud(dup);
     }
   };
 
