@@ -448,53 +448,60 @@ export default function WizardScreen({
                     Interactive Surprise Lock Game
                   </label>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" id="lock-selector">
+                  <div className="grid grid-cols-1 gap-3.5" id="lock-selector">
                     {[
                       {
                         id: 'cake',
                         title: 'Birthday Cake 🎂',
                         desc: 'Recipient taps glowing candles to blow them out & unlock your letter.',
-                        badge: 'Candle Blow Minigame'
+                        badge: 'Candle Blow Minigame',
+                        image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=150&q=80'
                       },
                       {
                         id: 'puzzle',
                         title: 'Photo Puzzle 🧩',
                         desc: 'Recipient swaps 4 puzzle tiles of your memory photo to solve & unlock.',
-                        badge: 'Tile Memory Game'
+                        badge: 'Tile Memory Game',
+                        image: images[0]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=150&q=80'
                       },
                       {
                         id: 'envelope',
                         title: 'Wax Envelope 💌',
                         desc: 'Classic parchment envelope sealed with wax seal that breaks on tap.',
-                        badge: 'Classic Touch Seal'
+                        badge: 'Classic Touch Seal',
+                        image: 'https://images.unsplash.com/photo-1473186578172-c141e6798cf4?auto=format&fit=crop&w=150&q=80'
                       },
                       {
                         id: 'popup',
                         title: '3D Unfolding Card 💖',
                         desc: 'Artistic folding card that unfolds photo frame layers on screen.',
-                        badge: '3D Unfolding Frames'
+                        badge: '3D Unfolding Frames',
+                        image: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=150&q=80'
                       }
                     ].map(l => (
                       <button
                         id={`lock-btn-${l.id}`}
                         key={l.id}
                         onClick={() => setInteractiveElement(l.id as any)}
-                        className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer ${
+                        className={`p-4 rounded-2xl border text-left flex gap-4 justify-between items-center transition-all duration-200 relative overflow-hidden cursor-pointer ${
                           interactiveElement === l.id
-                            ? 'border-primary ring-1 ring-primary bg-primary/5 shadow-md'
-                            : 'border-primary/15 hover:border-primary/35 bg-white'
+                            ? 'border-primary ring-1 ring-primary bg-primary/5 shadow-md scale-[1.01]'
+                            : 'border-primary/15 hover:border-primary/30 bg-white hover:bg-primary/5'
                         }`}
                       >
-                        <div>
+                        <div className="flex-1">
                           <span className="font-label-caps text-[7.5px] uppercase tracking-wider text-primary font-bold block mb-1">
                             {l.badge}
                           </span>
                           <div className="font-bold text-xs uppercase tracking-wider text-on-background mb-1">{l.title}</div>
                           <div className="text-[10px] text-on-surface-variant leading-relaxed">{l.desc}</div>
+                          <div className="mt-3 text-[9px] font-bold font-label-caps uppercase text-primary">
+                            {interactiveElement === l.id ? '✓ Selected' : 'Select'}
+                          </div>
                         </div>
 
-                        <div className="mt-3 text-[9px] font-bold font-label-caps uppercase text-primary flex items-center gap-1">
-                          {interactiveElement === l.id ? '✓ Selected' : 'Select'}
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-primary/10 bg-primary/5 shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                          <img src={l.image} alt={l.title} className="w-full h-full object-cover" />
                         </div>
                       </button>
                     ))}
