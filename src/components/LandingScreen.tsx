@@ -126,11 +126,9 @@ export default function LandingScreen({
         </div>
 
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-on-surface-variant">
-          <button onClick={onNavigateToExplore} className="hover:text-primary transition-colors cursor-pointer">Cards</button>
-          {onNavigateToMagazineDashboard && <button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors cursor-pointer">Magazine</button>}
-          {onNavigateToScrapbookDashboard && <button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors cursor-pointer">Scrapbook</button>}
-          {onNavigateToOpenWhenDashboard && <button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors cursor-pointer">Open When</button>}
-          <button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors cursor-pointer font-bold">Studio</button>
+          <button className="text-primary font-bold border-b border-primary pb-1 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
+          <button onClick={onNavigateToExplore} className="hover:text-primary transition-colors cursor-pointer">Explore</button>
+          <button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors cursor-pointer">Dashboard</button>
           <a href="#how-it-works" className="hover:text-primary transition-colors cursor-pointer">How It Works</a>
         </nav>
 
