@@ -95,7 +95,7 @@ export default function ScrapbookPreview({
               transform: `rotate(${el.rotation}deg)`,
               zIndex: el.zIndex,
               opacity: el.opacity,
-              pointerEvents: el.styleData.isFlap ? 'auto' : 'none'
+              pointerEvents: el.styleData?.isFlap ? 'auto' : 'none'
             }}
           >
             {el.type === 'photo' && (
@@ -106,7 +106,7 @@ export default function ScrapbookPreview({
                     alt="Memory"
                     className="w-full h-full object-cover"
                     style={{
-                      transform: el.styleData.crop 
+                      transform: el.styleData?.crop 
                         ? `scale(${el.styleData.crop.zoom}) rotate(${el.styleData.crop.rotate}deg) translate(${el.styleData.crop.x}px, ${el.styleData.crop.y}px)` 
                         : 'none'
                     }}
@@ -117,7 +117,7 @@ export default function ScrapbookPreview({
                 </div>
 
                 {/* Photo Corners overlay */}
-                {el.styleData.photoCorners && el.styleData.photoCorners !== 'none' && (
+                {el.styleData?.photoCorners && el.styleData.photoCorners !== 'none' && (
                   <div className="absolute inset-0 pointer-events-none z-20">
                     {/* Top Left */}
                     <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-[7px] border-l-[7px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
@@ -134,21 +134,21 @@ export default function ScrapbookPreview({
 
             {el.type === 'text' && (
               <div className="w-full h-full relative group">
-                {el.styleData.isFlap ? (
+                {el.styleData?.isFlap ? (
                   <div className="w-full h-full relative" style={{ perspective: '800px' }}>
                     {/* Flap Cover */}
                     <div 
                       className="absolute inset-0 bg-[#e6dfd3] border border-[#d2b48c] p-2 flex items-center justify-center text-center font-mono text-[9px] uppercase tracking-wider text-rose-800 font-bold z-10 origin-top transition-transform duration-700 hover:[transform:rotateX(120deg)] select-none shadow-md cursor-pointer"
                     >
-                      ✉️ {el.styleData.flapLabel || 'Lift Flap'}
+                      ✉️ {el.styleData?.flapLabel || 'Lift Flap'}
                     </div>
                     {/* Text Body */}
                     <div 
                       className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap bg-white"
                       style={{
-                        fontFamily: el.styleData.fontFamily || 'Inter',
-                        fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
-                        color: el.styleData.color || '#1A1A1A'
+                        fontFamily: el.styleData?.fontFamily || 'Inter',
+                        fontSize: el.styleData?.fontSize === '2xl' ? '1.3rem' : el.styleData?.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                        color: el.styleData?.color || '#1A1A1A'
                       }}
                     >
                       {el.content}
@@ -158,10 +158,10 @@ export default function ScrapbookPreview({
                   <div 
                     className="w-full h-full p-1 flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap"
                     style={{
-                      fontFamily: el.styleData.fontFamily || 'Inter',
-                      fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
-                      color: el.styleData.color || '#1A1A1A',
-                      backgroundColor: el.styleData.backgroundColor || 'transparent'
+                      fontFamily: el.styleData?.fontFamily || 'Inter',
+                      fontSize: el.styleData?.fontSize === '2xl' ? '1.3rem' : el.styleData?.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                      color: el.styleData?.color || '#1A1A1A',
+                      backgroundColor: el.styleData?.backgroundColor || 'transparent'
                     }}
                   >
                     {el.content}
@@ -177,7 +177,7 @@ export default function ScrapbookPreview({
             {el.type === 'tape' && (
               <div 
                 className={`w-full h-full opacity-90 ${SCRAPBOOK_TAPES.find(t => t.id === el.content)?.textureClass}`}
-                style={{ backgroundColor: el.styleData.color }}
+                style={{ backgroundColor: el.styleData?.color }}
               />
             )}
 
