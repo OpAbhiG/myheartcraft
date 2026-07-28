@@ -118,6 +118,36 @@ export const SCRAPBOOK_STICKERS: StickerAsset[] = [
     name: 'Rubber Duck',
     category: 'baby',
     svg: `<svg viewBox="0 0 100 100" fill="none"><path d="M30,50 C15,50 10,70 25,85 C45,95 75,90 85,75 C95,60 80,45 60,50" fill="#FFE853" /><circle cx="50" cy="25" r="18" fill="#FFE853" /><circle cx="58" cy="22" r="2.5" fill="black" /><path d="M68,25 Q80,25 74,32 Q68,36 65,30" fill="#FF9F43" /></svg>`
+  },
+  {
+    id: 'pressed_flower',
+    name: 'Pressed Flower 🌸',
+    category: 'vintage',
+    svg: `<svg viewBox="0 0 100 100" fill="none"><path d="M50,15 C52,35 68,30 68,45 C68,55 55,60 50,85 C45,60 32,55 32,45 C32,30 48,35 50,15 Z" fill="#E8C3C9" opacity="0.75" stroke="#D19DA4" stroke-width="2" /><path d="M15,50 C35,52 30,68 45,68 C55,68 60,55 85,50 C60,45 55,32 45,32 C30,32 35,48 15,50 Z" fill="#E8C3C9" opacity="0.75" stroke="#D19DA4" stroke-width="2" /><circle cx="50" cy="50" r="8" fill="#F4D03F" /></svg>`
+  },
+  {
+    id: 'paper_clip',
+    name: 'Paper Clip 📎',
+    category: 'vintage',
+    svg: `<svg viewBox="0 0 40 100" fill="none" stroke="#7F8C8D" stroke-width="3" stroke-linecap="round"><path d="M10,80 L10,30 C10,18 30,18 30,30 L30,70 C30,78 18,78 18,70 L18,35 C18,30 25,30 25,35 L25,60" fill="none" /></svg>`
+  },
+  {
+    id: 'film_strip',
+    name: 'Retro Film Strip 🎞️',
+    category: 'vintage',
+    svg: `<svg viewBox="0 0 120 40" fill="#222" stroke="#444" stroke-width="2"><rect x="5" y="5" width="110" height="30" rx="3" /><rect x="15" y="10" width="22" height="20" fill="#eee" /><rect x="47" y="10" width="22" height="20" fill="#eee" /><rect x="79" y="10" width="22" height="20" fill="#eee" /><rect x="8" y="7" width="4" height="4" fill="white" /><rect x="20" y="7" width="4" height="4" fill="white" /><rect x="32" y="7" width="4" height="4" fill="white" /><rect x="44" y="7" width="4" height="4" fill="white" /><rect x="56" y="7" width="4" height="4" fill="white" /><rect x="68" y="7" width="4" height="4" fill="white" /><rect x="80" y="7" width="4" height="4" fill="white" /><rect x="92" y="7" width="4" height="4" fill="white" /><rect x="104" y="7" width="4" height="4" fill="white" /><rect x="8" y="29" width="4" height="4" fill="white" /><rect x="20" y="29" width="4" height="4" fill="white" /><rect x="32" y="29" width="4" height="4" fill="white" /><rect x="44" y="29" width="4" height="4" fill="white" /><rect x="56" y="29" width="4" height="4" fill="white" /><rect x="68" y="29" width="4" height="4" fill="white" /><rect x="80" y="29" width="4" height="4" fill="white" /><rect x="92" y="29" width="4" height="4" fill="white" /><rect x="104" y="29" width="4" height="4" fill="white" /></svg>`
+  },
+  {
+    id: 'coffee_stain',
+    name: 'Coffee Stain ☕',
+    category: 'vintage',
+    svg: `<svg viewBox="0 0 100 100" fill="none" stroke="#8B5A2B" stroke-width="3" opacity="0.45" stroke-linecap="round"><path d="M30,30 A35,35 0 1,0 75,40" /><path d="M40,35 A30,30 0 1,0 65,70" stroke-width="1.5" /><path d="M70,25 C75,25 78,28 78,35 C78,42 70,50 65,48" stroke-width="2" /></svg>`
+  },
+  {
+    id: 'postal_mark',
+    name: 'Vintage Postmark 📮',
+    category: 'vintage',
+    svg: `<svg viewBox="0 0 100 100" fill="none" stroke="#2C3E50" stroke-width="2.5" opacity="0.65" stroke-linecap="round"><circle cx="50" cy="50" r="38" stroke-dasharray="8 4" /><circle cx="50" cy="50" r="30" /><text x="50" y="44" fill="#2C3E50" font-family="monospace" font-size="7" font-weight="bold" text-anchor="middle">OFFICIAL MAIL</text><text x="50" y="55" fill="#2C3E50" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">LONDON 1926</text><path d="M20,50 L80,50 M30,62 L70,62" stroke-width="1.5" /></svg>`
   }
 ];
 
@@ -126,7 +156,11 @@ export const SCRAPBOOK_TAPES: TapeAsset[] = [
   { id: 'washi_green', name: 'Mint Washi Tape', textureClass: 'bg-teal-200/80 border-t border-b border-teal-300/40 border-dashed', defaultColor: '#B2DFDB' },
   { id: 'washi_yellow', name: 'Yellow Polka Tape', textureClass: 'bg-yellow-200/80 border-t border-b border-yellow-300/40 border-dashed', defaultColor: '#FFF9C4' },
   { id: 'washi_stripe', name: 'Diagonal Stripe Tape', textureClass: 'bg-amber-100 border-t border-b border-dashed border-amber-300/50', defaultColor: '#FFE0B2' },
-  { id: 'masking_tape', name: 'Classic Masking Tape', textureClass: 'bg-[#F5F2EB]/70 shadow-sm border border-[#E8E2D5]', defaultColor: '#FAF8F5' }
+  { id: 'masking_tape', name: 'Classic Masking Tape', textureClass: 'bg-[#F5F2EB]/70 shadow-sm border border-[#E8E2D5]', defaultColor: '#FAF8F5' },
+  { id: 'washi_sage', name: 'Sage Green Tape', textureClass: 'bg-emerald-800/60 border-t border-b border-emerald-900/30 border-dashed', defaultColor: '#8FBC8F' },
+  { id: 'washi_brown', name: 'Warm Brown Polka', textureClass: 'bg-amber-900/45 border-t border-b border-amber-950/20 border-dashed', defaultColor: '#A0522D' },
+  { id: 'washi_butter', name: 'Butter Yellow Tape', textureClass: 'bg-yellow-100/90 border-t border-b border-yellow-200/50 border-dashed', defaultColor: '#FFF8DC' },
+  { id: 'washi_vintage_blue', name: 'Vintage Blue Tape', textureClass: 'bg-blue-300/70 border-t border-b border-blue-400/30 border-dashed', defaultColor: '#4682B4' }
 ];
 
 export const SCRAPBOOK_PAPERS: PaperAsset[] = [
@@ -134,7 +168,9 @@ export const SCRAPBOOK_PAPERS: PaperAsset[] = [
   { id: 'sticky_pink', name: 'Pink Sticky Note', type: 'sticky', bgStyle: 'background-color: #FFE5EE; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); border-left: 1px solid rgba(0,0,0,0.05);' },
   { id: 'sticky_blue', name: 'Blue Sticky Note', type: 'sticky', bgStyle: 'background-color: #E3F2FD; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); border-left: 1px solid rgba(0,0,0,0.05);' },
   { id: 'torn_white', name: 'Torn Writing Sheet', type: 'torn', bgStyle: 'background-color: #FFFFFF; filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.15)); border: 1px dashed #DDD;' },
-  { id: 'vintage_card', name: 'Vintage Grid Ticket', type: 'ticket', bgStyle: 'background-color: #E8E2CF; border: 1px solid #C4BCA2; background-image: repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.05) 15px, rgba(0,0,0,0.05) 16px);' }
+  { id: 'vintage_card', name: 'Vintage Grid Ticket', type: 'ticket', bgStyle: 'background-color: #E8E2CF; border: 1px solid #C4BCA2; background-image: repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.05) 15px, rgba(0,0,0,0.05) 16px);' },
+  { id: 'newspaper_cutout', name: 'Newspaper Cutout', type: 'newspaper', bgStyle: 'background-color: #F2EFE9; font-family: "Special Elite", serif; color: #333; border: 1px solid #D5CEB8; box-shadow: 2px 2px 6px rgba(0,0,0,0.1);' },
+  { id: 'pressed_flower_card', name: 'Pressed Flower Backing', type: 'card', bgStyle: 'background-color: #FAF4EB; border: 1px solid #E6DEC9; background-image: radial-gradient(#E8D0B3 2px, transparent 2px); background-size: 12px 12px;' }
 ];
 
 export const SCRAPBOOK_DOODLES: DoodleAsset[] = [

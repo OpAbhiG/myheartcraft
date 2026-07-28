@@ -126,6 +126,46 @@ export const MAGAZINE_PALETTES: { [key: string]: MagazinePalette } = {
     colorTheme: '#111111',
     textColor: '#111111',
     secondaryColor: '#E2E8F0'
+  },
+  'beige_cream': {
+    id: 'beige_cream',
+    name: 'Beige & Cream 🌾',
+    colorBackground: '#F5EFEB',
+    colorTheme: '#8C7A6B',
+    textColor: '#4E433C',
+    secondaryColor: '#E6DDD5'
+  },
+  'sage_green': {
+    id: 'sage_green',
+    name: 'Sage Green 🍃',
+    colorBackground: '#F1F3EE',
+    colorTheme: '#607A66',
+    textColor: '#2D3E32',
+    secondaryColor: '#D9DFD4'
+  },
+  'warm_brown': {
+    id: 'warm_brown',
+    name: 'Warm Brown 🪵',
+    colorBackground: '#FAF5EF',
+    colorTheme: '#8A5A36',
+    textColor: '#4F331E',
+    secondaryColor: '#ECDCCB'
+  },
+  'vintage_blue': {
+    id: 'vintage_blue',
+    name: 'Vintage Blue ⚓',
+    colorBackground: '#EEF2F6',
+    colorTheme: '#5C768D',
+    textColor: '#2D3E4E',
+    secondaryColor: '#D6DFE7'
+  },
+  'butter_yellow': {
+    id: 'butter_yellow',
+    name: 'Butter Yellow 🧈',
+    colorBackground: '#FFFDF0',
+    colorTheme: '#D4AF37',
+    textColor: '#5E541E',
+    secondaryColor: '#FAF4C8'
   }
 };
 
