@@ -298,7 +298,8 @@ export default function App() {
       setScrapbookProjects(updated);
       localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
       setActiveScrapbookId(project.id);
-      setScreen('scrapbook-success');
+      setScrapbookPreviewSource('dashboard');
+      setScreen('scrapbook-preview');
     }
     syncScrapbookToCloud(project);
   };
@@ -344,7 +345,8 @@ export default function App() {
       setMagazineProjects(updated);
       localStorage.setItem('memora_magazine_projects', JSON.stringify(updated));
       setActiveMagazineId(project.id);
-      setScreen('magazine-success');
+      setMagazinePreviewSource('dashboard');
+      setScreen('magazine-preview');
     }
     syncMagazineToCloud(project);
   };
