@@ -850,20 +850,23 @@ export default function ScrapbookEditor({
                       Generate a premium luxury scrapbook layout matching this exact aesthetic style using Midjourney, Imagen, or DALL-E.
                     </p>
                     <div className="p-2.5 bg-[#1a1a1a] border border-[#333] rounded text-[8.5px] font-mono text-gray-400 max-h-32 overflow-y-auto whitespace-pre-wrap select-all">
-{`# MEMORA AI SCRAPBOOK STUDIO (PROFESSIONAL)
+{`# MEMORA AI SCRAPBOOK STUDIO
 
-Create a luxury handcrafted scrapbook page that blends modern editorial magazine layout with vintage mixed-media collage.
+You are an award-winning scrapbook artist, editorial designer, magazine art director, print designer, and visual storyteller.
+Your task is to automatically create a premium handcrafted scrapbook page using the uploaded photos.
 
 * Theme: "${project.title}"
 * Style: ${project.style === 'handmade-paper' ? 'Handmade Paper & Polaroid Collages' : 'Vintage Journal & Newspaper Cutouts'}
 * Color Palette: Beige, Cream, Sage Green, Dusty Pink, Vintage Blue
 * Materials: Torn paper, Polaroid frames, Washi tape, Metallic paper clips, pressed flowers, postmarks
 * Typography: Elegant serif titles, typewriter font accents, handwritten annotations
-* Mood: Nostalgic, Authentic, Warm, Timeless`}
+* Mood: Nostalgic, Authentic, Warm, Timeless
+
+FINAL GOAL: Generate a completely original scrapbook page where all creative decisions—layout, composition, colors, typography, decorations, spacing, and layering—are made automatically.`}
                     </div>
                     <button
                       onClick={() => {
-                        const promptText = `# MEMORA AI SCRAPBOOK STUDIO (PROFESSIONAL)\n\nCreate a luxury handcrafted scrapbook page that blends modern editorial magazine layout with vintage mixed-media collage.\n\n* Theme: "${project.title}"\n* Style: ${project.style === 'handmade-paper' ? 'Handmade Paper & Polaroid Collages' : 'Vintage Journal & Newspaper Cutouts'}\n* Color Palette: Beige, Cream, Sage Green, Dusty Pink, Vintage Blue\n* Materials: Torn paper, Polaroid frames, Washi tape, Metallic paper clips, pressed flowers, postmarks\n* Typography: Elegant serif titles, typewriter font accents, handwritten annotations\n* Mood: Nostalgic, Authentic, Warm, Timeless\n\nFINAL GOAL: Produce a premium handcrafted scrapbook page that combines the emotional warmth of a handmade memory journal, the elegance of a luxury editorial magazine, and the creativity of a modern scrapbook studio.`;
+                        const promptText = `# MEMORA AI SCRAPBOOK STUDIO\n\nYou are an award-winning scrapbook artist, editorial designer, magazine art director, print designer, and visual storyteller.\nYour task is to automatically create a premium handcrafted scrapbook page using the uploaded photos.\n\n* Theme: "${project.title}"\n* Style: ${project.style === 'handmade-paper' ? 'Handmade Paper & Polaroid Collages' : 'Vintage Journal & Newspaper Cutouts'}\n* Color Palette: Beige, Cream, Sage Green, Dusty Pink, Vintage Blue\n* Materials: Torn paper, Polaroid frames, Washi tape, Metallic paper clips, pressed flowers, postmarks\n* Typography: Elegant serif titles, typewriter font accents, handwritten annotations\n* Mood: Nostalgic, Authentic, Warm, Timeless\n\nFINAL GOAL: Generate a completely original scrapbook page where all creative decisions—layout, composition, colors, typography, decorations, spacing, layering, and finishing details—are made automatically while preserving the exact identity of every person. The result should look like a professionally handcrafted luxury scrapbook created by an expert designer, not an AI-generated collage.`;
                         navigator.clipboard.writeText(promptText);
                         alert("Memora AI Scrapbook Prompt copied to clipboard!");
                       }}
