@@ -590,42 +590,6 @@ export default function ScrapbookEditor({
             <ImageIcon className="w-5 h-5" />
             <span className="text-[8px] uppercase tracking-wider mt-1">Photos</span>
           </button>
-          
-          <button 
-            onClick={() => setActivePanel(activePanel === 'text' ? null : 'text')}
-            className={`flex flex-col items-center justify-center p-2.5 w-12 h-12 transition-all ${activePanel === 'text' ? 'bg-[#282828] text-white' : 'text-[#888] hover:text-white'}`}
-            title="Text"
-          >
-            <Type className="w-5 h-5" />
-            <span className="text-[8px] uppercase tracking-wider mt-1">Text</span>
-          </button>
-
-          <button 
-            onClick={() => setActivePanel(activePanel === 'stickers' ? null : 'stickers')}
-            className={`flex flex-col items-center justify-center p-2.5 w-12 h-12 transition-all ${activePanel === 'stickers' ? 'bg-[#282828] text-white' : 'text-[#888] hover:text-white'}`}
-            title="Stickers"
-          >
-            <Sliders className="w-5 h-5" />
-            <span className="text-[8px] uppercase tracking-wider mt-1">Stickers</span>
-          </button>
-
-          <button 
-            onClick={() => setActivePanel(activePanel === 'tapes' ? null : 'tapes')}
-            className={`flex flex-col items-center justify-center p-2.5 w-12 h-12 transition-all ${activePanel === 'tapes' ? 'bg-[#282828] text-white' : 'text-[#888] hover:text-white'}`}
-            title="Washi Tape"
-          >
-            <Layers className="w-5 h-5" />
-            <span className="text-[8px] uppercase tracking-wider mt-1">Tapes</span>
-          </button>
-
-          <button 
-            onClick={() => setActivePanel(activePanel === 'paper' ? null : 'paper')}
-            className={`flex flex-col items-center justify-center p-2.5 w-12 h-12 transition-all ${activePanel === 'paper' ? 'bg-[#282828] text-white' : 'text-[#888] hover:text-white'}`}
-            title="Paper items"
-          >
-            <FolderOpen className="w-5 h-5" />
-            <span className="text-[8px] uppercase tracking-wider mt-1">Paper</span>
-          </button>
 
           <button 
             onClick={() => setActivePanel(activePanel === 'backgrounds' ? null : 'backgrounds')}
@@ -946,7 +910,7 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                 return (
                   <div
                     key={el.id}
-                    className={`absolute select-none cursor-move ${isSelected ? 'ring-2 ring-primary ring-offset-1 z-50' : ''}`}
+                    className="absolute select-none"
                     style={{
                       left: `${el.x}%`,
                       top: `${el.y}%`,
@@ -956,11 +920,10 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                       zIndex: el.zIndex,
                       opacity: el.opacity
                     }}
-                    onMouseDown={(e) => handleDragStart(e, el)}
                   >
                     {/* Render Content based on element type */}
                     {el.type === 'photo' && (
-                      <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between relative">
+                      <div className="w-full h-full p-2 bg-white shadow-md border border-gray-200 flex flex-col justify-between relative group">
                         {/* Frame borders */}
                         <div className="w-full h-[82%] overflow-hidden bg-gray-100 relative">
                           <img
@@ -968,18 +931,50 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                             alt="Scrapbook Memory"
                             className="w-full h-full object-cover"
                             style={{
-                              transform: el.styleData.crop 
+                              transform: el.styleData?.crop 
                                 ? `scale(${el.styleData.crop.zoom}) rotate(${el.styleData.crop.rotate}deg) translate(${el.styleData.crop.x}px, ${el.styleData.crop.y}px)` 
                                 : 'none'
                             }}
                           />
+                          {/* Replace Photo Overlay */}
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-20">
+                            <label className="bg-white hover:bg-gray-100 text-black px-2 py-1 text-[8px] font-mono font-bold uppercase tracking-wider cursor-pointer shadow-md rounded">
+                              Replace
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      if (typeof reader.result === 'string') {
+                                        const updatedPages = project.pages.map((p, pIdx) => {
+                                          if (pIdx === currentPageIndex) {
+                                            return {
+                                              ...p,
+                                              elements: p.elements.map(item => item.id === el.id ? { ...item, content: reader.result as string } : item)
+                                            };
+                                          }
+                                          return p;
+                                        });
+                                        pushState({ ...project, pages: updatedPages, updatedAt: new Date().toISOString() });
+                                      }
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }} 
+                                className="hidden" 
+                              />
+                            </label>
+                          </div>
                         </div>
                         <div className="h-[15%] flex items-center justify-center overflow-hidden">
                           <span className="font-mono text-[8px] text-[#444] tracking-wide">Polaroid Print</span>
                         </div>
 
                         {/* Photo Corners overlay */}
-                        {el.styleData.photoCorners && el.styleData.photoCorners !== 'none' && (
+                        {el.styleData?.photoCorners && el.styleData.photoCorners !== 'none' && (
                           <div className="absolute inset-0 pointer-events-none z-20">
                             {/* Top Left */}
                             <div className="absolute top-0 left-0 w-3 h-3 border-t-[6px] border-l-[6px] border-transparent" style={{ borderTopColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B', borderLeftColor: el.styleData.photoCorners === 'gold' ? '#D97706' : el.styleData.photoCorners === 'black' ? '#1F2937' : '#8B5A2B' }} />
@@ -995,8 +990,25 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                     )}
 
                     {el.type === 'text' && (
-                      <div className="w-full h-full relative group/flap">
-                        {el.styleData.isFlap ? (
+                      <div 
+                        className="w-full h-full relative group/flap cursor-pointer border border-transparent hover:border-dashed hover:border-primary/40 rounded transition-all"
+                        onClick={() => {
+                          const newText = prompt("Edit your memory caption:", el.content);
+                          if (newText !== null && newText.trim() !== '') {
+                            const updatedPages = project.pages.map((p, pIdx) => {
+                              if (pIdx === currentPageIndex) {
+                                return {
+                                  ...p,
+                                  elements: p.elements.map(item => item.id === el.id ? { ...item, content: newText } : item)
+                                };
+                              }
+                              return p;
+                            });
+                            pushState({ ...project, pages: updatedPages, updatedAt: new Date().toISOString() });
+                          }
+                        }}
+                      >
+                        {el.styleData?.isFlap ? (
                           <div className="w-full h-full relative" style={{ perspective: '800px' }}>
                             {/* Flap Cover */}
                             <div 
@@ -1020,11 +1032,11 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                           <div 
                             className="w-full h-full p-2 overflow-hidden flex items-center justify-center leading-relaxed text-center whitespace-pre-wrap select-text cursor-text"
                             style={{
-                              fontFamily: el.styleData.fontFamily || 'Inter',
-                              fontSize: el.styleData.fontSize === '2xl' ? '1.3rem' : el.styleData.fontSize === 'lg' ? '1.05rem' : '0.75rem',
-                              textAlign: el.styleData.textAlign || 'center',
-                              color: el.styleData.color || '#1A1A1A',
-                              backgroundColor: el.styleData.backgroundColor || 'transparent'
+                              fontFamily: el.styleData?.fontFamily || 'Inter',
+                              fontSize: el.styleData?.fontSize === '2xl' ? '1.3rem' : el.styleData?.fontSize === 'lg' ? '1.05rem' : '0.75rem',
+                              textAlign: el.styleData?.textAlign || 'center',
+                              color: el.styleData?.color || '#1A1A1A',
+                              backgroundColor: el.styleData?.backgroundColor || 'transparent'
                             }}
                           >
                             {el.content}
@@ -1040,7 +1052,7 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                     {el.type === 'tape' && (
                       <div 
                         className={`w-full h-full opacity-90 ${SCRAPBOOK_TAPES.find(t => t.id === el.content)?.textureClass}`}
-                        style={{ backgroundColor: el.styleData.color }}
+                        style={{ backgroundColor: el.styleData?.color }}
                       />
                     )}
 
@@ -1058,17 +1070,17 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                             <div className="text-[9.5px] font-bold text-center py-1">★ TICKET NO. 928372 ★</div>
                             <div className="text-[7px] font-mono text-right opacity-60">MEMORA REC. DEPT</div>
                           </div>
-                        ) : el.content.includes('sticky_yellow') ? (
+                        ) : (el.content || '').includes('sticky_yellow') ? (
                           <div className="w-full h-full p-3 shadow-md border-l-2 border-yellow-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#FFFDE0' }}>
                             <div className="w-full h-2 bg-yellow-300/40 -mt-1.5 mb-1.5" />
                             <div className="text-[8.5px] font-sans text-yellow-950 leading-relaxed italic">Write a quick sticky memory...</div>
                           </div>
-                        ) : el.content.includes('sticky_pink') ? (
+                        ) : (el.content || '').includes('sticky_pink') ? (
                           <div className="w-full h-full p-3 shadow-md border-l-2 border-pink-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#FFE5EE' }}>
                             <div className="w-full h-2 bg-pink-300/40 -mt-1.5 mb-1.5" />
                             <div className="text-[8.5px] font-sans text-pink-950 leading-relaxed italic">Important details...</div>
                           </div>
-                        ) : el.content.includes('sticky_blue') ? (
+                        ) : (el.content || '').includes('sticky_blue') ? (
                           <div className="w-full h-full p-3 shadow-md border-l-2 border-blue-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#E3F2FD' }}>
                             <div className="w-full h-2 bg-blue-300/40 -mt-1.5 mb-1.5" />
                             <div className="text-[8.5px] font-sans text-blue-950 leading-relaxed italic">Note to self...</div>
@@ -1089,33 +1101,6 @@ FINAL GOAL: Generate a completely original scrapbook page where all creative dec
                           </div>
                         )}
                       </div>
-                    )}
-
-                    {/* Transform Handles when selected */}
-                    {isSelected && !el.isLocked && (
-                      <>
-                        {/* Delete Quick Btn */}
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleDeleteElement(); }}
-                          className="absolute -top-3.5 -right-3.5 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 shadow z-50 cursor-pointer"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                        
-                        {/* Rotation Handle */}
-                        <div
-                          className="absolute -top-6 left-1/2 -translate-x-1/2 w-4 h-4 bg-primary rounded-full cursor-alias border border-white flex items-center justify-center z-50"
-                          onMouseDown={(e) => handleRotateStart(e, el)}
-                        >
-                          <RotateCw className="w-2.5 h-2.5 text-white" />
-                        </div>
-
-                        {/* Resize handle bottom right */}
-                        <div
-                          className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-primary border border-white cursor-se-resize z-50"
-                          onMouseDown={(e) => handleResizeStart(e, el)}
-                        />
-                      </>
                     )}
                   </div>
                 );

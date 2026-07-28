@@ -50,7 +50,6 @@ export default function MagazinePreview({
   onClose
 }: MagazinePreviewProps) {
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const basePreset = MAGAZINE_STYLES[project.style] || MAGAZINE_STYLES['minimal-editorial'];
@@ -62,17 +61,6 @@ export default function MagazinePreview({
     colorTheme: palettePreset ? palettePreset.colorTheme : basePreset.colorTheme,
     textColor: palettePreset ? palettePreset.textColor : basePreset.textColor
   };
-
-  useEffect(() => {
-    if (project.musicTrack && project.musicTrack !== 'none' && isPlayingAudio) {
-      ambientMusic.start(project.musicTrack);
-    } else {
-      ambientMusic.stop();
-    }
-    return () => {
-      ambientMusic.stop();
-    };
-  }, [isPlayingAudio, project.musicTrack]);
 
   const handleNext = () => {
     const isDesktop = window.innerWidth >= 768;
@@ -339,16 +327,7 @@ export default function MagazinePreview({
         </div>
 
         <div className="flex items-center gap-4">
-          {project.musicTrack && project.musicTrack !== 'none' && (
-            <button
-              onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-              className={`px-3 py-1.5 border text-[10px] uppercase font-mono tracking-widest flex items-center gap-1.5 transition-all ${
-                isPlayingAudio ? 'bg-primary border-primary text-background' : 'border-[#444] text-[#ccc] hover:bg-[#222]'
-              }`}
-            >
-              {isPlayingAudio ? 'Stop Music' : 'Play Music'}
-            </button>
-          )}
+
 
           <button onClick={toggleFullscreen} className="p-2 text-[#999] hover:text-white transition-colors">
             <Maximize className="w-5 h-5" />
