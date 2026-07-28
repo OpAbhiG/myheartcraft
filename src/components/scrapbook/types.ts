@@ -19,7 +19,7 @@ export type ScrapbookCategory =
   | 'Cute'
   | 'Aesthetic';
 
-export type FrameShape = 'polaroid' | 'rounded' | 'square' | 'circle' | 'torn-paper' | 'oval';
+export type FrameShape = 'polaroid' | 'rounded' | 'square' | 'circle' | 'torn-paper' | 'paper' | 'oval';
 
 export interface PhotoCrop {
   x: number; // offset X percentage (-50 to 50)
@@ -30,22 +30,22 @@ export interface PhotoCrop {
 
 export interface PhotoSlot {
   id: string;
-  x: number; // px or % relative to canvas width
+  x: number; // px relative to 1200x1600 canvas width
   y: number;
   width: number;
   height: number;
   shape: FrameShape;
   rotation?: number; // degrees
-  label?: string; // e.g. "Photo 1 - Golden Hour"
+  label?: string;
   required?: boolean;
   frameBorderColor?: string;
-  tapeDecoration?: 'top-center' | 'corners' | 'top-left' | 'top-right' | 'none';
+  tapeDecoration?: 'top-center' | 'corners' | 'top-left' | 'top-right' | 'paper-clip' | 'none';
   captionPlaceholder?: string;
 }
 
 export interface TextElement {
   id: string;
-  type: 'heading' | 'subheading' | 'body' | 'date' | 'names' | 'quote';
+  type: 'heading' | 'subheading' | 'body' | 'date' | 'names' | 'quote' | 'textarea';
   placeholder: string;
   defaultText: string;
   x: number;
@@ -58,28 +58,31 @@ export interface TextElement {
   rotation?: number;
   editable: boolean;
   align?: 'left' | 'center' | 'right';
+  backgroundColor?: string;
 }
 
 export interface DecorationElement {
   id: string;
-  type: 'sticker' | 'tape' | 'doodle' | 'flower' | 'stamp' | 'paper-texture' | 'ribbon';
+  type: 'sticker' | 'tape' | 'doodle' | 'flower' | 'stamp' | 'paper-texture' | 'ribbon' | 'paper-clip' | 'cupcake' | 'kraft-note' | 'torn-note';
   url?: string;
   svgContent?: string;
+  textContent?: string;
   x: number;
   y: number;
   width: number;
   height: number;
   rotation?: number;
   locked?: boolean;
+  bgColor?: string;
 }
 
 export interface ScrapbookCanvasConfig {
-  width: number; // e.g. 800
-  height: number; // e.g. 1066 (3:4 ratio)
+  width: number; // e.g. 1200
+  height: number; // e.g. 1600 (3:4 ratio)
   aspectRatio: '3:4' | '1:1' | '16:9' | '4:5';
   backgroundColor: string;
   backgroundImage?: string;
-  backgroundTexture?: 'craft-paper' | 'vintage-parchment' | 'grid' | 'linen' | 'pink-pastel' | 'dark-slate';
+  backgroundTexture?: 'craft-paper' | 'vintage-parchment' | 'grid' | 'linen' | 'pink-pastel' | 'dark-slate' | 'cream-paper';
 }
 
 export interface ScrapbookTemplate {
@@ -100,11 +103,6 @@ export interface UserPhotoAssignment {
   url: string;
   crop: PhotoCrop;
   fileName?: string;
-}
-
-export interface UserTextAssignment {
-  elementId: string;
-  text: string;
 }
 
 export interface ScrapbookProject {

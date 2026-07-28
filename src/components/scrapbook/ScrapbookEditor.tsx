@@ -321,18 +321,75 @@ export default function ScrapbookEditor({
             ref={canvasRef}
             className="relative shadow-2xl overflow-hidden transition-all duration-300 border border-slate-800 rounded-2xl shrink-0"
             style={{
-              width: `${template.canvas.width * 0.75}px`,
-              height: `${template.canvas.height * 0.75}px`,
-              backgroundColor: template.canvas.backgroundColor || '#fbf9f5'
+              width: `${template.canvas.width * 0.55}px`,
+              height: `${template.canvas.height * 0.55}px`,
+              backgroundColor: template.canvas.backgroundColor || '#fbf9f2'
             }}
           >
             {/* Background Texture Layer */}
             <div className="absolute inset-0 opacity-30 pointer-events-none bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80')` }} />
 
+            {/* Decorations Layer (Notes, Kraft Cards, Flowers, Cupcake Stickers) */}
+            {template.decorations.map(dec => {
+              const scaleVal = 0.55;
+              return (
+                <div
+                  key={dec.id}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: `${dec.x * scaleVal}px`,
+                    top: `${dec.y * scaleVal}px`,
+                    width: `${dec.width * scaleVal}px`,
+                    height: `${dec.height * scaleVal}px`,
+                    transform: `rotate(${dec.rotation || 0}deg)`
+                  }}
+                >
+                  {dec.type === 'torn-note' && (
+                    <div className="w-full h-full bg-rose-100/90 border border-rose-200 p-4 shadow-md rounded-lg flex flex-col font-handwritten relative overflow-hidden">
+                      <div className="text-rose-800 font-bold text-lg mb-1">{dec.textContent || 'Memories ♥'}</div>
+                      <div className="w-full border-b border-rose-200 border-dashed mb-2" />
+                    </div>
+                  )}
+
+                  {dec.type === 'kraft-note' && (
+                    <div className="w-full h-full bg-[#e7d5c0] border border-[#d4be9b] p-3 shadow-md rounded-md flex items-center justify-center text-center font-handwritten text-xs font-bold text-[#4a3b32] whitespace-pre-line leading-snug">
+                      {dec.textContent}
+                    </div>
+                  )}
+
+                  {dec.type === 'paper-texture' && (
+                    <div className="w-full h-full bg-[#fff1f2] border border-rose-200/60 p-4 shadow-sm rounded-xl" />
+                  )}
+
+                  {dec.type === 'cupcake' && (
+                    <div className="w-full h-full flex items-center justify-center text-4xl drop-shadow-md animate-bounce">
+                      🧁
+                    </div>
+                  )}
+
+                  {dec.type === 'flower' && (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-2xl text-amber-700/80 drop-shadow-sm">
+                      🌸 🌾
+                    </div>
+                  )}
+
+                  {dec.type === 'tape' && (
+                    <div className="w-full h-full bg-amber-200/80 border border-amber-300/50 shadow-sm opacity-90 backdrop-blur-[1px]" />
+                  )}
+
+                  {dec.type === 'doodle' && (
+                    <div className="w-full h-full flex items-center justify-center text-rose-500 font-bold text-2xl drop-shadow-sm">
+                      ⭐
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
             {/* Photo Slots Layer */}
             {template.photoSlots.map(slot => {
               const assignment = slotAssignments[slot.id];
-              const scaleVal = 0.75; // Canvas scale multiplier for display
+              const scaleVal = 0.55; // Canvas scale multiplier for 1200x1600 display
 
               return (
                 <div
@@ -342,7 +399,8 @@ export default function ScrapbookEditor({
                   onClick={() => setEditingSlotId(slot.id)}
                   className={`absolute transition-transform cursor-pointer group ${
                     slot.shape === 'polaroid' ? 'bg-white p-3 pb-8 shadow-[0_15px_30px_rgba(0,0,0,0.18)] border border-slate-200/80 rounded-sm' :
-                    slot.shape === 'circle' ? 'rounded-full overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]' :
+                    slot.shape === 'torn-paper' ? 'bg-[#fdfbf7] p-2.5 shadow-[0_12px_25px_rgba(0,0,0,0.16)] border-2 border-dashed border-amber-800/30 rounded-md' :
+                    slot.shape === 'paper' ? 'bg-[#fffdfa] p-3 shadow-[0_12px_25px_rgba(0,0,0,0.16)] border border-amber-900/20 rounded-md' :
                     'rounded-2xl overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]'
                   }`}
                   style={{
@@ -353,7 +411,7 @@ export default function ScrapbookEditor({
                     transform: `rotate(${slot.rotation || 0}deg)`
                   }}
                 >
-                  {/* Washi Tape Strip Overlays */}
+                  {/* Washi Tape & Paper Clip Overlays */}
                   {(slot.tapeDecoration === 'top-left' || slot.tapeDecoration === 'corners') && (
                     <div className="absolute -top-3 -left-3 w-16 h-5 bg-amber-200/80 border border-amber-300/50 shadow-sm transform -rotate-12 z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
                   )}
@@ -362,6 +420,9 @@ export default function ScrapbookEditor({
                   )}
                   {slot.tapeDecoration === 'top-center' && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-emerald-200/80 border border-emerald-300/50 shadow-sm z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                  )}
+                  {slot.tapeDecoration === 'paper-clip' && (
+                    <div className="absolute -top-4 right-6 w-4 h-10 border-2 border-slate-400 bg-slate-200/60 rounded-full z-20 pointer-events-none shadow-md transform rotate-6" />
                   )}
 
                   {/* Photo Frame Container */}
@@ -392,35 +453,8 @@ export default function ScrapbookEditor({
 
                   {/* Polaroid Bottom Caption Text */}
                   {slot.shape === 'polaroid' && (
-                    <div className="mt-2 text-center text-[11px] font-handwritten text-slate-700 font-bold truncate px-1">
+                    <div className="mt-2 text-center text-[10px] font-handwritten text-slate-700 font-bold truncate px-1">
                       {slot.captionPlaceholder || 'Sweet Memory'}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Sticker / Stamp Decorations Layer */}
-            {template.decorations.map(dec => {
-              const scaleVal = 0.75;
-              return (
-                <div
-                  key={dec.id}
-                  className="absolute pointer-events-none"
-                  style={{
-                    left: `${dec.x * scaleVal}px`,
-                    top: `${dec.y * scaleVal}px`,
-                    width: `${dec.width * scaleVal}px`,
-                    height: `${dec.height * scaleVal}px`,
-                    transform: `rotate(${dec.rotation || 0}deg)`
-                  }}
-                >
-                  {dec.type === 'tape' && (
-                    <div className="w-full h-full bg-amber-200/80 border border-amber-300/50 shadow-sm opacity-90 backdrop-blur-[1px]" />
-                  )}
-                  {dec.type === 'doodle' && (
-                    <div className="w-full h-full flex items-center justify-center text-rose-500 font-bold text-2xl drop-shadow-sm">
-                      ❤️
                     </div>
                   )}
                 </div>
@@ -429,7 +463,7 @@ export default function ScrapbookEditor({
 
             {/* Text Elements Layer */}
             {template.textElements.map(el => {
-              const scaleVal = 0.75;
+              const scaleVal = 0.55;
               const textVal = textValues[el.id] || el.defaultText;
 
               return (
@@ -440,17 +474,17 @@ export default function ScrapbookEditor({
                     left: `${el.x * scaleVal}px`,
                     top: `${el.y * scaleVal}px`,
                     width: `${el.width * scaleVal}px`,
-                    textAlign: el.align || 'center'
+                    textAlign: el.align || 'left'
                   }}
                 >
                   <span
-                    className={`inline-block text-slate-800 ${
+                    className={`inline-block whitespace-pre-line text-slate-800 ${
                       el.fontFamily === 'handwritten' ? 'font-handwritten font-bold' :
-                      el.fontFamily === 'cursive' ? 'font-cursive' : 'font-display font-bold'
+                      el.fontFamily === 'cursive' ? 'font-cursive font-bold' : 'font-display font-bold'
                     }`}
                     style={{
-                      fontSize: `${(el.fontSize || 24) * scaleVal}px`,
-                      color: el.color || '#1e293b'
+                      fontSize: `${el.fontSize * scaleVal}px`,
+                      color: el.color || '#3a2e2b'
                     }}
                   >
                     {textVal}
