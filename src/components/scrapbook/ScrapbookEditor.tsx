@@ -843,6 +843,35 @@ export default function ScrapbookEditor({
                       </button>
                     </div>
                   </div>
+
+                  <div className="border-t border-[#333] pt-4 space-y-3">
+                    <span className="text-[10px] uppercase tracking-wider text-amber-400 block font-mono">Universal AI Prompt Spec</span>
+                    <p className="text-[9.5px] text-[#888] leading-relaxed">
+                      Generate a premium luxury scrapbook layout matching this exact aesthetic style using Midjourney, Imagen, or DALL-E.
+                    </p>
+                    <div className="p-2.5 bg-[#1a1a1a] border border-[#333] rounded text-[8.5px] font-mono text-gray-400 max-h-32 overflow-y-auto whitespace-pre-wrap select-all">
+{`# MEMORA AI SCRAPBOOK STUDIO (PROFESSIONAL)
+
+Create a luxury handcrafted scrapbook page that blends modern editorial magazine layout with vintage mixed-media collage.
+
+* Theme: "${project.title}"
+* Style: ${project.style === 'handmade-paper' ? 'Handmade Paper & Polaroid Collages' : 'Vintage Journal & Newspaper Cutouts'}
+* Color Palette: Beige, Cream, Sage Green, Dusty Pink, Vintage Blue
+* Materials: Torn paper, Polaroid frames, Washi tape, Metallic paper clips, pressed flowers, postmarks
+* Typography: Elegant serif titles, typewriter font accents, handwritten annotations
+* Mood: Nostalgic, Authentic, Warm, Timeless`}
+                    </div>
+                    <button
+                      onClick={() => {
+                        const promptText = `# MEMORA AI SCRAPBOOK STUDIO (PROFESSIONAL)\n\nCreate a luxury handcrafted scrapbook page that blends modern editorial magazine layout with vintage mixed-media collage.\n\n* Theme: "${project.title}"\n* Style: ${project.style === 'handmade-paper' ? 'Handmade Paper & Polaroid Collages' : 'Vintage Journal & Newspaper Cutouts'}\n* Color Palette: Beige, Cream, Sage Green, Dusty Pink, Vintage Blue\n* Materials: Torn paper, Polaroid frames, Washi tape, Metallic paper clips, pressed flowers, postmarks\n* Typography: Elegant serif titles, typewriter font accents, handwritten annotations\n* Mood: Nostalgic, Authentic, Warm, Timeless\n\nFINAL GOAL: Produce a premium handcrafted scrapbook page that combines the emotional warmth of a handmade memory journal, the elegance of a luxury editorial magazine, and the creativity of a modern scrapbook studio.`;
+                        navigator.clipboard.writeText(promptText);
+                        alert("Memora AI Scrapbook Prompt copied to clipboard!");
+                      }}
+                      className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-black font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer rounded transition-all"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 fill-current" /> Copy Prompt Spec
+                    </button>
+                  </div>
                 </div>
               )}
 
