@@ -354,6 +354,112 @@ export default function MagazineEditor({
           </div>
         );
 
+      case 'masonry':
+        return (
+          <div className="w-full h-full p-6 flex flex-col justify-between" style={{ color: stylePreset.textColor }}>
+            <div className="text-center mb-4">
+              <h2 className="text-lg font-bold mb-1" style={{ fontFamily: stylePreset.fontHeading }}>{page.title || "Portfolio Collection"}</h2>
+              <p className="text-[8px] uppercase tracking-wider text-[#999]">{page.subtitle || "Selected Fragments"}</p>
+            </div>
+            
+            <div className="relative flex-grow h-48 w-full flex items-center justify-center">
+              <div className="absolute left-2 top-2 w-[42%] h-[65%] border border-[#ddd] bg-white p-1 shadow-md -rotate-6 z-10 overflow-hidden group">
+                {pagePhotos[0] ? (
+                  <img src={pagePhotos[0]} alt="Masonry 1" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <label className="bg-white text-black px-1.5 py-1 text-[7px] font-bold uppercase tracking-wider cursor-pointer">
+                    Replace
+                    <input type="file" accept="image/*" onChange={(e) => handlePhotoUploadInput(e, 0)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              <div className="w-[50%] h-[80%] border border-[#ddd] bg-white p-1.5 shadow-xl rotate-3 z-0 overflow-hidden group">
+                {pagePhotos[1] ? (
+                  <img src={pagePhotos[1]} alt="Masonry 2" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <label className="bg-white text-black px-1.5 py-1 text-[7px] font-bold uppercase tracking-wider cursor-pointer">
+                    Replace
+                    <input type="file" accept="image/*" onChange={(e) => handlePhotoUploadInput(e, 1)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              <div className="absolute right-2 bottom-4 w-[38%] h-[60%] border border-[#ddd] bg-white p-1 shadow-md -rotate-3 z-10 overflow-hidden group">
+                {pagePhotos[2] ? (
+                  <img src={pagePhotos[2]} alt="Masonry 3" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <label className="bg-white text-black px-1.5 py-1 text-[7px] font-bold uppercase tracking-wider cursor-pointer">
+                    Replace
+                    <input type="file" accept="image/*" onChange={(e) => handlePhotoUploadInput(e, 2)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {page.bodyText && (
+              <p className="text-[9px] text-center italic opacity-85 mt-2 max-w-xs mx-auto leading-relaxed">
+                {page.bodyText}
+              </p>
+            )}
+          </div>
+        );
+
+      case 'celebration':
+        return (
+          <div className="w-full h-full p-6 flex flex-col justify-between" style={{ color: stylePreset.textColor }}>
+            <div className="text-center space-y-1">
+              <span className="font-mono text-[7px] uppercase tracking-[0.2em] opacity-75">special celebration</span>
+              <h2 className="text-lg font-bold uppercase tracking-tight" style={{ fontFamily: stylePreset.fontHeading }}>
+                {page.title || "Celebrating Life"}
+              </h2>
+              <p className="text-[8px] uppercase tracking-wider text-primary font-bold">{page.subtitle}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 h-40 my-3">
+              <div className="h-full border border-primary/10 overflow-hidden shadow-sm relative group">
+                {pagePhotos[0] ? (
+                  <img src={pagePhotos[0]} alt="Celebration 1" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <label className="bg-white text-black px-1.5 py-1 text-[7px] font-bold uppercase tracking-wider cursor-pointer">
+                    Replace
+                    <input type="file" accept="image/*" onChange={(e) => handlePhotoUploadInput(e, 0)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+              <div className="h-full border border-primary/10 overflow-hidden shadow-sm relative group">
+                {pagePhotos[1] ? (
+                  <img src={pagePhotos[1]} alt="Celebration 2" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <label className="bg-white text-black px-1.5 py-1 text-[7px] font-bold uppercase tracking-wider cursor-pointer">
+                    Replace
+                    <input type="file" accept="image/*" onChange={(e) => handlePhotoUploadInput(e, 1)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[9px] leading-relaxed text-center opacity-85 px-2">
+              {page.bodyText || "A toast to the beautiful milestones we've shared, and the exciting adventures that lie ahead."}
+            </p>
+          </div>
+        );
+
       case 'hero':
         return (
           <div className="w-full h-full relative overflow-hidden group">

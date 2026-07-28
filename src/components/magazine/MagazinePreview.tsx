@@ -221,6 +221,80 @@ export default function MagazinePreview({
           </div>
         )}
 
+        {page.layoutType === 'masonry' && (
+          <div className="w-full h-full flex flex-col justify-between">
+            <div className="text-center mb-4">
+              <h2 className="text-lg font-bold mb-1" style={{ fontFamily: stylePreset.fontHeading }}>{page.title || "Portfolio Collection"}</h2>
+              <p className="text-[8px] uppercase tracking-wider text-[#999]">{page.subtitle || "Selected Fragments"}</p>
+            </div>
+            
+            <div className="relative flex-grow h-60 w-full flex items-center justify-center">
+              <div className="absolute left-4 top-4 w-[42%] h-[65%] border border-[#ddd] bg-white p-1.5 shadow-md -rotate-6 z-10 overflow-hidden">
+                {pagePhotos[0] ? (
+                  <img src={pagePhotos[0]} alt="Masonry 1" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+              </div>
+
+              <div className="w-[50%] h-[80%] border border-[#ddd] bg-white p-2 shadow-xl rotate-3 z-0 overflow-hidden">
+                {pagePhotos[1] ? (
+                  <img src={pagePhotos[1]} alt="Masonry 2" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+              </div>
+
+              <div className="absolute right-4 bottom-6 w-[38%] h-[60%] border border-[#ddd] bg-white p-1.5 shadow-md -rotate-3 z-10 overflow-hidden">
+                {pagePhotos[2] ? (
+                  <img src={pagePhotos[2]} alt="Masonry 3" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+              </div>
+            </div>
+
+            {page.bodyText && (
+              <p className="text-[9px] text-center italic opacity-85 mt-4 max-w-xs mx-auto leading-relaxed">
+                {page.bodyText}
+              </p>
+            )}
+          </div>
+        )}
+
+        {page.layoutType === 'celebration' && (
+          <div className="w-full h-full flex flex-col justify-between">
+            <div className="text-center space-y-2 mt-2">
+              <span className="font-mono text-[8px] uppercase tracking-[0.2em] opacity-75">special celebration</span>
+              <h2 className="text-xl font-bold uppercase tracking-tight" style={{ fontFamily: stylePreset.fontHeading }}>
+                {page.title || "Celebrating Life"}
+              </h2>
+              <p className="text-[8px] uppercase tracking-wider text-primary font-bold">{page.subtitle}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 h-48 my-4">
+              <div className="h-full border border-primary/10 overflow-hidden shadow-sm">
+                {pagePhotos[0] ? (
+                  <img src={pagePhotos[0]} alt="Celebration 1" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+              </div>
+              <div className="h-full border border-primary/10 overflow-hidden shadow-sm">
+                {pagePhotos[1] ? (
+                  <img src={pagePhotos[1]} alt="Celebration 2" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[8px] text-gray-400">Empty</div>
+                )}
+              </div>
+            </div>
+
+            <p className="text-[10px] leading-relaxed text-center opacity-85 px-4 mb-2">
+              {page.bodyText || "A toast to the beautiful milestones we've shared, and the exciting adventures that lie ahead of us."}
+            </p>
+          </div>
+        )}
+
         {page.layoutType === 'hero' && (
           <div className="w-full h-full relative overflow-hidden p-0 -m-8">
             {pagePhotos[0] && <img src={pagePhotos[0]} alt="Hero Full" className="w-full h-full object-cover" />}

@@ -49,8 +49,8 @@ import { OpenWhenProject } from './components/openwhen/types';
 export default function App() {
   const [screen, setScreen] = useState<
     'landing' | 'explore' | 'dashboard' | 'wizard' | 'success' | 'recipient-flow' |
-    'scrapbook-dashboard' | 'scrapbook-wizard' | 'scrapbook-editor' | 'scrapbook-preview' |
-    'magazine-dashboard' | 'magazine-wizard' | 'magazine-editor' | 'magazine-preview' |
+    'scrapbook-dashboard' | 'scrapbook-wizard' | 'scrapbook-editor' | 'scrapbook-preview' | 'scrapbook-success' |
+    'magazine-dashboard' | 'magazine-wizard' | 'magazine-editor' | 'magazine-preview' | 'magazine-success' |
     'openwhen-dashboard' | 'openwhen-wizard' | 'openwhen-editor' | 'openwhen-preview'
   >('landing');
 
@@ -298,7 +298,7 @@ export default function App() {
       setScrapbookProjects(updated);
       localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
       setActiveScrapbookId(project.id);
-      setScreen('scrapbook-editor');
+      setScreen('scrapbook-success');
     }
     syncScrapbookToCloud(project);
   };
@@ -344,7 +344,7 @@ export default function App() {
       setMagazineProjects(updated);
       localStorage.setItem('memora_magazine_projects', JSON.stringify(updated));
       setActiveMagazineId(project.id);
-      setScreen('magazine-editor');
+      setScreen('magazine-success');
     }
     syncMagazineToCloud(project);
   };
@@ -577,6 +577,19 @@ export default function App() {
         />
       )}
 
+      {screen === 'scrapbook-success' && activeScrapbook && (
+        <SuccessScreen
+          type="scrapbook"
+          projectName={activeScrapbook.title}
+          shareUrl={`${window.location.origin}${window.location.pathname}?s=${activeScrapbook.id}`}
+          onPreview={() => {
+            setScrapbookPreviewSource('dashboard');
+            setScreen('scrapbook-preview');
+          }}
+          onGoToDashboard={() => setScreen('scrapbook-dashboard')}
+        />
+      )}
+
       {/* --- Magazine Screens --- */}
       {screen === 'magazine-dashboard' && (
         <MagazineDashboard
@@ -631,6 +644,19 @@ export default function App() {
               setScreen('magazine-dashboard');
             }
           }}
+        />
+      )}
+
+      {screen === 'magazine-success' && activeMagazine && (
+        <SuccessScreen
+          type="magazine"
+          projectName={activeMagazine.basicInfo.title}
+          shareUrl={`${window.location.origin}${window.location.pathname}?m=${activeMagazine.id}`}
+          onPreview={() => {
+            setMagazinePreviewSource('dashboard');
+            setScreen('magazine-preview');
+          }}
+          onGoToDashboard={() => setScreen('magazine-dashboard')}
         />
       )}
 
