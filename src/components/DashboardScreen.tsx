@@ -14,6 +14,7 @@ interface DashboardScreenProps {
   onDeleteCreation: (creationId: string) => void;
   onUpdateCreations?: (updated: Creation[]) => void;
   onUpdateGlobalCreations?: (updated: Creation[]) => void;
+  onNavigateToScrapbook?: () => void;
 }
 
 export default function DashboardScreen({
@@ -24,7 +25,8 @@ export default function DashboardScreen({
   onPreviewCreation,
   onDeleteCreation,
   onUpdateCreations,
-  onUpdateGlobalCreations
+  onUpdateGlobalCreations,
+  onNavigateToScrapbook
 }: DashboardScreenProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -122,6 +124,12 @@ export default function DashboardScreen({
             </button>
           </li>
 
+          <li>
+            <button onClick={onNavigateToScrapbook} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-primary/5 rounded-xl text-left transition-all">
+              <BookOpen className="w-4 h-4 text-primary" />
+              <span className="font-sans text-xs uppercase tracking-wider font-semibold font-bold text-primary">Scrapbook Studio</span>
+            </button>
+          </li>
           <li>
             <button onClick={onNavigateToExplore} className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-primary/5 rounded-xl text-left transition-all">
               <BookOpen className="w-4 h-4" />

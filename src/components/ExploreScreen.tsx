@@ -6,12 +6,14 @@ interface ExploreScreenProps {
   onNavigateToWizard: (templateId: string) => void;
   onNavigateToHome: () => void;
   onNavigateToDashboard: () => void;
+  onNavigateToScrapbook?: () => void;
 }
 
 export default function ExploreScreen({
   onNavigateToWizard,
   onNavigateToHome,
-  onNavigateToDashboard
+  onNavigateToDashboard,
+  onNavigateToScrapbook
 }: ExploreScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -189,6 +191,44 @@ export default function ExploreScreen({
               </div>
             </div>
           </div>
+
+          {/* Scrapbook Studio Card */}
+          {onNavigateToScrapbook && (
+            <div
+              onClick={onNavigateToScrapbook}
+              className="glass-card rounded-3xl overflow-hidden group cursor-pointer border border-primary/10 hover:border-primary/20 bg-white/70 shadow-lg hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="h-52 relative overflow-hidden bg-primary/5 rounded-t-3xl">
+                <div
+                  className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80')` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent" />
+                <div className="absolute top-4 left-4 bg-white/90 border border-primary/10 px-3 py-1 rounded-xl text-[8px] font-bold font-label-caps text-primary uppercase tracking-widest shadow-sm">
+                  Handcrafted Scrapbooks
+                </div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="font-display text-xl font-bold text-on-background mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                  Scrapbook Studio <Sparkles className="w-4 h-4 text-primary shrink-0 animate-pulse" />
+                </h3>
+                <p className="font-body-lg text-on-surface-variant text-xs mb-6 line-clamp-2 min-h-[38px]">
+                  Turn your favorite photos into beautiful handmade-style memories with ready-made templates, frames, and typography.
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-primary/5">
+                  <span className="text-[9px] font-bold font-label-caps text-on-surface-variant flex items-center gap-1 uppercase tracking-wider">
+                    <Clock className="w-3.5 h-3.5" />
+                    Ready-Made Templates
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[9px] font-bold font-label-caps text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 uppercase tracking-widest">
+                    Create Scrapbook
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
 
 

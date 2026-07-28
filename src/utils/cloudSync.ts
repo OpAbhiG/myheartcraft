@@ -1,4 +1,5 @@
 import { Creation } from '../types';
+import { ScrapbookProject } from '../components/scrapbook/types';
 
 const PRIMARY_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019f8884-e333-7b41-9ab0-dd4db87a8c5d';
 const SECONDARY_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019f7ec5a940010f';
@@ -239,6 +240,49 @@ export async function submitSiteReviewToCloud(review: { sender: string; text: st
   } catch (e) {
     console.warn('Submit site review error:', e);
   }
+}
+
+// --- Scrapbook Cloud Sync APIs ---
+export async function syncScrapbookToCloud(project: ScrapbookProject): Promise<void> {
+  if (!project || !project.id) return;
+  try {
+    const res = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (res.ok) {
+      const json = await res.json();
+      const currentScraps = Array.isArray(json.scrapbooks) ? json.scrapbooks : [];
+      const idx = currentScraps.findIndex((s: any) => s.id === project.id);
+      if (idx >= 0) {
+        currentScraps[idx] = project;
+      } else {
+        currentScraps.push(project);
+      }
+      await fetchWithRetry(PRIMARY_CLOUD_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...json,
+          scrapbooks: currentScraps
+        })
+      }, 3, 500);
+    }
+  } catch (e) {
+    console.warn('Sync scrapbook to cloud warning:', e);
+  }
+}
+
+export async function fetchScrapbookFromCloud(id: string): Promise<ScrapbookProject | null> {
+  try {
+    const res = await fetchWithRetry(PRIMARY_CLOUD_URL, { cache: 'no-cache' }, 3, 500);
+    if (res.ok) {
+      const json = await res.json();
+      if (json && Array.isArray(json.scrapbooks)) {
+        return json.scrapbooks.find((s: any) => s.id === id) || null;
+      }
+    }
+  } catch (e) {
+    console.warn('Fetch scrapbook from cloud warning:', e);
+  }
+  return null;
 }
 
 

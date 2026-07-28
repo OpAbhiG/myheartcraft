@@ -8,12 +8,14 @@ interface LandingScreenProps {
   onNavigateToExplore: () => void;
   onNavigateToWizard: (templateId: string) => void;
   onNavigateToDashboard: () => void;
+  onNavigateToScrapbook?: () => void;
 }
 
 export default function LandingScreen({
   onNavigateToExplore,
   onNavigateToWizard,
-  onNavigateToDashboard
+  onNavigateToDashboard,
+  onNavigateToScrapbook
 }: LandingScreenProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<'about' | 'privacy' | 'terms' | null>(null);
@@ -397,6 +399,7 @@ export default function LandingScreen({
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-4">EXPERIENCES</h4>
             <ul className="space-y-2.5 text-xs text-on-surface-variant text-left">
               <li><button onClick={() => onNavigateToWizard('birthday')} className="hover:text-primary transition-colors cursor-pointer">Greeting Cards</button></li>
+              {onNavigateToScrapbook && <li><button onClick={onNavigateToScrapbook} className="hover:text-primary font-bold text-primary transition-colors cursor-pointer">Scrapbook Studio</button></li>}
               <li><button onClick={() => onNavigateToWizard('proposal')} className="hover:text-primary transition-colors cursor-pointer">Perfect Proposal</button></li>
               <li><button onClick={() => onNavigateToWizard('puzzle')} className="hover:text-primary transition-colors cursor-pointer">Photo Puzzle Card</button></li>
             </ul>

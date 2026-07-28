@@ -8,7 +8,9 @@ import { Creation, INITIAL_CREATIONS } from './types';
 import { parseCreationFromUrl } from './utils/share';
 import { 
   fetchGlobalCreationsFromCloud, 
-  syncCreationToCloud
+  syncCreationToCloud,
+  syncScrapbookToCloud,
+  fetchScrapbookFromCloud
 } from './utils/cloudSync';
 import LandingScreen, { LandingAnims } from './components/LandingScreen';
 import ExploreScreen from './components/ExploreScreen';
@@ -17,9 +19,17 @@ import WizardScreen, { WizardAnims } from './components/WizardScreen';
 import SuccessScreen from './components/SuccessScreen';
 import RecipientFlow from './components/RecipientFlow';
 
+// Scrapbook Module Imports
+import ScrapbookDashboard from './components/scrapbook/ScrapbookDashboard';
+import ScrapbookEditor from './components/scrapbook/ScrapbookEditor';
+import ScrapbookPublicView from './components/scrapbook/ScrapbookPublicView';
+import { ScrapbookProject, ScrapbookTemplate } from './components/scrapbook/types';
+import { INITIAL_SCRAPBOOK_TEMPLATES } from './components/scrapbook/templates';
+
 export default function App() {
   const [screen, setScreen] = useState<
-    'landing' | 'explore' | 'dashboard' | 'wizard' | 'success' | 'recipient-flow'
+    'landing' | 'explore' | 'dashboard' | 'wizard' | 'success' | 'recipient-flow' |
+    'scrapbook-dashboard' | 'scrapbook-editor' | 'scrapbook-preview'
   >('landing');
 
   // Existing Creations States
@@ -28,6 +38,12 @@ export default function App() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('birthday');
   const [editCreationId, setEditCreationId] = useState<string | undefined>(undefined);
   const [activeCreation, setActiveCreation] = useState<Creation | null>(null);
+
+  // Scrapbook States
+  const [scrapbookProjects, setScrapbookProjects] = useState<ScrapbookProject[]>([]);
+  const [activeScrapbookTemplate, setActiveScrapbookTemplate] = useState<ScrapbookTemplate | null>(null);
+  const [activeScrapbookProject, setActiveScrapbookProject] = useState<ScrapbookProject | null>(null);
+  const [scrapbookPersonalization, setScrapbookPersonalization] = useState<any>(null);
 
   // Initialize and check URLs
   useEffect(() => {
@@ -53,12 +69,28 @@ export default function App() {
       }
     });
 
-    // 2. URL Router checks
+    // 2. Scrapbook Local Storage Init
+    const savedScraps = localStorage.getItem('memora_scrapbook_projects');
+    if (savedScraps) {
+      try {
+        setScrapbookProjects(JSON.parse(savedScraps));
+      } catch (e) {}
+    }
+
+    // 3. URL Router checks
     const params = new URLSearchParams(window.location.search);
     const shortData = params.get('g');
     const giftId = params.get('c') || params.get('giftId');
+    const sId = params.get('sId') || params.get('s');
 
-    if (shortData) {
+    if (sId) {
+      fetchScrapbookFromCloud(sId).then(cloudScrap => {
+        if (cloudScrap) {
+          setActiveScrapbookProject(cloudScrap);
+          setScreen('scrapbook-preview');
+        }
+      });
+    } else if (shortData) {
       const found = parseCreationFromUrl(localCreations);
       if (found) loadCreation(found);
     } else if (giftId) {
@@ -144,6 +176,45 @@ export default function App() {
     setScreen('wizard');
   };
 
+  // --- Scrapbook Handlers ---
+  const handleSaveScrapbook = (project: ScrapbookProject) => {
+    let updated: ScrapbookProject[];
+    const exists = scrapbookProjects.some(p => p.id === project.id);
+    if (exists) {
+      updated = scrapbookProjects.map(p => p.id === project.id ? project : p);
+    } else {
+      updated = [project, ...scrapbookProjects];
+    }
+    setScrapbookProjects(updated);
+    localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+    syncScrapbookToCloud(project);
+  };
+
+  const handleDeleteScrapbook = (id: string) => {
+    if (window.confirm('Permanently delete this scrapbook?')) {
+      const updated = scrapbookProjects.filter(p => p.id !== id);
+      setScrapbookProjects(updated);
+      localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+    }
+  };
+
+  const handleDuplicateScrapbook = (id: string) => {
+    const orig = scrapbookProjects.find(p => p.id === id);
+    if (orig) {
+      const dup: ScrapbookProject = {
+        ...orig,
+        id: `scrapbook-${Date.now()}`,
+        title: `${orig.title} (Copy)`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const updated = [dup, ...scrapbookProjects];
+      setScrapbookProjects(updated);
+      localStorage.setItem('memora_scrapbook_projects', JSON.stringify(updated));
+      syncScrapbookToCloud(dup);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-on-background relative" id="app-root">
       
@@ -153,6 +224,7 @@ export default function App() {
           onNavigateToExplore={() => setScreen('explore')}
           onNavigateToWizard={(id) => handleNavigateToWizard(id)}
           onNavigateToDashboard={() => setScreen('dashboard')}
+          onNavigateToScrapbook={() => setScreen('scrapbook-dashboard')}
         />
       )}
 
@@ -161,6 +233,7 @@ export default function App() {
           onNavigateToWizard={(id) => handleNavigateToWizard(id)}
           onNavigateToHome={() => setScreen('landing')}
           onNavigateToDashboard={() => setScreen('dashboard')}
+          onNavigateToScrapbook={() => setScreen('scrapbook-dashboard')}
         />
       )}
 
@@ -180,6 +253,7 @@ export default function App() {
           onDeleteCreation={handleDeleteCreation}
           onUpdateCreations={(updatedList) => saveCreationsList(updatedList)}
           onUpdateGlobalCreations={(updatedGlobal) => setAllGlobalCreations(updatedGlobal)}
+          onNavigateToScrapbook={() => setScreen('scrapbook-dashboard')}
         />
       )}
 
@@ -212,6 +286,50 @@ export default function App() {
             setScreen('dashboard');
           }}
           onUpdateCreation={handleUpdateReplies}
+        />
+      )}
+
+      {/* --- Scrapbook Module Screens --- */}
+      {screen === 'scrapbook-dashboard' && (
+        <ScrapbookDashboard
+          userProjects={scrapbookProjects}
+          onSelectTemplate={(template, personalization) => {
+            setActiveScrapbookTemplate(template);
+            setScrapbookPersonalization(personalization);
+            setActiveScrapbookProject(null);
+            setScreen('scrapbook-editor');
+          }}
+          onOpenProject={(id) => {
+            const proj = scrapbookProjects.find(p => p.id === id);
+            if (proj) {
+              const tmpl = INITIAL_SCRAPBOOK_TEMPLATES.find(t => t.id === proj.templateId) || INITIAL_SCRAPBOOK_TEMPLATES[0];
+              setActiveScrapbookTemplate(tmpl);
+              setActiveScrapbookProject(proj);
+              setScreen('scrapbook-editor');
+            }
+          }}
+          onDeleteProject={handleDeleteScrapbook}
+          onDuplicateProject={handleDuplicateScrapbook}
+          onNavigateToCards={() => setScreen('dashboard')}
+        />
+      )}
+
+      {screen === 'scrapbook-editor' && activeScrapbookTemplate && (
+        <ScrapbookEditor
+          template={activeScrapbookTemplate}
+          existingProject={activeScrapbookProject}
+          initialPersonalization={scrapbookPersonalization}
+          onSave={(project) => {
+            handleSaveScrapbook(project);
+          }}
+          onClose={() => setScreen('scrapbook-dashboard')}
+        />
+      )}
+
+      {screen === 'scrapbook-preview' && activeScrapbookProject && (
+        <ScrapbookPublicView
+          project={activeScrapbookProject}
+          onExit={() => setScreen('scrapbook-dashboard')}
         />
       )}
 
