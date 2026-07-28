@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Sparkles, Volume2, VolumeX, Gift, Send, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Sparkles, Volume2, VolumeX, Gift, Send, MessageCircle, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { Creation } from '../types';
 import ParticleBackground from './ParticleBackground';
 import InteractiveExperiences from './InteractiveExperiences';
@@ -43,7 +43,6 @@ export default function RecipientFlow({
 
   const handleStartSurprise = () => {
     setPhase('play');
-    // Trigger audio pad start
     if (creation.musicTrack !== 'none') {
       ambientMusic.start(creation.musicTrack);
       setAudioPlaying(true);
@@ -106,56 +105,54 @@ export default function RecipientFlow({
     setFeedbackSubmitted(true);
   };
 
-  // Cleanup audio when component unmounts
   useEffect(() => {
     return () => {
       ambientMusic.stop();
     };
   }, []);
 
-  // Theme palettes matching creation options
-  const colorThemes: { [key: string]: { bg: string; text: string; cardBg: string; buttonBg: string; border: string } } = {
+  // Theme styles supporting the new luxurious color system
+  const colorThemes: { [key: string]: { bg: string; text: string; accent: string; highlight: string } } = {
     rose_gold: {
-      bg: 'bg-background',
-      text: 'text-[#8a4d4e]',
-      cardBg: 'bg-background border-primary/20',
-      buttonBg: 'bg-primary text-background',
-      border: 'border-primary/20'
+      bg: 'from-[#fff8f8] to-[#fff1f3]',
+      text: 'text-[#8d3c59]',
+      accent: 'border-[#ebdce1]',
+      highlight: '#8d3c59'
     },
     amethyst: {
-      bg: 'bg-background',
+      bg: 'from-[#f9f7fc] to-[#f3effa]',
       text: 'text-[#66568a]',
-      cardBg: 'bg-background border-primary/20',
-      buttonBg: 'bg-primary text-background',
-      border: 'border-primary/20'
+      accent: 'border-[#e8e2f4]',
+      highlight: '#66568a'
     },
     golden_twilight: {
-      bg: 'bg-background',
-      text: 'text-[#735c00]',
-      cardBg: 'bg-background border-primary/20',
-      buttonBg: 'bg-primary text-background',
-      border: 'border-primary/20'
+      bg: 'from-[#fffbf5] to-[#fff7e6]',
+      text: 'text-[#856404]',
+      accent: 'border-[#fbf2d5]',
+      highlight: '#735c00'
     },
     emerald: {
-      bg: 'bg-background',
-      text: 'text-[#047857]',
-      cardBg: 'bg-background border-primary/20',
-      buttonBg: 'bg-primary text-background',
-      border: 'border-primary/20'
+      bg: 'from-[#f4fbf7] to-[#e6f7ee]',
+      text: 'text-[#065f46]',
+      accent: 'border-[#d1fae5]',
+      highlight: '#047857'
     }
   };
 
   const activeTheme = colorThemes[creation.themeColor] || colorThemes.rose_gold;
 
   return (
-    <div className={`min-h-screen ${activeTheme.bg} flex flex-col justify-center items-center overflow-x-hidden p-6 relative antialiased font-sans`} id="recipient-flow">
-      
+    <div className={`min-h-screen bg-gradient-to-b ${activeTheme.bg} flex flex-col justify-center items-center overflow-x-hidden p-6 relative antialiased font-sans`} id="recipient-flow">
+      {/* Background Orbs */}
+      <div className="glow-orb-backdrop top-10 left-10 opacity-[0.04]" />
+      <div className="glow-orb-backdrop glow-orb-2 bottom-10 right-10 opacity-[0.04]" />
+
       {/* Audio volume control widget */}
       {phase === 'play' && creation.musicTrack !== 'none' && (
         <button
           id="btn-recipient-audio-toggle"
           onClick={handleToggleAudio}
-          className="fixed top-6 right-6 z-50 p-3 rounded-none bg-background shadow-none border border-primary/20 text-primary hover:bg-primary/5 transition-all"
+          className="fixed top-6 right-6 z-50 p-3 rounded-xl bg-white shadow-md border border-primary/10 text-primary hover:bg-primary/5 transition-all cursor-pointer"
           title={audioPlaying ? 'Mute Music' : 'Play Music'}
         >
           {audioPlaying ? (
@@ -170,7 +167,7 @@ export default function RecipientFlow({
       <button
         id="btn-recipient-exit-preview"
         onClick={onExit}
-        className="fixed top-6 left-6 z-50 py-2.5 px-5 rounded-none bg-background shadow-none border border-primary/20 text-[9px] font-bold font-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all"
+        className="fixed top-6 left-6 z-50 py-2.5 px-5 rounded-xl bg-white shadow-md border border-primary/10 text-[9px] font-bold font-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all cursor-pointer"
       >
         Exit Keepsake
       </button>
@@ -183,33 +180,33 @@ export default function RecipientFlow({
       {/* PHASE A: LOADING KEEPSAKE SCREEN */}
       {phase === 'loading' && (
         <div className="text-center space-y-6 animate-pulse z-10" id="phase-loading">
-          <div className="w-14 h-14 border border-primary flex items-center justify-center mx-auto bg-background">
+          <div className="w-16 h-16 rounded-2xl bg-white shadow-xl border border-primary/10 flex items-center justify-center mx-auto text-primary">
             <Heart className="w-6 h-6 text-primary fill-current" />
           </div>
           <div>
-            <h1 className="font-display-lg text-2xl uppercase tracking-tight font-light text-on-background">Crafting something special...</h1>
-            <p className="font-body-lg text-on-surface-variant text-xs mt-1">Please wait while your digital surprise loads.</p>
+            <h1 className="font-display-lg text-2xl uppercase tracking-widest font-light text-on-background">Crafting something special...</h1>
+            <p className="font-body-lg text-on-surface-variant text-xs mt-2">Preparing your personal digital keepsake.</p>
           </div>
         </div>
       )}
 
       {/* PHASE B: INTRO SURPRISE INVITATION SCREEN */}
       {phase === 'intro' && (
-        <div className="text-center max-w-lg mx-auto space-y-8 z-10 p-8 md:p-12 border border-primary bg-background shadow-none animate-fade-in" id="phase-intro">
+        <div className="text-center max-w-lg mx-auto space-y-8 z-10 p-10 md:p-14 border border-primary/10 bg-white rounded-3xl shadow-2xl animate-scale-in" id="phase-intro">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-primary/5 text-primary border border-primary/20 font-label-caps text-[9px] tracking-[0.15em] uppercase mb-4 font-bold">
-              <Sparkles className="w-3 h-3 text-primary" />
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary/10 text-primary border border-primary/10 rounded-full font-label-caps text-[9px] tracking-[0.15em] uppercase mb-4 font-bold">
+              <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
               Surprise Delivery
             </span>
-            <h1 className="font-display-lg text-4xl md:text-5xl font-light tracking-tight text-on-background leading-tight">
+            <h1 className="font-display-lg text-4xl md:text-5xl font-bold tracking-tight text-on-background leading-tight">
               Hey {creation.recipientName}...
             </h1>
-            <p className="font-display-lg text-lg text-on-surface-variant mt-4 font-light italic">
+            <p className="font-display text-lg text-on-surface-variant mt-4 font-light italic">
               {creation.creatorName} created something special for you.
             </p>
           </div>
 
-          <div className="h-[1px] bg-primary/20 w-1/4 mx-auto" />
+          <div className="h-[1px] bg-primary/10 w-1/4 mx-auto" />
 
           <p className="font-body-lg text-on-surface-variant text-xs leading-relaxed max-w-md mx-auto">
             A custom interactive digital keepsake, personalized memory scrapbook, and a sweet heartfelt letter are waiting inside.
@@ -218,7 +215,7 @@ export default function RecipientFlow({
           <button
             id="btn-open-keepsake-surprise"
             onClick={handleStartSurprise}
-            className="btn-primary py-3.5 px-10 rounded-none font-label-caps tracking-widest font-bold text-[10px] uppercase transition-all w-full flex items-center justify-center gap-2"
+            className="btn-primary py-3.5 px-10 rounded-xl font-label-caps tracking-widest font-bold text-[10px] uppercase transition-all w-full flex items-center justify-center gap-2 shadow-lg"
           >
             <Gift className="w-4 h-4" />
             Open Your Surprise
@@ -246,31 +243,31 @@ export default function RecipientFlow({
               
               {/* Unlocked Announcement Callout */}
               <div className="text-center space-y-2">
-                <div className="w-12 h-12 border border-green-700 flex items-center justify-center mx-auto text-green-700 bg-background">
-                  <Sparkles className="w-5 h-5" />
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-md border border-green-500/20 flex items-center justify-center mx-auto text-green-600">
+                  <Sparkles className="w-6 h-6 animate-pulse" />
                 </div>
-                <h2 className="font-display-lg text-2xl uppercase tracking-wider font-light text-on-background">Unlocked!</h2>
-                <p className="text-[9px] text-on-surface-variant uppercase font-label-caps tracking-[0.18em] font-bold">Unfolding your customized memories timeline</p>
+                <h2 className="font-display text-3xl font-bold tracking-tight text-on-background">Surprise Unlocked!</h2>
+                <p className="text-[9.5px] text-on-surface-variant uppercase font-label-caps tracking-[0.2em] font-bold">Unfolding your customized memories timeline</p>
               </div>
 
               {/* 1. MEMORY VAULT IMAGES TIMELINE */}
               {(creation.images?.length || 0) > 0 && (
-                <div className="p-6 md:p-8 border border-primary bg-background shadow-none relative" id="recipient-images-timeline">
+                <div className="p-8 md:p-10 border border-primary/10 bg-white rounded-3xl shadow-xl relative" id="recipient-images-timeline">
                   
-                  <div className="text-center mb-6">
+                  <div className="text-center mb-8">
                     <span className="font-label-caps text-[9px] text-primary tracking-[0.15em] uppercase font-bold">Keepsake Scrapbook</span>
-                    <h3 className="font-display-lg text-xl text-on-background uppercase tracking-wider font-light mt-1">Our Beautiful Moments</h3>
+                    <h3 className="font-display text-2xl text-on-background tracking-tight font-bold mt-1">Our Beautiful Moments</h3>
                   </div>
 
-                  {/* Polaroid Frame */}
-                  <div className="relative aspect-[4/3] w-full bg-background p-4 pb-12 border border-primary/20 rounded-none shadow-none" id="polaroid-view">
+                  {/* Polaroid Frame Container */}
+                  <div className="relative aspect-[4/3] w-full max-w-lg mx-auto bg-[#fbfbf9] p-4 pb-14 border border-gray-200/60 rounded-2xl shadow-2xl transform rotate-[-1deg]" id="polaroid-view">
                     <img
                       src={creation.images?.[activePhotoIdx]?.url || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80'}
                       alt="Keepsake memories"
-                      className="w-full h-full object-cover rounded-none grayscale"
+                      className="w-full h-full object-cover rounded-lg border border-gray-100 shadow-inner"
                     />
-                    <div className="absolute bottom-3 inset-x-4 text-center">
-                      <p className="font-handwritten text-primary font-bold text-sm md:text-base tracking-wide italic">
+                    <div className="absolute bottom-4 inset-x-4 text-center">
+                      <p className="font-handwritten text-primary font-bold text-lg md:text-xl tracking-wide">
                         "{creation.images?.[activePhotoIdx]?.caption || 'A special moment together'}"
                       </p>
                     </div>
@@ -278,21 +275,21 @@ export default function RecipientFlow({
 
                   {/* Carousel navigation dots */}
                   {(creation.images?.length || 0) > 1 && (
-                    <div className="flex items-center justify-between mt-8" id="polaroid-navigation">
+                    <div className="flex items-center justify-between mt-10 max-w-lg mx-auto" id="polaroid-navigation">
                       <button
                         id="btn-polaroid-prev"
                         onClick={() => setActivePhotoIdx((activePhotoIdx - 1 + creation.images.length) % creation.images.length)}
-                        className="p-2 rounded-none border border-primary/20 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all"
+                        className="p-2.5 rounded-xl border border-primary/10 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all cursor-pointer"
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </button>
 
-                      <div className="flex gap-1.5">
+                      <div className="flex gap-2">
                         {creation.images?.map((_, i) => (
                           <span
                             key={i}
-                            className={`h-1.5 rounded-none transition-all ${
-                              activePhotoIdx === i ? 'bg-primary w-4' : 'bg-primary/20 w-1.5'
+                            className={`h-2 rounded-full transition-all ${
+                              activePhotoIdx === i ? 'bg-primary w-5' : 'bg-primary/20 w-2'
                             }`}
                           />
                         ))}
@@ -301,7 +298,7 @@ export default function RecipientFlow({
                       <button
                         id="btn-polaroid-next"
                         onClick={() => setActivePhotoIdx((activePhotoIdx + 1) % creation.images.length)}
-                        className="p-2 rounded-none border border-primary/20 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all"
+                        className="p-2.5 rounded-xl border border-primary/10 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all cursor-pointer"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </button>
@@ -312,73 +309,76 @@ export default function RecipientFlow({
               )}
 
               {/* 2. THE HEARTFELT PERSONAL DIGITAL LETTER */}
-              <div className="p-8 md:p-14 border border-primary bg-background shadow-none space-y-6 relative" id="recipient-letter">
-                <div className="absolute top-4 left-4 w-10 h-10 border-t-2 border-l-2 border-primary/20" />
-                <div className="absolute bottom-4 right-4 w-10 h-10 border-b-2 border-r-2 border-primary/20" />
+              <div className="p-8 md:p-14 border border-primary/10 bg-white rounded-3xl shadow-xl space-y-6 relative overflow-hidden" id="recipient-letter">
+                {/* Vintage overlay texture */}
+                <div className="absolute inset-0 bg-[#FAF9F5] opacity-30 pointer-events-none" />
+                
+                <div className="absolute top-6 left-6 w-10 h-10 border-t-2 border-l-2 border-primary/20 rounded-tl-lg" />
+                <div className="absolute bottom-6 right-6 w-10 h-10 border-b-2 border-r-2 border-primary/20 rounded-br-lg" />
 
-                <div className="text-center">
-                  <Heart className="w-6 h-6 fill-current text-primary mx-auto mb-4" />
-                  <h3 className="font-display-lg text-2xl md:text-3xl text-on-background font-light tracking-tight leading-tight uppercase">
+                <div className="text-center relative z-10">
+                  <Heart className="w-8 h-8 fill-current text-primary mx-auto mb-4 animate-pulse" />
+                  <h3 className="font-display text-2xl md:text-3xl text-on-background font-bold tracking-tight uppercase">
                     {creation.messageTitle}
                   </h3>
                 </div>
 
-                <div className="h-[1px] bg-primary/20 w-1/4 mx-auto my-4" />
+                <div className="h-[1px] bg-primary/10 w-1/4 mx-auto my-4 relative z-10" />
 
-                <p className="font-body-lg text-on-surface-variant text-xs leading-relaxed text-left whitespace-pre-wrap pl-4 md:pl-6 border-l-2 border-primary/30">
+                <p className="font-body-lg text-on-surface-variant text-sm leading-relaxed text-left whitespace-pre-wrap pl-5 md:pl-7 border-l-3 border-primary/30 relative z-10 italic">
                   {creation.messageBody}
                 </p>
 
-                <div className="text-right pt-4">
-                  <p className="font-handwritten text-base text-primary italic font-bold">
+                <div className="text-right pt-6 relative z-10">
+                  <p className="font-handwritten text-xl text-primary font-bold">
                     With all my love,
                   </p>
-                  <p className="font-display-lg text-lg text-on-background uppercase font-bold mt-1 pr-1">
+                  <p className="font-display text-lg text-on-background font-bold mt-1 pr-1 tracking-wider">
                     {creation.creatorName}
                   </p>
                 </div>
               </div>
 
               {/* 3. RECIPIENT SWEET REPLY SUBMISSION FORM */}
-              <div className="p-6 md:p-8 border border-primary bg-background shadow-none relative" id="recipient-reply-form">
+              <div className="p-8 border border-primary/10 bg-white rounded-3xl shadow-xl relative" id="recipient-reply-form">
                 
                 {replySubmitted ? (
-                  <div className="text-center py-6 space-y-3" id="reply-success">
-                    <div className="w-10 h-10 border border-green-700 flex items-center justify-center mx-auto text-green-700 bg-background">
-                      <Send className="w-4 h-4" />
+                  <div className="text-center py-8 space-y-4" id="reply-success">
+                    <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto text-green-700">
+                      <Check className="w-5 h-5" />
                     </div>
-                    <h4 className="font-bold text-xs uppercase tracking-wider text-on-background">Reply Sent to {creation.creatorName}!</h4>
-                    <p className="text-[11px] text-on-surface-variant">Your heartfelt reply has been written to the creation's dashboard successfully.</p>
+                    <h4 className="font-bold text-sm uppercase tracking-wider text-on-background">Reply Sent to {creation.creatorName}!</h4>
+                    <p className="text-xs text-on-surface-variant leading-relaxed max-w-sm mx-auto">Your heartfelt response has been written directly to the studio dashboard logs.</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmitReply} className="space-y-4">
+                  <form onSubmit={handleSubmitReply} className="space-y-5">
                     <div className="text-center mb-4">
-                      <MessageCircle className="w-5 h-5 text-primary mx-auto mb-1" />
-                      <h4 className="font-bold text-xs uppercase tracking-wider text-on-background">Send a sweet reply back</h4>
-                      <p className="text-[10px] text-on-surface-variant">Let them know how much this beautiful creation meant to you.</p>
+                      <MessageCircle className="w-6 h-6 text-primary mx-auto mb-1.5 animate-bounce" />
+                      <h4 className="font-display text-lg font-bold text-on-background">Send a sweet reply back</h4>
+                      <p className="text-xs text-on-surface-variant mt-0.5">Let them know how much this beautiful keepsake meant to you.</p>
                     </div>
 
                     <div className="flex flex-col group">
-                      <label className="text-[9px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Your Name</label>
+                      <label className="text-[9px] font-bold uppercase text-on-surface-variant tracking-widest mb-1.5 pl-1">Your Name</label>
                       <input
                         id="reply-sender-name"
                         type="text"
                         value={replySender}
                         onChange={(e) => setReplySender(e.target.value)}
-                        className="w-full bg-transparent border-b border-primary/20 py-1.5 text-xs focus:outline-none focus:border-primary font-sans"
+                        className="w-full bg-primary/5 border border-primary/10 rounded-xl py-2 px-4 text-xs focus:outline-none focus:border-primary font-sans"
                         required
                       />
                     </div>
 
                     <div className="flex flex-col group">
-                      <label className="text-[9px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Heartfelt Reply Message</label>
+                      <label className="text-[9px] font-bold uppercase text-on-surface-variant tracking-widest mb-1.5 pl-1">Heartfelt Reply Message</label>
                       <textarea
                         id="reply-message-body"
                         rows={3}
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         placeholder="Say something sweet..."
-                        className="w-full bg-transparent border border-primary/20 rounded-none p-3 focus:outline-none focus:border-primary text-xs leading-relaxed font-body-lg"
+                        className="w-full bg-primary/5 border border-primary/10 rounded-xl p-4 focus:outline-none focus:border-primary text-xs leading-relaxed font-body-lg"
                         required
                       />
                     </div>
@@ -386,7 +386,7 @@ export default function RecipientFlow({
                     <button
                       id="btn-submit-reply"
                       type="submit"
-                      className="btn-primary py-2.5 px-6 rounded-none font-label-caps text-[9px] tracking-widest uppercase font-bold w-full flex items-center justify-center gap-1.5"
+                      className="btn-primary py-3 px-6 rounded-xl font-label-caps text-[9px] tracking-widest uppercase font-bold w-full flex items-center justify-center gap-2 shadow-md hover:scale-[1.01]"
                     >
                       <Send className="w-3.5 h-3.5" />
                       Send Reply
@@ -395,16 +395,16 @@ export default function RecipientFlow({
                 )}
 
                 {/* Private Feedback to Admin */}
-                <div className="border-t border-primary/20 pt-6 mt-6 text-left">
+                <div className="border-t border-primary/10 pt-6 mt-6 text-left">
                   {feedbackSubmitted ? (
-                    <div className="text-center py-4 bg-primary/5 border border-primary/20 rounded-none animate-fade-in" id="feedback-success">
+                    <div className="text-center py-4 bg-primary/5 border border-primary/10 rounded-xl animate-fade-in" id="feedback-success">
                       <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Review Sent Privately to Admin!</p>
                       <p className="text-[9px] text-on-surface-variant mt-1">Thank you for sharing your experience with us.</p>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitFeedback} className="space-y-3">
                       <div>
-                        <h5 className="font-bold text-[10px] uppercase tracking-wider text-on-background">Share Platform Feedback / Review</h5>
+                        <h5 className="font-bold text-[10px] uppercase tracking-wider text-on-background">Share Platform Review</h5>
                         <p className="text-[9px] text-on-surface-variant mt-0.5">Write a simple, short review. This is sent privately to the administrators.</p>
                       </div>
 
@@ -416,13 +416,13 @@ export default function RecipientFlow({
                           onChange={(e) => setFeedbackText(e.target.value)}
                           placeholder="What did you think of Memora? (Max 200 chars)"
                           maxLength={200}
-                          className="flex-grow bg-transparent border-b border-primary/25 py-1 text-xs focus:outline-none focus:border-primary font-sans text-on-background"
+                          className="flex-grow bg-primary/5 border border-primary/10 rounded-xl py-2 px-4 text-xs focus:outline-none focus:border-primary font-sans text-on-background"
                           required
                         />
                         <button
                           id="btn-submit-feedback"
                           type="submit"
-                          className="btn-primary py-1 px-4 text-[9px] font-bold tracking-widest uppercase font-sans border border-primary"
+                          className="btn-primary py-2 px-4 text-[9px] font-bold tracking-widest uppercase font-sans shadow-sm"
                         >
                           Submit
                         </button>
@@ -439,14 +439,13 @@ export default function RecipientFlow({
         </div>
       )}
 
-      {/* Embedded Handwritten Custom Typography in Document */}
+      {/* Embedded Handwritten Typography */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
         .font-handwritten {
           font-family: 'Caveat', cursive, sans-serif;
         }
       `}</style>
-
     </div>
   );
 }

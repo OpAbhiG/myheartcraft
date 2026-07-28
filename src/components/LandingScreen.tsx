@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Sparkles, Heart, Gift, MessageSquare, ChevronDown, ChevronUp, Mail, ShieldCheck, FileText, Info, X, Send } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart, Gift, MessageSquare, ChevronDown, ChevronUp, Mail, ShieldCheck, FileText, Info, X } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
 import { submitSiteReviewToCloud } from '../utils/cloudSync';
 import { sanitizeText } from '../utils/security';
@@ -71,12 +71,12 @@ export default function LandingScreen({
 
   const faqs = [
     {
-      q: "How do I ask my crush to be my girlfriend or boyfriend without getting rejected?",
-      a: "Crafting a digital surprise keepsake is a thoughtful, low-pressure way to express your feelings. You can build a romantic timeline with your favorite photos, background piano music, and a sweet message sealed in a virtual parchment envelope. It allows them to feel your sincerity in a beautiful, private moment."
+      q: "How do I ask my crush to be my partner without rejection?",
+      a: "Crafting a digital surprise keepsake is a thoughtful, warm, and low-pressure way to express your feelings. You can build a romantic timeline with your favorite photos, background piano music, and a sweet message sealed in a virtual parchment envelope. It allows them to feel your sincerity in a beautiful, private moment."
     },
     {
       q: "How does the surprise photo puzzle work?",
-      a: "When your recipient opens your shared gift link, your memory photo is split into interactive puzzle tiles. They tap adjacent tiles to solve the memory puzzle and unlock your heartfelt letter and background music ambiance."
+      a: "When your recipient opens your shared gift link, your memory photo is split into interactive puzzle tiles. They tap tiles to solve the memory puzzle and unlock your heartfelt letter and background music ambiance."
     },
     {
       q: "How does a virtual birthday bash work?",
@@ -105,44 +105,47 @@ export default function LandingScreen({
   ];
 
   return (
-    <div className="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden relative flex flex-col min-h-screen" id="landing-page">
-      
+    <div className="bg-background text-on-background font-body-lg antialiased overflow-x-hidden relative flex flex-col min-h-screen" id="landing-page">
+      {/* Background Orbs */}
+      <div className="glow-orb-backdrop top-10 left-10" />
+      <div className="glow-orb-backdrop glow-orb-2 bottom-10 right-10" />
+
       {/* Ambient background particles */}
       <ParticleBackground type="gold_dust" />
 
       {/* Top Fixed Header Bar */}
-      <header className="bg-background/95 backdrop-blur-md border-b border-primary/20 sticky top-0 flex justify-between items-center px-4 md:px-16 w-full z-50 h-20 transition-all duration-300" id="topAppBar">
+      <header className="bg-white/80 backdrop-blur-md border-b border-primary/10 sticky top-0 flex justify-between items-center px-6 md:px-16 w-full z-50 h-20 transition-all duration-300" id="topAppBar">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="w-9 h-9 border border-primary flex items-center justify-center text-primary bg-background">
-            <Heart className="w-4 h-4 fill-current text-primary" />
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/10">
+            <Heart className="w-4.5 h-4.5 fill-current text-white" />
           </div>
           <div className="flex flex-col justify-center">
-            <span className="font-display-lg text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary leading-none">Memora</span>
-            <span className="hidden sm:inline text-[7px] text-on-surface-variant/80 tracking-widest uppercase font-bold mt-1">Create moments. Keep memories.</span>
+            <span className="font-display text-2xl font-black tracking-tighter uppercase italic text-primary leading-none">Memora</span>
+            <span className="hidden sm:inline text-[7.5px] text-on-surface-variant tracking-widest uppercase font-bold mt-1">Create moments. Keep memories.</span>
           </div>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold opacity-80">
-          <button onClick={onNavigateToExplore} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Cards</button>
-          <button onClick={onNavigateToMagazineDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Magazine</button>
-          <button onClick={onNavigateToScrapbookDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Scrapbook</button>
-          <button onClick={onNavigateToOpenWhenDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Open When</button>
-          <button onClick={onNavigateToDashboard} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Creator Studio</button>
-          <a href="#how-it-works" className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">How It Works</a>
+        <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-on-surface-variant">
+          <button onClick={onNavigateToExplore} className="hover:text-primary transition-colors cursor-pointer">Cards</button>
+          {onNavigateToMagazineDashboard && <button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors cursor-pointer">Magazine</button>}
+          {onNavigateToScrapbookDashboard && <button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors cursor-pointer">Scrapbook</button>}
+          {onNavigateToOpenWhenDashboard && <button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors cursor-pointer">Open When</button>}
+          <button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors cursor-pointer font-bold">Studio</button>
+          <a href="#how-it-works" className="hover:text-primary transition-colors cursor-pointer">How It Works</a>
         </nav>
 
         <div className="flex items-center gap-3">
           <button
             id="landing-header-btn-studio"
             onClick={onNavigateToDashboard}
-            className="hidden sm:flex border border-primary/80 text-primary px-4 py-2 rounded-none font-label-caps text-[10px] tracking-widest hover:bg-primary hover:text-background transition-all"
+            className="hidden sm:flex border border-primary/20 text-primary px-4 py-2 rounded-xl font-label-caps text-[10px] tracking-widest hover:bg-primary/5 transition-all cursor-pointer"
           >
             Studio
           </button>
           <button
             id="landing-header-btn-create"
             onClick={onNavigateToExplore}
-            className="btn-primary py-2 px-5 text-[10px]"
+            className="btn-primary py-2.5 px-6 text-[10px] shadow-md"
           >
             Create Gift
           </button>
@@ -151,34 +154,34 @@ export default function LandingScreen({
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden py-16 md:py-0 border-b border-primary/10 bg-surface-container-low">
+        <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden py-16 md:py-0 border-b border-primary/5 bg-gradient-to-b from-primary/5 to-transparent">
           <div className="absolute inset-0 z-0">
             <img
-              alt="Cinematic background with floating polaroids"
-              className="w-full h-full object-cover opacity-60 grayscale contrast-[1.1]"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYNw4gggVTI7wvFMV9kzkHGKW6ABe0a8Mt6wGL0UyemTULr9ml-q9fN5rpzj75axnqFYdV8UsI9_yr9kl7zKq8ktGmGX0wdEN9OrjMPgQ6M2WWtm5_yJNKu8jKzVE13GT2zBcZwfAFk6s05f8Sy6Mf8R1CTEVBlkKadsG0QYcX2IB2bX5HzAKykETV1uyPCvMrYTvo97WOjMQQEt-q2IsIou8GupRari7P2vbNTe1AdYXu8AolSVfHNQ"
+              alt="Cinematic background"
+              className="w-full h-full object-cover opacity-[0.18] grayscale contrast-[1.25]"
+              src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1600&q=80"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
           </div>
 
           <div className="relative z-10 text-center px-6 md:px-16 max-w-4xl mx-auto flex flex-col items-center">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-none font-label-caps text-[9px] tracking-[0.25em] uppercase mb-6">
-              <Sparkles className="w-3 h-3 text-primary" />
+            <span className="inline-flex items-center gap-1.5 px-4.5 py-1.5 bg-primary/10 text-primary border border-primary/10 rounded-full font-label-caps text-[9px] tracking-[0.25em] uppercase mb-6 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
               Create moments. Keep memories.
             </span>
             
-            <h1 className="font-display-lg text-4xl md:text-8xl text-primary mb-6 font-light tracking-[-0.04em] leading-[0.85] drop-shadow-sm">
-              Stillness <br/> <span className="italic font-normal">as</span> Sentiment
+            <h1 className="font-display-lg text-5xl md:text-8xl text-primary mb-6 font-light tracking-[-0.03em] leading-[0.9] drop-shadow-sm">
+              Sentiment <br/> <span className="italic font-serif font-normal">made</span> Beautiful
             </h1>
-            <p className="font-body-lg text-primary/85 mb-8 text-base md:text-xl max-w-xl">
-              Turn memories, emotions, and unspoken words into beautiful digital experiences designed to be treasured forever.
+            <p className="font-body-lg text-on-surface-variant/90 mb-10 text-base md:text-xl max-w-xl leading-relaxed">
+              Turn memories, emotions, and unspoken words into gorgeous interactive keepsakes designed to be treasured forever.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in delay-150">
               <button
                 id="landing-hero-btn-primary"
                 onClick={onNavigateToExplore}
-                className="btn-primary text-background bg-primary hover:bg-background hover:text-primary font-label-caps text-xs px-8 py-4 rounded-none tracking-[0.2em] uppercase font-semibold flex items-center justify-center gap-2 border border-primary"
+                className="btn-primary text-white font-label-caps text-xs px-8 py-4 rounded-xl tracking-[0.2em] uppercase font-semibold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.03] active:scale-[0.98]"
               >
                 Create Something Special
                 <ArrowRight className="w-4 h-4" />
@@ -186,7 +189,7 @@ export default function LandingScreen({
               <button
                 id="landing-hero-btn-secondary"
                 onClick={onNavigateToDashboard}
-                className="border border-primary text-primary hover:bg-primary hover:text-background font-label-caps text-xs px-8 py-4 rounded-none tracking-[0.2em] uppercase transition-all flex items-center justify-center"
+                className="border border-primary/20 bg-white/70 text-primary hover:bg-primary hover:text-white font-label-caps text-xs px-8 py-4 rounded-xl tracking-[0.2em] uppercase transition-all flex items-center justify-center cursor-pointer shadow-sm hover:scale-[1.03] active:scale-[0.98]"
               >
                 Go To Studio
               </button>
@@ -195,14 +198,14 @@ export default function LandingScreen({
         </section>
 
         {/* Featured Experiences Section */}
-        <section className="py-20 px-6 md:px-16 max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12 border-b border-primary/20 pb-4 reveal">
+        <section className="py-24 px-6 md:px-16 max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-12 border-b border-primary/10 pb-5 reveal">
             <div>
-              <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-on-surface-variant font-bold">Curated Catalog</span>
-              <h2 className="font-display-lg text-3xl md:text-4xl text-on-background font-light mt-1">Featured Experiences</h2>
+              <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-secondary font-bold">Curated Keepsakes</span>
+              <h2 className="font-display text-3xl md:text-4xl text-on-background font-bold mt-1">Featured Experiences</h2>
             </div>
-            <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.2em]">
-              View All Catalog →
+            <button onClick={onNavigateToExplore} className="font-label-caps text-[10px] text-primary hover:opacity-75 transition-all font-bold uppercase tracking-[0.2em] cursor-pointer">
+              View Catalog →
             </button>
           </div>
 
@@ -210,18 +213,18 @@ export default function LandingScreen({
             {/* Virtual Birthday Bash */}
             <div
               onClick={() => onNavigateToWizard('birthday')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-1"
+              className="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer border border-primary/10 hover:border-primary/30 transition-all duration-500 bg-white shadow-lg hover:shadow-2xl reveal reveal-delay-1"
             >
               <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.75] group-hover:brightness-[0.85]"
                 alt="Birthday bash card"
                 src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#200b13]/90 via-[#200b13]/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
-                <span className="font-label-caps text-[9px] text-background mb-2 opacity-80 uppercase tracking-widest font-bold">Festive / Interactive</span>
-                <h3 className="font-display-lg text-2xl text-background mb-4 font-light">Virtual Birthday Bash</h3>
-                <div className="border border-background text-background bg-transparent self-start px-4 py-1.5 rounded-none font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                <span className="font-label-caps text-[9px] text-white/80 mb-2 uppercase tracking-widest font-bold">Festive / Interactive</span>
+                <h3 className="font-display text-2xl text-white mb-4 font-bold">Virtual Birthday Bash</h3>
+                <div className="border border-white/30 text-white bg-white/10 backdrop-blur-sm self-start px-4 py-2 rounded-xl font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-350 shadow-md">
                   Begin Craft
                 </div>
               </div>
@@ -230,18 +233,18 @@ export default function LandingScreen({
             {/* Anniversary Special */}
             <div
               onClick={() => onNavigateToWizard('anniversary')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-2"
+              className="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer border border-primary/10 hover:border-primary/30 transition-all duration-500 bg-white shadow-lg hover:shadow-2xl reveal reveal-delay-2"
             >
               <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.75] group-hover:brightness-[0.85]"
                 alt="Anniversary keepsake"
                 src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#200b13]/90 via-[#200b13]/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
-                <span className="font-label-caps text-[9px] text-background mb-2 opacity-80 uppercase tracking-widest font-bold">Romantic / Elegant</span>
-                <h3 className="font-display-lg text-2xl text-background mb-4 font-light">Anniversary Special</h3>
-                <div className="border border-background text-background bg-transparent self-start px-4 py-1.5 rounded-none font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                <span className="font-label-caps text-[9px] text-white/80 mb-2 uppercase tracking-widest font-bold">Romantic / Elegant</span>
+                <h3 className="font-display text-2xl text-white mb-4 font-bold">Anniversary Special</h3>
+                <div className="border border-white/30 text-white bg-white/10 backdrop-blur-sm self-start px-4 py-2 rounded-xl font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-350 shadow-md">
                   Begin Craft
                 </div>
               </div>
@@ -250,18 +253,18 @@ export default function LandingScreen({
             {/* Perfect Proposal */}
             <div
               onClick={() => onNavigateToWizard('proposal')}
-              className="group relative rounded-none overflow-hidden aspect-[4/5] cursor-pointer border border-primary/20 hover:border-primary transition-all duration-500 bg-[#E8E6E3] reveal reveal-delay-3"
+              className="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer border border-primary/10 hover:border-primary/30 transition-all duration-500 bg-white shadow-lg hover:shadow-2xl reveal reveal-delay-3"
             >
               <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.8] group-hover:brightness-[0.9]"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-[0.75] group-hover:brightness-[0.85]"
                 alt="Proposal sequence"
                 src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#200b13]/90 via-[#200b13]/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end h-full">
-                <span className="font-label-caps text-[9px] text-background mb-2 opacity-80 uppercase tracking-widest font-bold">Cinematic / Emotional</span>
-                <h3 className="font-display-lg text-2xl text-background mb-4 font-light">Perfect Proposal</h3>
-                <div className="border border-background text-background bg-transparent self-start px-4 py-1.5 rounded-none font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                <span className="font-label-caps text-[9px] text-white/80 mb-2 uppercase tracking-widest font-bold">Cinematic / Emotional</span>
+                <h3 className="font-display text-2xl text-white mb-4 font-bold">Perfect Proposal</h3>
+                <div className="border border-white/30 text-white bg-white/10 backdrop-blur-sm self-start px-4 py-2 rounded-xl font-label-caps text-[9px] uppercase tracking-wider transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-350 shadow-md">
                   Begin Craft
                 </div>
               </div>
@@ -270,84 +273,86 @@ export default function LandingScreen({
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-20 px-6 md:px-16 max-w-7xl mx-auto border-t border-primary/10 bg-surface-container/50">
-          <div className="text-center mb-16 reveal">
-            <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Simple 3-Step Surprise</span>
-            <h2 className="font-display-lg text-3xl md:text-5xl text-on-background font-light mt-2">How It Works</h2>
-            <p className="text-xs text-on-surface-variant mt-2 max-w-lg mx-auto">Create, customize, and deliver an unforgettable digital gift keepsake in under 2 minutes.</p>
-          </div>
+        <section id="how-it-works" className="py-24 px-6 md:px-16 bg-white/40 border-t border-b border-primary/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 reveal">
+              <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Simple 3-Step Process</span>
+              <h2 className="font-display text-3xl md:text-5xl text-on-background font-bold mt-2">How It Works</h2>
+              <p className="text-xs text-on-surface-variant mt-2 max-w-lg mx-auto leading-relaxed">Create, customize, and deliver a personalized digital keepsake surprise in under two minutes.</p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Step 1 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-1">
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">01</span>
-                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
-                    <Sparkles className="w-5 h-5" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Step 1 */}
+              <div className="glass-card p-8 border border-primary/10 relative flex flex-col justify-between group hover:scale-[1.01] transition-all duration-300 bg-white/80 reveal reveal-delay-1">
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="font-mono text-3xl font-light text-primary/30 group-hover:text-primary transition-colors">01</span>
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
                   </div>
+                  <h3 className="font-display text-xl text-on-background mb-3 font-bold">Design & Personalize</h3>
+                  <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                    Select a template (Birthday Bash, Proposal, Anniversary, or sealed Wax envelope). Input messages, upload photo memories, and pair with ambient audio tracks.
+                  </p>
                 </div>
-                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Pick & Customize</h3>
-                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
-                  Select a template (Virtual Birthday Bash, Proposal, Anniversary, or Love Letter). Write your heartfelt message, upload memory photos, and pick a synthesized music track.
-                </p>
+                <div className="mt-8 pt-4 border-t border-primary/5">
+                  <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 1 — Craft</span>
+                </div>
               </div>
-              <div className="mt-8 pt-4 border-t border-primary/10">
-                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 1 — Craft</span>
+
+              {/* Step 2 */}
+              <div className="glass-card p-8 border border-primary/10 relative flex flex-col justify-between group hover:scale-[1.01] transition-all duration-300 bg-white/80 reveal reveal-delay-2">
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="font-mono text-3xl font-light text-primary/30 group-hover:text-primary transition-colors">02</span>
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                      <Gift className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <h3 className="font-display text-xl text-on-background mb-3 font-bold">Generate Sharing Link</h3>
+                  <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                    Click "Copy Link" to generate a secure portable gift URL. Share it with your recipient instantly via WhatsApp, Messenger, SMS, or Email.
+                  </p>
+                </div>
+                <div className="mt-8 pt-4 border-t border-primary/5">
+                  <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 2 — Share</span>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="glass-card p-8 border border-primary/10 relative flex flex-col justify-between group hover:scale-[1.01] transition-all duration-300 bg-white/80 reveal reveal-delay-3">
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="font-mono text-3xl font-light text-primary/30 group-hover:text-primary transition-colors">03</span>
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <h3 className="font-display text-xl text-on-background mb-3 font-bold">Unveil & Get Reply</h3>
+                  <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
+                    Your recipient cracks the puzzle or breaks the seal, listens to the track, and responds with a heartfelt thank-you reply that is sent straight back to your studio dashboard!
+                  </p>
+                </div>
+                <div className="mt-8 pt-4 border-t border-primary/5">
+                  <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 3 — Cherish</span>
+                </div>
               </div>
             </div>
 
-            {/* Step 2 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-2">
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">02</span>
-                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
-                    <Gift className="w-5 h-5" />
-                  </div>
-                </div>
-                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Copy & Share Link</h3>
-                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
-                  Click "Copy Link" to generate a self-contained portable URL payload (?g=...). Send it directly to your recipient via WhatsApp, iMessage, SMS, or Email.
-                </p>
-              </div>
-              <div className="mt-8 pt-4 border-t border-primary/10">
-                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 2 — Share</span>
-              </div>
+            <div className="text-center mt-12 reveal">
+              <button onClick={onNavigateToExplore} className="btn-primary py-3 px-8 text-xs font-label-caps uppercase tracking-widest font-bold shadow-md">
+                Start Building Now →
+              </button>
             </div>
-
-            {/* Step 3 */}
-            <div className="glass-card p-8 border border-primary/25 relative flex flex-col justify-between group hover:border-primary transition-all reveal reveal-delay-3">
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <span className="font-mono text-3xl font-light text-primary/40 group-hover:text-primary transition-colors">03</span>
-                  <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary bg-background">
-                    <MessageSquare className="w-5 h-5" />
-                  </div>
-                </div>
-                <h3 className="font-display-lg text-xl text-on-background mb-3 font-normal">Unlock & Receive Reply</h3>
-                <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
-                  Your recipient opens the link, breaks the wax seal or solves the memory puzzle, experiences your surprise, and can write a sweet thank-you reply back to your Studio!
-                </p>
-              </div>
-              <div className="mt-8 pt-4 border-t border-primary/10">
-                <span className="font-label-caps text-[9px] text-primary uppercase font-bold tracking-widest">Step 3 — Cherish</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center mt-12 reveal">
-            <button onClick={onNavigateToExplore} className="btn-primary py-3 px-8 text-xs font-label-caps uppercase tracking-widest font-bold">
-              Start Building Now →
-            </button>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section id="faq-section" className="py-20 px-6 md:px-16 max-w-4xl mx-auto border-t border-primary/10">
+        <section id="faq-section" className="py-24 px-6 md:px-16 max-w-4xl mx-auto">
           <div className="text-center mb-12 reveal">
             <span className="font-label-caps text-[9px] uppercase tracking-[0.25em] text-primary font-bold">Questions & Answers</span>
-            <h2 className="font-display-lg text-3xl md:text-5xl text-on-background font-light mt-2">Frequently Asked Questions</h2>
+            <h2 className="font-display text-3xl md:text-5xl text-on-background font-bold mt-2">Frequently Asked Questions</h2>
             <p className="text-xs text-on-surface-variant mt-2">Everything you need to know about creating, customizing, and sharing digital gift surprises.</p>
           </div>
 
@@ -355,18 +360,18 @@ export default function LandingScreen({
             {faqs.map((faq, index) => {
               const isOpen = openFaq === index;
               return (
-                <div key={index} className="border border-primary/20 bg-surface-container rounded-none transition-all">
+                <div key={index} className="border border-primary/10 bg-white/60 backdrop-blur-sm rounded-2xl transition-all shadow-sm">
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full p-5 text-left flex justify-between items-center gap-4 hover:bg-surface-container-high transition-colors focus:outline-none"
+                    className="w-full p-5 text-left flex justify-between items-center gap-4 hover:bg-primary/5 transition-colors focus:outline-none cursor-pointer rounded-2xl"
                   >
-                    <span className="font-display-lg text-base md:text-lg text-on-background font-normal">{faq.q}</span>
-                    <div className="w-6 h-6 border border-primary/30 flex items-center justify-center text-primary bg-background shrink-0">
+                    <span className="font-display text-base md:text-lg text-on-background font-bold">{faq.q}</span>
+                    <div className="w-7 h-7 rounded-lg border border-primary/10 flex items-center justify-center text-primary bg-background shrink-0 shadow-sm">
                       {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
                   {isOpen && (
-                    <div className="p-5 pt-0 text-xs text-on-surface-variant font-body-lg leading-relaxed border-t border-primary/10 mt-2 bg-background">
+                    <div className="p-5 pt-0 text-xs text-on-surface-variant font-body-lg leading-relaxed border-t border-primary/5 mt-2 bg-transparent animate-scale-in">
                       {faq.a}
                     </div>
                   )}
@@ -375,22 +380,21 @@ export default function LandingScreen({
             })}
           </div>
         </section>
-
       </main>
 
       {/* Footer Section */}
-      <footer className="bg-surface-container border-t border-primary/20 text-on-surface py-14 px-6 md:px-16 w-full relative z-10 mt-auto">
+      <footer className="bg-white border-t border-primary/10 text-on-surface py-16 px-6 md:px-16 w-full relative z-10 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
           
           {/* Brand Col */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <div className="w-7 h-7 border border-primary flex items-center justify-center text-primary bg-background">
-                <Heart className="w-3.5 h-3.5 fill-current" />
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+                <Heart className="w-4 h-4 fill-current text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="font-display-lg font-black text-lg tracking-wider uppercase italic text-primary leading-none">Memora</span>
-                <span className="text-[7px] text-primary/75 tracking-wider uppercase font-bold mt-1">Create moments. Keep memories.</span>
+                <span className="font-display font-black text-lg tracking-wider uppercase italic text-primary leading-none">Memora</span>
+                <span className="text-[7.5px] text-primary/75 tracking-wider uppercase font-bold mt-1">Create moments. Keep memories.</span>
               </div>
             </div>
             <p className="text-xs text-on-surface-variant leading-relaxed">
@@ -401,34 +405,31 @@ export default function LandingScreen({
           {/* EXPERIENCES Col */}
           <div>
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-4">EXPERIENCES</h4>
-            <ul className="space-y-2 text-xs text-on-surface-variant text-left">
+            <ul className="space-y-2.5 text-xs text-on-surface-variant text-left">
               <li><button onClick={() => onNavigateToWizard('birthday')} className="hover:text-primary transition-colors cursor-pointer">Greeting Cards</button></li>
-              <li><button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">AI Magazine Maker</button></li>
-              <li><button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">Collage Story Scrapbook</button></li>
-              <li><button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">"Open When..." Envelopes</button></li>
+              {onNavigateToMagazineDashboard && <li><button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">AI Magazine Maker</button></li>}
+              {onNavigateToScrapbookDashboard && <li><button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">Collage Story Scrapbook</button></li>}
+              {onNavigateToOpenWhenDashboard && <li><button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">"Open When..." Envelopes</button></li>}
               <li><button onClick={() => onNavigateToWizard('proposal')} className="hover:text-primary transition-colors cursor-pointer">Perfect Proposal</button></li>
               <li><button onClick={() => onNavigateToWizard('puzzle')} className="hover:text-primary transition-colors cursor-pointer">Photo Puzzle Card</button></li>
-              <li><button onClick={() => onNavigateToWizard('anniversary')} className="hover:text-primary transition-colors cursor-pointer">Anniversary Special</button></li>
             </ul>
           </div>
 
           {/* ABOUT US Col */}
           <div>
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-4">ABOUT US</h4>
-            <ul className="space-y-2 text-xs text-on-surface-variant">
-              <li><button onClick={() => setActiveModal('about')} className="hover:text-primary transition-colors">Know about us</button></li>
-              <li><button onClick={() => setActiveModal('privacy')} className="hover:text-primary transition-colors">Privacy Policy</button></li>
-              <li><button onClick={() => setActiveModal('terms')} className="hover:text-primary transition-colors">Terms & Conditions of Use</button></li>
+            <ul className="space-y-2.5 text-xs text-on-surface-variant">
+              <li><button onClick={() => setActiveModal('about')} className="hover:text-primary transition-colors cursor-pointer">Know about us</button></li>
+              <li><button onClick={() => setActiveModal('privacy')} className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</button></li>
+              <li><button onClick={() => setActiveModal('terms')} className="hover:text-primary transition-colors cursor-pointer">Terms & Conditions</button></li>
             </ul>
           </div>
 
           {/* CONTACT US Col */}
           <div className="space-y-4">
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-2">CONTACT US</h4>
-            <div className="space-y-2 text-xs text-on-surface-variant">
-              <p className="leading-relaxed">
-                For complaints, concerns, or feedback:
-              </p>
+            <div className="space-y-2.5 text-xs text-on-surface-variant">
+              <p className="leading-relaxed">For complaints, concerns, or feedback:</p>
               <a href="mailto:gholapabhishek9@gmail.com" className="font-mono text-primary font-bold block hover:underline flex items-center gap-1.5 mb-4">
                 <Mail className="w-3.5 h-3.5" />
                 gholapabhishek9@gmail.com
@@ -437,9 +438,9 @@ export default function LandingScreen({
 
             {/* Compact Footer Feedback Form */}
             <div className="border-t border-primary/10 pt-4 mt-2">
-              <h5 className="font-label-caps text-[9px] uppercase tracking-wider font-bold text-on-background mb-2">Share a Feedback / Review</h5>
+              <h5 className="font-label-caps text-[9px] uppercase tracking-wider font-bold text-on-background mb-2">Share Feedback / Review</h5>
               {landingFeedbackSubmitted ? (
-                <div className="py-2 px-3 bg-primary/5 border border-primary/20 rounded-none text-center">
+                <div className="py-2 px-3 bg-primary/5 border border-primary/10 rounded-xl text-center">
                   <p className="text-[10px] text-green-700 italic">✓ Review sent privately to Admin!</p>
                 </div>
               ) : (
@@ -449,7 +450,7 @@ export default function LandingScreen({
                     value={landingFeedbackSender}
                     onChange={(e) => setLandingFeedbackSender(e.target.value)}
                     placeholder="Your Name"
-                    className="w-full bg-transparent border-b border-primary/20 py-1 text-[11px] focus:outline-none focus:border-primary text-on-background font-sans"
+                    className="w-full bg-transparent border-b border-primary/20 py-1.5 text-[11px] focus:outline-none focus:border-primary text-on-background font-sans"
                     required
                   />
                   <div className="flex gap-2">
@@ -457,14 +458,14 @@ export default function LandingScreen({
                       type="text"
                       value={landingFeedbackText}
                       onChange={(e) => setLandingFeedbackText(e.target.value)}
-                      placeholder="Short review (Max 200 chars)"
+                      placeholder="Review (Max 200 chars)"
                       maxLength={200}
-                      className="flex-grow bg-transparent border-b border-primary/20 py-1 text-[11px] focus:outline-none focus:border-primary text-on-background font-sans"
+                      className="flex-grow bg-transparent border-b border-primary/20 py-1.5 text-[11px] focus:outline-none focus:border-primary text-on-background font-sans"
                       required
                     />
                     <button
                       type="submit"
-                      className="btn-primary py-1 px-3 text-[9px] uppercase tracking-widest font-bold font-sans"
+                      className="btn-primary py-1 px-3 text-[9px] uppercase tracking-widest font-bold font-sans shadow-sm"
                     >
                       Send
                     </button>
@@ -484,8 +485,8 @@ export default function LandingScreen({
 
       {/* LEGAL & ABOUT MODALS */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-background border border-primary p-6 md:p-10 w-full max-w-2xl relative shadow-2xl max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#200b13]/60 backdrop-blur-md animate-fade-in animate-scale-in">
+          <div className="bg-background border border-primary/10 p-6 md:p-10 w-full max-w-2xl rounded-3xl relative shadow-2xl max-h-[85vh] overflow-y-auto">
             
             <button
               onClick={() => setActiveModal(null)}
@@ -498,7 +499,7 @@ export default function LandingScreen({
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Info className="w-5 h-5" />
-                  <h3 className="font-display-lg text-2xl font-light text-on-background">Know About Us — Memora</h3>
+                  <h3 className="font-display-lg text-2xl font-bold text-on-background">Know About Us — Memora</h3>
                 </div>
                 <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
                   Memora was born from a simple belief: in a world dominated by instant messages and temporary social posts, true emotion deserves a permanent, beautiful form.
@@ -513,7 +514,7 @@ export default function LandingScreen({
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="w-5 h-5" />
-                  <h3 className="font-display-lg text-2xl font-light text-on-background">Privacy Policy & Grievance Redressal</h3>
+                  <h3 className="font-display-lg text-2xl font-bold text-on-background">Privacy Policy & Grievance Redressal</h3>
                 </div>
                 <div className="text-xs text-on-surface-variant leading-relaxed space-y-3 font-body-lg">
                   <p><strong>1. Information Collection & Storage:</strong> Memora prioritizes user privacy. Creations built on our platform are stored on the creator's local device and rendered through unique encoded URL payloads.</p>
@@ -527,7 +528,7 @@ export default function LandingScreen({
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <FileText className="w-5 h-5" />
-                  <h3 className="font-display-lg text-2xl font-light text-on-background">Terms & Conditions of Use</h3>
+                  <h3 className="font-display-lg text-2xl font-bold text-on-background">Terms & Conditions of Use</h3>
                 </div>
                 <div className="text-xs text-on-surface-variant leading-relaxed space-y-3 font-body-lg">
                   <p><strong>1. Acceptance of Terms:</strong> By creating or viewing experiences on Memora, you agree to comply with these terms of use.</p>
@@ -548,7 +549,7 @@ export default function LandingScreen({
 export const LandingAnims = () => (
   <style>{`
     .animate-fade-in {
-      animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
       opacity: 0;
       transform: translateY(12px);
     }

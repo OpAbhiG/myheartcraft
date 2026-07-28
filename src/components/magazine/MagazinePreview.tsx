@@ -298,18 +298,28 @@ export default function MagazinePreview({
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
 
-        <div className="w-full max-w-5xl flex gap-1 justify-center items-center relative z-10 animate-scale-in">
-          {leftPage && (
-            <div className="w-full max-w-[420px] aspect-[1/1.414]">
-              {renderPage(leftPage)}
-            </div>
-          )}
+        <div className="w-full max-w-5xl flex justify-center items-center relative z-10 animate-scale-in bg-black/45 p-6 rounded-3xl border border-white/5 shadow-2xl">
+          <div className="flex gap-[1px] relative rounded-xl overflow-hidden shadow-2xl bg-black/20">
+            {leftPage && (
+              <div className="w-full max-w-[420px] aspect-[1/1.414] relative transition-transform duration-500 origin-right">
+                {renderPage(leftPage)}
+                {/* Book crease shading */}
+                <div className="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-black/25 via-black/10 to-transparent pointer-events-none z-20" />
+              </div>
+            )}
 
-          {isDesktop && rightPageIndex < project.pages.length && (
-            <div className="w-full max-w-[420px] aspect-[1/1.414]">
-              {renderPage(project.pages[rightPageIndex])}
-            </div>
-          )}
+            {isDesktop && (
+              <div className="w-[1px] h-auto bg-black/45 self-stretch z-30 shadow-inner" />
+            )}
+
+            {isDesktop && rightPageIndex < project.pages.length && (
+              <div className="w-full max-w-[420px] aspect-[1/1.414] relative transition-transform duration-500 origin-left">
+                {renderPage(project.pages[rightPageIndex])}
+                {/* Book crease shading */}
+                <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-black/25 via-black/10 to-transparent pointer-events-none z-20" />
+              </div>
+            )}
+          </div>
         </div>
 
         <button
