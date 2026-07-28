@@ -182,13 +182,49 @@ export default function ScrapbookPreview({
             )}
 
             {el.type === 'paper' && (
-              <div 
-                className="w-full h-full p-3 font-mono text-[9px] text-gray-800 shadow"
-                style={{
-                  backgroundColor: el.styleData.backgroundColor || '#FAF9F6'
-                }}
-              >
-                {el.content.includes('ticket') ? '★ TICKET NO. 928372 ★' : 'Note cutout'}
+              <div className="w-full h-full pointer-events-none select-none">
+                {el.content === 'newspaper_cutout' ? (
+                  <div className="w-full h-full p-3 border border-[#D5CEB8] shadow-md flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#F2EFE9', color: '#333', fontFamily: 'Special Elite, serif' }}>
+                    <div className="text-[6.5px] uppercase tracking-widest border-b border-gray-400 pb-0.5 mb-0.5 font-bold">DAILY TIMES // ISSUE 104</div>
+                    <div className="text-[9px] font-bold leading-tight line-clamp-2">LATEST MEMORIES DECLARED SPECIAL</div>
+                    <div className="text-[8px] opacity-80 leading-normal line-clamp-3 mt-1 font-sans">Yesterday at golden hour, sweet memories were preserved forever in this custom digital scrapbook project. Details inside.</div>
+                  </div>
+                ) : el.content === 'vintage_card' ? (
+                  <div className="w-full h-full p-3 border border-[#C4BCA2] shadow flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#E8E2CF', color: '#4E433C', backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.05) 15px, rgba(0,0,0,0.05) 16px)' }}>
+                    <div className="text-[7.5px] font-mono tracking-widest font-bold border-b border-dashed border-[#C4BCA2] pb-0.5">ADMIT ONE SURPRISE</div>
+                    <div className="text-[9.5px] font-bold text-center py-1">★ TICKET NO. 928372 ★</div>
+                    <div className="text-[7px] font-mono text-right opacity-60">MEMORA REC. DEPT</div>
+                  </div>
+                ) : el.content.includes('sticky_yellow') ? (
+                  <div className="w-full h-full p-3 shadow-md border-l-2 border-yellow-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#FFFDE0' }}>
+                    <div className="w-full h-2 bg-yellow-300/40 -mt-1.5 mb-1.5" />
+                    <div className="text-[8.5px] font-sans text-yellow-950 leading-relaxed italic">Write a quick sticky memory...</div>
+                  </div>
+                ) : el.content.includes('sticky_pink') ? (
+                  <div className="w-full h-full p-3 shadow-md border-l-2 border-pink-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#FFE5EE' }}>
+                    <div className="w-full h-2 bg-pink-300/40 -mt-1.5 mb-1.5" />
+                    <div className="text-[8.5px] font-sans text-pink-950 leading-relaxed italic">Important details...</div>
+                  </div>
+                ) : el.content.includes('sticky_blue') ? (
+                  <div className="w-full h-full p-3 shadow-md border-l-2 border-blue-400/50 flex flex-col justify-between overflow-hidden" style={{ backgroundColor: '#E3F2FD' }}>
+                    <div className="w-full h-2 bg-blue-300/40 -mt-1.5 mb-1.5" />
+                    <div className="text-[8.5px] font-sans text-blue-950 leading-relaxed italic">Note to self...</div>
+                  </div>
+                ) : el.content === 'pressed_flower_card' ? (
+                  <div className="w-full h-full p-3 border border-[#E6DEC9] shadow flex flex-col justify-between overflow-hidden bg-contain" style={{ backgroundColor: '#FAF4EB', backgroundImage: 'radial-gradient(#E8D0B3 2px, transparent 2px)', backgroundSize: '12px 12px' }}>
+                    <div className="text-[7px] font-mono uppercase tracking-widest text-[#888]">Botanical Backing</div>
+                    <div className="w-9 h-9 border border-[#E6DEC9]/45 rounded-full mx-auto my-1 flex items-center justify-center bg-white/70">🌸</div>
+                  </div>
+                ) : (
+                  <div 
+                    className="w-full h-full p-3 font-mono text-[9px] text-gray-800 shadow"
+                    style={{
+                      backgroundColor: el.styleData?.backgroundColor || '#FAF9F6'
+                    }}
+                  >
+                    Torn Sheet cutout
+                  </div>
+                )}
               </div>
             )}
           </div>
