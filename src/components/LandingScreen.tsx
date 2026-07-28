@@ -154,14 +154,14 @@ export default function LandingScreen({
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden py-16 md:py-0 border-b border-primary/5 bg-gradient-to-b from-primary/5 to-transparent">
+        <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden py-16 md:py-0 border-b border-primary/10 bg-surface-container-low">
           <div className="absolute inset-0 z-0">
             <img
-              alt="Cinematic background"
-              className="w-full h-full object-cover opacity-[0.18] grayscale contrast-[1.25]"
-              src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1600&q=80"
+              alt="Cinematic background with floating polaroids"
+              className="w-full h-full object-cover opacity-60 grayscale contrast-[1.1]"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYNw4gggVTI7wvFMV9kzkHGKW6ABe0a8Mt6wGL0UyemTULr9ml-q9fN5rpzj75axnqFYdV8UsI9_yr9kl7zKq8ktGmGX0wdEN9OrjMPgQ6M2WWtm5_yJNKu8jKzVE13GT2zBcZwfAFk6s05f8Sy6Mf8R1CTEVBlkKadsG0QYcX2IB2bX5HzAKykETV1uyPCvMrYTvo97WOjMQQEt-q2IsIou8GupRari7P2vbNTe1AdYXu8AolSVfHNQ"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
           </div>
 
           <div className="relative z-10 text-center px-6 md:px-16 max-w-4xl mx-auto flex flex-col items-center">
