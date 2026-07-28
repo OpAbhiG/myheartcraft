@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, Heart, Plane, Cake, Smile, Users, BookOpen, PenTool, Music, HelpCircle, Layers } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Heart, Plane, Cake, Smile, Users, BookOpen, PenTool, Music, HelpCircle, Layers, Plus } from 'lucide-react';
 import { ScrapbookProject } from './types';
 import { buildPagesFromTemplate } from './templates';
 
@@ -50,12 +50,28 @@ export default function ScrapbookWizard({ onSave, onClose }: ScrapbookWizardProp
   const [style, setStyle] = useState<typeof STYLES[number]['id']>('handmade-paper');
   const [size, setSize] = useState<'A5' | 'A4'>('A5');
   const [template, setTemplate] = useState<typeof TEMPLATES[number]['id']>('guided');
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
 
   // Metadata states
   const [title, setTitle] = useState('');
   const [creatorName, setCreatorName] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [musicTrack, setMusicTrack] = useState<string>('romantic_piano');
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach((file: any) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setUploadedPhotos(prev => [...prev, reader.result as string]);
+        }
+      };
+      reader.readAsDataURL(file as File);
+    });
+  };
 
   const handleNext = () => {
     if (step < 5) {
@@ -78,7 +94,7 @@ export default function ScrapbookWizard({ onSave, onClose }: ScrapbookWizardProp
       return;
     }
 
-    const pages = buildPagesFromTemplate(template, title, type);
+    const pages = buildPagesFromTemplate(template, title, type, uploadedPhotos);
 
     const newProject: ScrapbookProject = {
       id: `scrapbook-${Date.now()}`,
@@ -115,8 +131,8 @@ export default function ScrapbookWizard({ onSave, onClose }: ScrapbookWizardProp
             <h2 className="font-display text-2xl md:text-3xl text-primary font-bold mt-1">
               {step === 1 && "Choose Scrapbook Theme"}
               {step === 2 && "Select Visual Style"}
-              {step === 3 && "Scrapbook Layout Size"}
-              {step === 4 && "Choose Starting Template"}
+              {step === 3 && "Upload Memory Photos"}
+              {step === 4 && "Choose Page Template"}
               {step === 5 && "Scrapbook Details"}
             </h2>
           </div>
@@ -182,46 +198,54 @@ export default function ScrapbookWizard({ onSave, onClose }: ScrapbookWizardProp
             </div>
           )}
 
-          {/* Step 3: Scrapbook Size */}
+          {/* Step 3: Upload Photos */}
           {step === 3 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto py-4">
-              {/* A5 Size */}
-              <button
-                onClick={() => setSize('A5')}
-                className={`p-6 border text-center cursor-pointer transition-all flex flex-col items-center justify-between ${
-                  size === 'A5' ? 'border-primary bg-primary/5 shadow-md' : 'border-primary/20 bg-surface'
-                }`}
-              >
-                <div className="w-24 h-36 border-2 border-dashed border-primary/40 flex items-center justify-center bg-white mb-6">
-                  <span className="font-mono text-[10px] text-primary/60">A5 Portrait</span>
+            <div className="space-y-6 max-w-2xl mx-auto py-2">
+              <div className="border-2 border-dashed border-primary/20 hover:border-primary/45 rounded-2xl p-8 text-center bg-primary/5 transition-all relative">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div className="space-y-3">
+                  <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <Plus className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="font-sans text-xs font-bold uppercase tracking-wider block">Upload Memory Photos</span>
+                    <span className="text-[10px] text-on-surface-variant/75 block mt-1">Select multiple pictures to fill your pages automatically.</span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-sans text-sm font-bold uppercase tracking-widest mb-1.5">A5 — Personal Memory Book</h3>
-                  <span className="text-[10px] text-on-surface-variant font-mono mb-3 block">148 × 210 mm</span>
-                  <p className="text-[11px] text-on-surface-variant max-w-xs leading-relaxed">
-                    Great for birthday books, baby logs, gifts, and printing directly at home onto A4 paper sheets.
-                  </p>
-                </div>
-              </button>
+              </div>
 
-              {/* A4 Size */}
-              <button
-                onClick={() => setSize('A4')}
-                className={`p-6 border text-center cursor-pointer transition-all flex flex-col items-center justify-between ${
-                  size === 'A4' ? 'border-primary bg-primary/5 shadow-md' : 'border-primary/20 bg-surface'
-                }`}
-              >
-                <div className="w-32 h-44 border-2 border-dashed border-primary/40 flex items-center justify-center bg-white mb-6">
-                  <span className="font-mono text-[10px] text-primary/60">A4 Portrait</span>
+              {uploadedPhotos.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-[#777]">Uploaded ({uploadedPhotos.length})</span>
+                    <button
+                      onClick={() => setUploadedPhotos([])}
+                      className="text-[9px] uppercase tracking-wider font-mono text-red-600 hover:text-red-700 font-bold cursor-pointer"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-[160px] overflow-y-auto p-1 border border-primary/5 rounded-xl bg-[#FAF9F6]">
+                    {uploadedPhotos.map((url, idx) => (
+                      <div key={idx} className="aspect-square rounded-lg border border-primary/10 overflow-hidden relative group shadow-sm bg-white">
+                        <img src={url} alt="upload preview" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => setUploadedPhotos(prev => prev.filter((_, i) => i !== idx))}
+                          className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 cursor-pointer z-10"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-sans text-sm font-bold uppercase tracking-widest mb-1.5">A4 — Large Memory Scrapbook</h3>
-                  <span className="text-[10px] text-on-surface-variant font-mono mb-3 block">210 × 297 mm</span>
-                  <p className="text-[11px] text-on-surface-variant max-w-xs leading-relaxed">
-                    Perfect for holiday photo scrapbooks, wedding memory walls, and large family photo collections.
-                  </p>
-                </div>
-              </button>
+              )}
             </div>
           )}
 

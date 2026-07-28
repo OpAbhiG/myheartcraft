@@ -586,16 +586,27 @@ export const SCRAPBOOK_TEMPLATES: ScrapbookTemplatePreset[] = [
 export function buildPagesFromTemplate(
   templateId: string,
   projectName: string,
-  type: string
+  type: string,
+  userPhotos?: string[]
 ): ScrapbookPage[] {
   const preset = SCRAPBOOK_TEMPLATES.find(t => t.id === templateId) || SCRAPBOOK_TEMPLATES[0];
 
+  let photoCount = 0;
+
   return preset.pages.map((p, idx) => {
     // Generate fresh elements from Omit<Element, 'id'> with unique IDs
-    const elements: ScrapbookElement[] = p.elements.map((el, eIdx) => ({
-      ...el,
-      id: `el-${idx}-${eIdx}-${Date.now()}`
-    })) as ScrapbookElement[];
+    const elements: ScrapbookElement[] = p.elements.map((el, eIdx) => {
+      let finalContent = el.content;
+      if (el.type === 'photo' && userPhotos && userPhotos.length > 0) {
+        finalContent = userPhotos[photoCount % userPhotos.length];
+        photoCount++;
+      }
+      return {
+        ...el,
+        id: `el-${idx}-${eIdx}-${Date.now()}`,
+        content: finalContent
+      };
+    }) as ScrapbookElement[];
 
     return {
       id: `page-${idx}-${Date.now()}`,
