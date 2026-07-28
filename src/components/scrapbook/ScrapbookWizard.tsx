@@ -29,6 +29,7 @@ const STYLES = [
 ] as const;
 
 const TEMPLATES = [
+  { id: 'ai-auto', label: 'AI Auto-Design Engine 🔮', desc: 'Memora AI automatically analyzes images and drafts layouts, typography, tape styles, and mixed-media details.' },
   { id: 'blank', label: 'Blank Page Canvas', desc: 'Completely blank layout. Full placement freedom.' },
   { id: 'guided', label: 'Lightly Guided', desc: 'Suggested zones for photos, captions, and notes.' },
   { id: 'creative', label: 'Creative Layout', desc: 'Pre-arranged photo structures, tape borders & tags.' },

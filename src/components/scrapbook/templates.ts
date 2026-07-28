@@ -13,6 +13,22 @@ export interface ScrapbookTemplatePreset {
 
 export const SCRAPBOOK_TEMPLATES: ScrapbookTemplatePreset[] = [
   {
+    id: 'ai-auto',
+    name: 'AI Auto-Design Engine 🔮',
+    description: 'Memora AI automatically analyzes images and drafts layouts, typography, tape styles, and mixed-media details.',
+    pages: Array.from({ length: 8 }).map((_, i) => ({
+      backgroundColor: i % 2 === 0 ? '#FAF9F6' : '#F5EFEB',
+      backgroundTexture: i === 0 ? 'paper' : i % 2 === 0 ? 'minimal-cream' : 'vintage',
+      elements: [
+        {
+          type: 'text', x: 20, y: i === 0 ? 15 : 10, width: 60, height: 12, rotation: -1, zIndex: 5, opacity: 1, isLocked: false,
+          content: i === 0 ? 'MEMORIES COLLAGE' : i === 7 ? 'OUR KEEPSAKE' : 'Life Lately',
+          styleData: { fontFamily: 'Playfair Display', fontSize: '2xl', fontWeight: 'bold', textAlign: 'center' }
+        }
+      ]
+    }))
+  },
+  {
     id: 'blank',
     name: 'Blank Canvas',
     description: 'A completely empty scrapbook. You are the sole creative director.',
