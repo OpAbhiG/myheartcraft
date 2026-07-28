@@ -52,11 +52,10 @@ export default function ExploreScreen({
         <nav className="hidden md:flex gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-on-surface-variant">
           <button onClick={onNavigateToHome} className="hover:text-primary transition-colors cursor-pointer">Home</button>
           <button className="text-primary font-bold border-b border-primary pb-1 cursor-pointer">Explore</button>
-          <button onClick={onNavigateToDashboard} className="hover:text-primary transition-colors cursor-pointer font-bold">Studio</button>
         </nav>
         
         <button onClick={onNavigateToDashboard} className="btn-primary py-2 px-5 text-[10px] shadow-md">
-          Dashboard
+          Studio
         </button>
       </header>
 
