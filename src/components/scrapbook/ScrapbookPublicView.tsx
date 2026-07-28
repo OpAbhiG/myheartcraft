@@ -78,8 +78,9 @@ export default function ScrapbookPublicView({
               <div
                 key={slot.id}
                 className={`absolute ${
-                  slot.shape === 'polaroid' ? 'bg-white p-3 pb-8 shadow-xl border border-gray-200' :
-                  'rounded-2xl overflow-hidden border-4 border-white shadow-xl'
+                  slot.shape === 'polaroid' ? 'bg-white p-3 pb-8 shadow-[0_15px_30px_rgba(0,0,0,0.18)] border border-slate-200/80 rounded-sm' :
+                  slot.shape === 'circle' ? 'rounded-full overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]' :
+                  'rounded-2xl overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]'
                 }`}
                 style={{
                   left: `${slot.x * scaleVal}px`,
@@ -89,6 +90,17 @@ export default function ScrapbookPublicView({
                   transform: `rotate(${slot.rotation || 0}deg)`
                 }}
               >
+                {/* Washi Tape Strip Overlays */}
+                {(slot.tapeDecoration === 'top-left' || slot.tapeDecoration === 'corners') && (
+                  <div className="absolute -top-3 -left-3 w-16 h-5 bg-amber-200/80 border border-amber-300/50 shadow-sm transform -rotate-12 z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                )}
+                {(slot.tapeDecoration === 'top-right' || slot.tapeDecoration === 'corners') && (
+                  <div className="absolute -top-3 -right-3 w-16 h-5 bg-rose-200/80 border border-rose-300/50 shadow-sm transform rotate-12 z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                )}
+                {slot.tapeDecoration === 'top-center' && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-emerald-200/80 border border-emerald-300/50 shadow-sm z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                )}
+
                 <div className="w-full h-full relative overflow-hidden">
                   <img
                     src={imgUrl}
@@ -101,8 +113,35 @@ export default function ScrapbookPublicView({
                 </div>
 
                 {slot.shape === 'polaroid' && (
-                  <div className="mt-2 text-center text-[10px] font-handwritten text-slate-600 font-semibold truncate px-1">
+                  <div className="mt-2 text-center text-[11px] font-handwritten text-slate-700 font-bold truncate px-1">
                     {slot.captionPlaceholder || 'Beautiful Memory'}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Sticker / Stamp Decorations Layer */}
+          {template.decorations.map(dec => {
+            const scaleVal = 0.75;
+            return (
+              <div
+                key={dec.id}
+                className="absolute pointer-events-none"
+                style={{
+                  left: `${dec.x * scaleVal}px`,
+                  top: `${dec.y * scaleVal}px`,
+                  width: `${dec.width * scaleVal}px`,
+                  height: `${dec.height * scaleVal}px`,
+                  transform: `rotate(${dec.rotation || 0}deg)`
+                }}
+              >
+                {dec.type === 'tape' && (
+                  <div className="w-full h-full bg-amber-200/80 border border-amber-300/50 shadow-sm opacity-90 backdrop-blur-[1px]" />
+                )}
+                {dec.type === 'doodle' && (
+                  <div className="w-full h-full flex items-center justify-center text-rose-500 font-bold text-2xl drop-shadow-sm">
+                    ❤️
                   </div>
                 )}
               </div>

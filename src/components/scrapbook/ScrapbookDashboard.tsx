@@ -142,7 +142,19 @@ export default function ScrapbookDashboard({
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-xl font-bold text-on-background flex items-center gap-2">
-              <Layers className="w-5 h-5 text-primary" /> My Saved Scrapbooks ({userProjects.length})
+              <div className="flex items-center gap-2">
+                <Layers className="w-5 h-5 text-primary" /> My Saved Scrapbooks ({userProjects.length})
+              </div>
+              <button
+                onClick={() => {
+                  if (window.confirm('Delete all your saved scrapbook projects? This action cannot be undone.')) {
+                    userProjects.forEach(p => onDeleteProject(p.id));
+                  }
+                }}
+                className="text-xs text-red-600 hover:text-red-700 font-semibold font-label-caps uppercase tracking-wider cursor-pointer"
+              >
+                Clear All Scrapbooks
+              </button>
             </h2>
           </div>
 
@@ -150,17 +162,55 @@ export default function ScrapbookDashboard({
             {userProjects.map(proj => (
               <div
                 key={proj.id}
-                onClick={() => onOpenProject(proj.id)}
-                className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
               >
-                <div className="h-44 rounded-xl bg-slate-100 overflow-hidden relative mb-3">
-                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-300" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80')` }} />
-                  <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded-md text-[9px] font-mono">
-                    {proj.photos?.length || 0} Photos
+                <div>
+                  <div
+                    onClick={() => onOpenProject(proj.id)}
+                    className="h-44 rounded-xl bg-slate-100 overflow-hidden relative mb-3 cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-300" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80')` }} />
+                    <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded-md text-[9px] font-mono">
+                      {proj.photos?.length || 0} Photos
+                    </div>
                   </div>
+                  <h3
+                    onClick={() => onOpenProject(proj.id)}
+                    className="font-display font-bold text-sm text-on-background group-hover:text-primary transition-colors cursor-pointer"
+                  >
+                    {proj.title || proj.templateName}
+                  </h3>
+                  <p className="text-[10px] text-on-surface-variant mt-1 mb-4">Edited {new Date(proj.updatedAt).toLocaleDateString()}</p>
                 </div>
-                <h3 className="font-display font-bold text-sm text-on-background group-hover:text-primary transition-colors">{proj.title || proj.templateName}</h3>
-                <p className="text-[10px] text-on-surface-variant mt-1">Edited {new Date(proj.updatedAt).toLocaleDateString()}</p>
+
+                {/* Project Card Actions */}
+                <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => onOpenProject(proj.id)}
+                    className="flex-1 py-1.5 px-3 rounded-xl bg-primary text-white text-[10px] font-bold uppercase tracking-wider font-label-caps flex items-center justify-center gap-1 cursor-pointer hover:opacity-90 shadow-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDuplicateProject(proj.id)}
+                    className="py-1.5 px-3 rounded-xl border border-gray-200 text-slate-700 hover:bg-slate-50 text-[10px] font-bold uppercase tracking-wider font-label-caps cursor-pointer"
+                    title="Duplicate Project"
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm(`Are you sure you want to delete "${proj.title || proj.templateName}"?`)) {
+                        onDeleteProject(proj.id);
+                      }
+                    }}
+                    className="py-1.5 px-3 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-[10px] font-bold uppercase tracking-wider font-label-caps cursor-pointer"
+                    title="Delete Project"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>

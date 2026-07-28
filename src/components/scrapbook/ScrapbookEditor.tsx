@@ -327,7 +327,7 @@ export default function ScrapbookEditor({
             }}
           >
             {/* Background Texture Layer */}
-            <div className="absolute inset-0 opacity-40 pointer-events-none bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80')` }} />
+            <div className="absolute inset-0 opacity-30 pointer-events-none bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80')` }} />
 
             {/* Photo Slots Layer */}
             {template.photoSlots.map(slot => {
@@ -341,9 +341,9 @@ export default function ScrapbookEditor({
                   onDrop={() => handleDropOnSlot(slot.id)}
                   onClick={() => setEditingSlotId(slot.id)}
                   className={`absolute transition-transform cursor-pointer group ${
-                    slot.shape === 'polaroid' ? 'bg-white p-3 pb-8 shadow-xl border border-gray-200' :
-                    slot.shape === 'circle' ? 'rounded-full overflow-hidden border-4 border-white shadow-xl' :
-                    'rounded-2xl overflow-hidden border-4 border-white shadow-xl'
+                    slot.shape === 'polaroid' ? 'bg-white p-3 pb-8 shadow-[0_15px_30px_rgba(0,0,0,0.18)] border border-slate-200/80 rounded-sm' :
+                    slot.shape === 'circle' ? 'rounded-full overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]' :
+                    'rounded-2xl overflow-hidden border-4 border-white shadow-[0_12px_25px_rgba(0,0,0,0.18)]'
                   }`}
                   style={{
                     left: `${slot.x * scaleVal}px`,
@@ -353,6 +353,17 @@ export default function ScrapbookEditor({
                     transform: `rotate(${slot.rotation || 0}deg)`
                   }}
                 >
+                  {/* Washi Tape Strip Overlays */}
+                  {(slot.tapeDecoration === 'top-left' || slot.tapeDecoration === 'corners') && (
+                    <div className="absolute -top-3 -left-3 w-16 h-5 bg-amber-200/80 border border-amber-300/50 shadow-sm transform -rotate-12 z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                  )}
+                  {(slot.tapeDecoration === 'top-right' || slot.tapeDecoration === 'corners') && (
+                    <div className="absolute -top-3 -right-3 w-16 h-5 bg-rose-200/80 border border-rose-300/50 shadow-sm transform rotate-12 z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                  )}
+                  {slot.tapeDecoration === 'top-center' && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-emerald-200/80 border border-emerald-300/50 shadow-sm z-20 pointer-events-none opacity-90 backdrop-blur-[1px]" />
+                  )}
+
                   {/* Photo Frame Container */}
                   <div className="w-full h-full relative overflow-hidden bg-slate-100 flex items-center justify-center">
                     {assignment ? (
@@ -381,8 +392,35 @@ export default function ScrapbookEditor({
 
                   {/* Polaroid Bottom Caption Text */}
                   {slot.shape === 'polaroid' && (
-                    <div className="mt-2 text-center text-[10px] font-handwritten text-slate-600 font-semibold truncate px-1">
+                    <div className="mt-2 text-center text-[11px] font-handwritten text-slate-700 font-bold truncate px-1">
                       {slot.captionPlaceholder || 'Sweet Memory'}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Sticker / Stamp Decorations Layer */}
+            {template.decorations.map(dec => {
+              const scaleVal = 0.75;
+              return (
+                <div
+                  key={dec.id}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: `${dec.x * scaleVal}px`,
+                    top: `${dec.y * scaleVal}px`,
+                    width: `${dec.width * scaleVal}px`,
+                    height: `${dec.height * scaleVal}px`,
+                    transform: `rotate(${dec.rotation || 0}deg)`
+                  }}
+                >
+                  {dec.type === 'tape' && (
+                    <div className="w-full h-full bg-amber-200/80 border border-amber-300/50 shadow-sm opacity-90 backdrop-blur-[1px]" />
+                  )}
+                  {dec.type === 'doodle' && (
+                    <div className="w-full h-full flex items-center justify-center text-rose-500 font-bold text-2xl drop-shadow-sm">
+                      ❤️
                     </div>
                   )}
                 </div>
