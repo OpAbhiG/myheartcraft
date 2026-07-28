@@ -80,8 +80,8 @@ export const INITIAL_SCRAPBOOK_TEMPLATES: ScrapbookTemplate[] = [
       {
         id: 'names',
         type: 'names',
-        placeholder: 'Abhishek & Priya',
-        defaultText: 'Abhishek & Priya',
+        placeholder: 'You & Me',
+        defaultText: 'You & Me',
         x: 80,
         y: 120,
         width: 640,

@@ -47,7 +47,7 @@ export default function ScrapbookQuickPersonalizeModal({
     e.preventDefault();
     onStartCreation({
       title: template.name,
-      names: names.trim() || 'Abhishek & Priya',
+      names: names.trim() || 'You & Me',
       date: date.trim() || '12 JUNE 2026',
       memory: memory.trim() || 'Our favorite day together',
       photos: uploadedFiles
@@ -84,7 +84,7 @@ export default function ScrapbookQuickPersonalizeModal({
               type="text"
               value={names}
               onChange={(e) => setNames(e.target.value)}
-              placeholder="e.g. Abhishek & Priya"
+              placeholder="e.g. Alex & Sam"
               className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-on-background focus:outline-none focus:border-primary focus:bg-white transition-all"
             />
           </div>

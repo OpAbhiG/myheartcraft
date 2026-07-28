@@ -420,9 +420,9 @@ export default function LandingScreen({
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-2">CONTACT US</h4>
             <div className="space-y-2.5 text-xs text-on-surface-variant">
               <p className="leading-relaxed">For complaints, concerns, or feedback:</p>
-              <a href="mailto:gholapabhishek9@gmail.com" className="font-mono text-primary font-bold block hover:underline flex items-center gap-1.5 mb-4">
+              <a href="mailto:support@memora.app" className="font-mono text-primary font-bold block hover:underline flex items-center gap-1.5 mb-4">
                 <Mail className="w-3.5 h-3.5" />
-                gholapabhishek9@gmail.com
+                support@memora.app
               </a>
             </div>
 
@@ -509,7 +509,7 @@ export default function LandingScreen({
                 <div className="text-xs text-on-surface-variant leading-relaxed space-y-3 font-body-lg">
                   <p><strong>1. Information Collection & Storage:</strong> Memora prioritizes user privacy. Creations built on our platform are stored on the creator's local device and rendered through unique encoded URL payloads.</p>
                   <p><strong>2. Recipient Replies:</strong> Thank you messages and replies submitted by recipients are encrypted and stored solely for the creator and recipient of that card.</p>
-                  <p><strong>3. Grievance Redressal Officer:</strong> In compliance with applicable digital privacy standards, for any complaints, content concerns, or grievance redressal, please write directly to <strong>gholapabhishek9@gmail.com</strong>.</p>
+                  <p><strong>3. Grievance Redressal Officer:</strong> In compliance with applicable digital privacy standards, for any complaints, content concerns, or grievance redressal, please write directly to <strong>support@memora.app</strong>.</p>
                 </div>
               </div>
             )}

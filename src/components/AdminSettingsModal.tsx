@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe, Search, Link2, MessageSquare, Star } from 'lucide-react';
+import { Lock, Key, Shield, Download, Upload, RefreshCw, Check, X, Eye, EyeOff, Save, User, Music, FileText, AlertTriangle, Database, Sliders, Globe, Search, Link2, MessageSquare, Star, Trash2 } from 'lucide-react';
 import { Creation } from '../types';
 import { fetchGlobalCreationsFromCloud, fetchSiteReviewsFromCloud, SiteReview } from '../utils/cloudSync';
 import { generateShareableUrl } from '../utils/share';
@@ -55,7 +55,7 @@ export default function AdminSettingsModal({
   const [passwordSuccessMsg, setPasswordSuccessMsg] = useState('');
 
   const [defaultCreator, setDefaultCreator] = useState(
-    localStorage.getItem('memora_default_creator') || localStorage.getItem('wishora_default_creator') || localStorage.getItem('myheartcraft_default_creator') || 'Abhishek'
+    localStorage.getItem('memora_default_creator') || localStorage.getItem('wishora_default_creator') || localStorage.getItem('myheartcraft_default_creator') || 'Creator'
   );
   const [defaultMusic, setDefaultMusic] = useState(
     localStorage.getItem('memora_default_music') || localStorage.getItem('wishora_default_music') || localStorage.getItem('myheartcraft_default_music') || 'birthday_instrumental'
@@ -353,7 +353,7 @@ export default function AdminSettingsModal({
                       type="text"
                       value={defaultCreator}
                       onChange={(e) => setDefaultCreator(e.target.value)}
-                      placeholder="e.g. Abhishek"
+                      placeholder="e.g. Creator Name"
                       className="w-full bg-surface-container border border-primary/30 p-2.5 text-xs font-sans focus:outline-none focus:border-primary text-on-background"
                     />
                   </div>
@@ -634,10 +634,24 @@ export default function AdminSettingsModal({
                                   navigator.clipboard.writeText(shareableUrl);
                                   alert('Copied share link to clipboard!');
                                 }}
-                                className="py-1 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary hover:text-background transition-colors flex items-center gap-1"
+                                className="py-1 px-3 text-[9px] font-bold font-label-caps rounded-none text-primary border border-primary/30 hover:bg-primary hover:text-background transition-colors flex items-center gap-1 cursor-pointer"
                               >
                                 <Link2 className="w-3 h-3" />
                                 Copy Link
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Delete this card from your workspace?')) {
+                                    const updated = allGlobalCards.filter(c => c.id !== creation.id);
+                                    setAllGlobalCards(updated);
+                                    onImportCreations(updated);
+                                    localStorage.setItem('memora_user_creations', JSON.stringify(updated));
+                                  }
+                                }}
+                                className="py-1 px-3 text-[9px] font-bold font-label-caps rounded-none text-red-600 border border-red-300 hover:bg-red-600 hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                Delete Card
                               </button>
                             </div>
                           </div>
