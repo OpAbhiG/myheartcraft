@@ -1,7 +1,8 @@
-import React from 'react';
-import { Sparkles, Heart, Share2, ArrowLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sparkles, Heart, Share2, ArrowLeft, Download } from 'lucide-react';
 import { ScrapbookProject } from './types';
 import { INITIAL_SCRAPBOOK_TEMPLATES } from './templates';
+import { exportScrapbookPage } from './exportScrapbook';
 
 interface ScrapbookPublicViewProps {
   project: ScrapbookProject;
@@ -12,6 +13,7 @@ export default function ScrapbookPublicView({
   project,
   onExit
 }: ScrapbookPublicViewProps) {
+  const [isExporting, setIsExporting] = useState(false);
   const template = INITIAL_SCRAPBOOK_TEMPLATES.find(t => t.id === project.templateId) || INITIAL_SCRAPBOOK_TEMPLATES[0];
 
   const photoMap = new Map(project.photos?.map(p => [p.slotId, p]));
@@ -20,6 +22,27 @@ export default function ScrapbookPublicView({
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     alert('Shareable link copied to clipboard!');
+  };
+
+  const handleDownloadPage = async (format: 'png' | 'jpg' | 'pdf' = 'png') => {
+    try {
+      setIsExporting(true);
+      const slotAssignmentsObj: Record<string, any> = {};
+      project.photos?.forEach(p => {
+        slotAssignmentsObj[p.slotId] = p;
+      });
+      await exportScrapbookPage(
+        template,
+        slotAssignmentsObj,
+        project.texts || {},
+        format,
+        project.title || template.name
+      );
+      setIsExporting(false);
+    } catch (e) {
+      console.error('Export error:', e);
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -34,6 +57,20 @@ export default function ScrapbookPublicView({
         </button>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleDownloadPage('png')}
+            disabled={isExporting}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-4 rounded-xl text-xs font-label-caps font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+          >
+            <Download className="w-4 h-4" /> {isExporting ? 'Exporting...' : 'Download PNG'}
+          </button>
+          <button
+            onClick={() => handleDownloadPage('pdf')}
+            disabled={isExporting}
+            className="bg-rose-600 hover:bg-rose-500 text-white py-2 px-4 rounded-xl text-xs font-label-caps font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+          >
+            <Download className="w-4 h-4" /> Printable PDF
+          </button>
           <button
             onClick={handleShareLink}
             className="btn-primary py-2 px-4 rounded-xl text-xs font-label-caps font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer"

@@ -5,7 +5,7 @@ import {
   ZoomIn, ZoomOut, Move, Trash2, Check, X, Edit3, Grid, Lock
 } from 'lucide-react';
 import { ScrapbookTemplate, ScrapbookProject, PhotoSlot, TextElement, PhotoCrop } from './types';
-import html2canvas from 'html2canvas';
+import { exportScrapbookPage } from './exportScrapbook';
 
 interface ScrapbookEditorProps {
   template: ScrapbookTemplate;
@@ -134,26 +134,22 @@ export default function ScrapbookEditor({
     alert('Scrapbook project saved successfully!');
   };
 
-  // Download / Export as PNG/JPG
-  const handleDownload = async () => {
-    if (!canvasRef.current) return;
+  // Download / Export Artwork as High-Res A4 PNG, JPG, or PDF
+  const handleExportArtwork = async (format: 'png' | 'jpg' | 'pdf' = 'png') => {
     try {
       setIsExporting(true);
-      const canvas = await html2canvas(canvasRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: template.canvas.backgroundColor || '#ffffff'
-      });
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `${template.name.toLowerCase().replace(/\s+/g, '-')}-scrapbook.png`;
-      link.href = dataUrl;
-      link.click();
+      await exportScrapbookPage(
+        template,
+        slotAssignments,
+        textValues,
+        format,
+        textValues['title'] || template.name
+      );
       setIsExporting(false);
     } catch (e) {
       console.error('Export error:', e);
       setIsExporting(false);
-      alert('Could not export image. Please try again.');
+      alert('Could not export scrapbook page. Please try again.');
     }
   };
 
@@ -213,13 +209,34 @@ export default function ScrapbookEditor({
             <Save className="w-4 h-4" /> Save
           </button>
 
-          <button
-            onClick={handleDownload}
-            disabled={isExporting}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-4 rounded-xl font-label-caps text-xs uppercase font-bold tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all disabled:opacity-50"
-          >
-            <Download className="w-4 h-4" /> {isExporting ? 'Exporting...' : 'Download'}
-          </button>
+          <div className="relative group">
+            <button
+              disabled={isExporting}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-4 rounded-xl font-label-caps text-xs uppercase font-bold tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all disabled:opacity-50"
+            >
+              <Download className="w-4 h-4" /> {isExporting ? 'Exporting...' : 'Export ▼'}
+            </button>
+            <div className="absolute right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-xl p-1.5 w-48 opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none group-hover:pointer-events-auto">
+              <button
+                onClick={() => handleExportArtwork('png')}
+                className="w-full text-left py-2 px-3 hover:bg-slate-700 rounded-lg text-xs font-semibold text-white flex items-center gap-2 cursor-pointer"
+              >
+                📸 Download PNG (2480x3508)
+              </button>
+              <button
+                onClick={() => handleExportArtwork('jpg')}
+                className="w-full text-left py-2 px-3 hover:bg-slate-700 rounded-lg text-xs font-semibold text-white flex items-center gap-2 cursor-pointer"
+              >
+                🖼️ Download JPG (High Res)
+              </button>
+              <button
+                onClick={() => handleExportArtwork('pdf')}
+                className="w-full text-left py-2 px-3 hover:bg-slate-700 rounded-lg text-xs font-semibold text-white flex items-center gap-2 cursor-pointer"
+              >
+                📄 Printable A4 PDF (300 DPI)
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -683,18 +700,39 @@ export default function ScrapbookEditor({
             })}
           </div>
 
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={() => setIsPreviewOpen(false)}
-              className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-label-caps text-xs font-bold uppercase cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-label-caps text-xs font-bold uppercase cursor-pointer"
             >
               Edit Again
             </button>
             <button
               onClick={handleSaveProject}
-              className="btn-primary px-6 py-2.5 rounded-xl font-label-caps text-xs font-bold uppercase cursor-pointer"
+              className="btn-primary px-5 py-2.5 rounded-xl font-label-caps text-xs font-bold uppercase cursor-pointer"
             >
               Save Project
+            </button>
+            <button
+              onClick={() => handleExportArtwork('png')}
+              disabled={isExporting}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-label-caps text-xs font-bold uppercase cursor-pointer flex items-center gap-1.5"
+            >
+              <Download className="w-4 h-4" /> Download PNG
+            </button>
+            <button
+              onClick={() => handleExportArtwork('jpg')}
+              disabled={isExporting}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-label-caps text-xs font-bold uppercase cursor-pointer flex items-center gap-1.5"
+            >
+              <Download className="w-4 h-4" /> Download JPG
+            </button>
+            <button
+              onClick={() => handleExportArtwork('pdf')}
+              disabled={isExporting}
+              className="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2.5 rounded-xl font-label-caps text-xs font-bold uppercase cursor-pointer flex items-center gap-1.5"
+            >
+              <Download className="w-4 h-4" /> Printable A4 PDF
             </button>
           </div>
         </div>
