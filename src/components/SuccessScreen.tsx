@@ -5,7 +5,7 @@ import { generateShareableUrl } from '../utils/share';
 
 interface SuccessScreenProps {
   creation?: Creation;
-  type?: 'card' | 'scrapbook' | 'magazine';
+  type?: 'card';
   projectName?: string;
   shareUrl?: string;
   onPreview: () => void;
@@ -25,23 +25,9 @@ export default function SuccessScreen({
   // Generate portable shareable URL
   const finalShareUrl = shareUrl || (creation ? generateShareableUrl(creation) : '');
   
-  const displayTitle = type === 'scrapbook' 
-    ? 'Book of memories is live!' 
-    : type === 'magazine' 
-      ? 'Editorial issue is printed!' 
-      : 'The magic is ready.';
-
-  const displayBadge = type === 'scrapbook'
-    ? 'Scrapbook Assembled'
-    : type === 'magazine'
-      ? 'AI Magazine Published'
-      : 'Your keepsake is live!';
-
-  const displayDesc = type === 'scrapbook'
-    ? `Copy the unique link below to share your digital scrapbook "${projectName || 'My Scrapbook'}". Your recipient can turn pages and listen to your selected music.`
-    : type === 'magazine'
-      ? `Copy the unique link below to share your digital magazine column "${projectName || 'Our Memories'}". Your recipient can read your custom written articles.`
-      : `Copy the unique link below to share your digital creation. ${creation?.recipientName || 'Your recipient'} can open it on any mobile or desktop screen.`;
+  const displayTitle = 'The magic is ready.';
+  const displayBadge = 'Your keepsake is live!';
+  const displayDesc = `Copy the unique link below to share your digital creation. ${creation?.recipientName || 'Your recipient'} can open it on any mobile or desktop screen.`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(finalShareUrl);
@@ -50,14 +36,9 @@ export default function SuccessScreen({
   };
 
   const handleWhatsAppShare = () => {
-    let text = `Hey! I created something special for you. Open this link to see it: ${finalShareUrl}`;
-    if (type === 'scrapbook') {
-      text = `Hey! I made a beautiful digital scrapbook album of our memories. Check it out here: ${finalShareUrl}`;
-    } else if (type === 'magazine') {
-      text = `Hey! Check out this custom editorial magazine I made featuring our photos and stories: ${finalShareUrl}`;
-    } else if (creation) {
-      text = `Hey ${creation.recipientName}! I created something incredibly special and custom for you. Open this surprise link to unfold your memories and see it: ${finalShareUrl}`;
-    }
+    const text = creation
+      ? `Hey ${creation.recipientName}! I created something incredibly special and custom for you. Open this surprise link to unfold your memories and see it: ${finalShareUrl}`
+      : `Hey! I created something special for you. Open this link to see it: ${finalShareUrl}`;
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };

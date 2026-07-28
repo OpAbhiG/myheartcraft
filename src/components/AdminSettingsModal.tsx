@@ -35,12 +35,7 @@ export default function AdminSettingsModal({
   const [allGlobalCards, setAllGlobalCards] = useState<Creation[]>(creations);
   const [isSyncing, setIsSyncing] = useState(false);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
-
-  // Magazines, Scrapbooks, and Open Whens States
-  const [adminMagazines, setAdminMagazines] = useState<any[]>([]);
-  const [adminScrapbooks, setAdminScrapbooks] = useState<any[]>([]);
-  const [adminOpenWhens, setAdminOpenWhens] = useState<any[]>([]);
-  const [explorerTab, setExplorerTab] = useState<'cards' | 'magazines' | 'scrapbooks' | 'openwhens'>('cards');
+  const [explorerTab, setExplorerTab] = useState<'cards'>('cards');
 
   // Global Reviews State
   const [siteReviews, setSiteReviews] = useState<SiteReview[]>([]);
@@ -104,23 +99,7 @@ export default function AdminSettingsModal({
         })
         .catch(() => setIsSyncing(false));
 
-      // Fetch Magazines
-      const savedMags = localStorage.getItem('memora_magazine_projects');
-      if (savedMags) {
-        try { setAdminMagazines(JSON.parse(savedMags)); } catch(e) {}
-      }
 
-      // Fetch Scrapbooks
-      const savedScraps = localStorage.getItem('memora_scrapbook_projects');
-      if (savedScraps) {
-        try { setAdminScrapbooks(JSON.parse(savedScraps)); } catch(e) {}
-      }
-
-      // Fetch Open Whens
-      const savedOpenWhens = localStorage.getItem('memora_open_when_projects');
-      if (savedOpenWhens) {
-        try { setAdminOpenWhens(JSON.parse(savedOpenWhens)); } catch(e) {}
-      }
     }
   }, [isOpen, creations]);
 
@@ -342,31 +321,18 @@ export default function AdminSettingsModal({
             </div>
 
             {/* Quick Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
                 <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Greeting Cards</div>
                 <div className="font-display-lg text-lg font-bold text-primary mt-1">{totalExperiences}</div>
               </div>
               <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Magazines</div>
-                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminMagazines.length}</div>
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Active Links</div>
+                <div className="font-display-lg text-lg font-bold text-primary mt-1">{activeLinks}</div>
               </div>
               <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Scrapbooks</div>
-                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminScrapbooks.length}</div>
-              </div>
-              <div className="p-2.5 bg-surface-container border border-primary/20 text-center">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Open Whens</div>
-                <div className="font-display-lg text-lg font-bold text-primary mt-1">{adminOpenWhens.length}</div>
-              </div>
-              <div className="p-2.5 bg-surface-container border border-primary/20 text-center col-span-2 md:col-span-1">
-                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Combined Views</div>
-                <div className="font-display-lg text-lg font-bold text-green-700 mt-1">
-                  {totalViews + 
-                   adminMagazines.reduce((s: number, m: any) => s + (m.views || 0), 0) + 
-                   adminScrapbooks.reduce((s: number, sc: any) => s + (sc.views || 0), 0) + 
-                   adminOpenWhens.reduce((s: number, o: any) => s + (o.views || 0), 0)}
-                </div>
+                <div className="font-label-caps text-[8px] text-on-surface-variant uppercase tracking-wider">Total Card Views</div>
+                <div className="font-display-lg text-lg font-bold text-green-700 mt-1">{totalViews}</div>
               </div>
             </div>
 
@@ -542,7 +508,7 @@ export default function AdminSettingsModal({
                   <FileText className="w-4 h-4 text-primary" />
                   <div>
                     <h3 className="font-display-lg text-sm font-bold uppercase tracking-wider text-on-background">4. Admin All Data Explorer Center</h3>
-                    <p className="text-[9px] text-on-surface-variant">Live inspection of all Memora keepsake modules (Cards, Magazines, Scrapbooks, Open Whens).</p>
+                    <p className="text-[9px] text-on-surface-variant">Live inspection of all Memora card keepsakes.</p>
                   </div>
                 </div>
 
@@ -569,23 +535,7 @@ export default function AdminSettingsModal({
                 </div>
               </div>
 
-              {/* Tab Selector */}
-              <div className="flex border border-primary p-0.5 bg-background mb-4 overflow-x-auto gap-1">
-                {(['cards', 'magazines', 'scrapbooks', 'openwhens'] as const).map(tab => (
-                  <button
-                    key={tab}
-                    onClick={() => setExplorerTab(tab)}
-                    className={`px-4 py-2 font-mono text-[9px] uppercase tracking-widest transition-all whitespace-nowrap ${
-                      explorerTab === tab ? 'bg-primary text-background font-bold' : 'text-on-surface-variant hover:text-primary'
-                    }`}
-                  >
-                    {tab === 'cards' && `Cards (${allGlobalCards.length})`}
-                    {tab === 'magazines' && `Magazines (${adminMagazines.length})`}
-                    {tab === 'scrapbooks' && `Scrapbooks (${adminScrapbooks.length})`}
-                    {tab === 'openwhens' && `Open Whens (${adminOpenWhens.length})`}
-                  </button>
-                ))}
-              </div>
+
 
               {/* Admin Search Filter Input */}
               <div className="relative mb-4">
@@ -696,140 +646,7 @@ export default function AdminSettingsModal({
                   </>
                 )}
 
-                {/* 2. Magazines Tab */}
-                {explorerTab === 'magazines' && (
-                  <>
-                    {adminMagazines
-                      .filter(m => {
-                        if (!adminSearchQuery.trim()) return true;
-                        const q = adminSearchQuery.toLowerCase();
-                        return (
-                          (m.title && m.title.toLowerCase().includes(q)) ||
-                          (m.creatorName && m.creatorName.toLowerCase().includes(q)) ||
-                          (m.recipientName && m.recipientName.toLowerCase().includes(q)) ||
-                          (m.id && m.id.toLowerCase().includes(q))
-                        );
-                      })
-                      .map((mag, idx) => (
-                        <div key={mag.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
-                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
-                            <span className="font-mono text-[11px] font-bold text-primary">{mag.id}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
-                                👁️ {mag.views || 0} Views
-                              </span>
-                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${mag.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
-                                {mag.status}
-                              </span>
-                            </div>
-                          </div>
 
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
-                            <div><strong>Title:</strong> {mag.title}</div>
-                            <div><strong>Creator:</strong> {mag.creatorName}</div>
-                            <div><strong>Recipient:</strong> {mag.recipientName}</div>
-                            <div><strong>Occasion:</strong> {mag.occasion}</div>
-                            <div><strong>Style:</strong> {mag.style}</div>
-                            <div><strong>Size:</strong> {mag.size}</div>
-                            <div><strong>Pages Count:</strong> {mag.pages?.length || 0}</div>
-                          </div>
-                        </div>
-                      ))}
-                  </>
-                )}
-
-                {/* 3. Scrapbooks Tab */}
-                {explorerTab === 'scrapbooks' && (
-                  <>
-                    {adminScrapbooks
-                      .filter(s => {
-                        if (!adminSearchQuery.trim()) return true;
-                        const q = adminSearchQuery.toLowerCase();
-                        return (
-                          (s.title && s.title.toLowerCase().includes(q)) ||
-                          (s.creatorName && s.creatorName.toLowerCase().includes(q)) ||
-                          (s.recipientName && s.recipientName.toLowerCase().includes(q)) ||
-                          (s.id && s.id.toLowerCase().includes(q))
-                        );
-                      })
-                      .map((scrap, idx) => (
-                        <div key={scrap.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
-                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
-                            <span className="font-mono text-[11px] font-bold text-primary">{scrap.id}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
-                                👁️ {scrap.views || 0} Views
-                              </span>
-                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${scrap.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
-                                {scrap.status}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
-                            <div><strong>Title:</strong> {scrap.title}</div>
-                            <div><strong>Creator:</strong> {scrap.creatorName}</div>
-                            <div><strong>Recipient:</strong> {scrap.recipientName}</div>
-                            <div><strong>Style:</strong> {scrap.style}</div>
-                            <div><strong>Size:</strong> {scrap.size}</div>
-                            <div><strong>Pages Count:</strong> {scrap.pages?.length || 0}</div>
-                          </div>
-                        </div>
-                      ))}
-                  </>
-                )}
-
-                {/* 4. Open Whens Tab */}
-                {explorerTab === 'openwhens' && (
-                  <>
-                    {adminOpenWhens
-                      .filter(o => {
-                        if (!adminSearchQuery.trim()) return true;
-                        const q = adminSearchQuery.toLowerCase();
-                        return (
-                          (o.title && o.title.toLowerCase().includes(q)) ||
-                          (o.creatorName && o.creatorName.toLowerCase().includes(q)) ||
-                          (o.recipientName && o.recipientName.toLowerCase().includes(q)) ||
-                          (o.id && o.id.toLowerCase().includes(q))
-                        );
-                      })
-                      .map((ow, idx) => (
-                        <div key={ow.id || idx} className="p-4 bg-surface-container border border-primary/20 space-y-3 text-xs shadow-sm">
-                          <div className="flex justify-between items-center border-b border-primary/10 pb-2">
-                            <span className="font-mono text-[11px] font-bold text-primary">{ow.id}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-[9px] text-green-700 bg-green-50 px-2 py-0.5 border border-green-200 font-bold">
-                                👁️ {ow.views || 0} Views
-                              </span>
-                              <span className={`px-2 py-0.5 font-label-caps text-[8px] uppercase font-bold ${ow.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
-                                {ow.status}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono bg-background p-2.5 border border-primary/10">
-                            <div><strong>Title:</strong> {ow.title}</div>
-                            <div><strong>Creator:</strong> {ow.creatorName}</div>
-                            <div><strong>Recipient:</strong> {ow.recipientName}</div>
-                            <div><strong>Occasion:</strong> {ow.occasion}</div>
-                            <div><strong>Style:</strong> {ow.style}</div>
-                            <div><strong>Envelopes Count:</strong> {ow.messages?.length || 0}</div>
-                            <div><strong>Envelopes Opened:</strong> {ow.messages?.filter((m: any) => m.status === 'OPENED').length || 0}</div>
-                          </div>
-
-                          <div className="bg-background p-3 border border-primary/10 space-y-1.5">
-                            <div className="font-bold text-[9px] text-primary uppercase border-b border-primary/5 pb-1">Envelopes List:</div>
-                            {ow.messages?.map((m: any, mIdx: number) => (
-                              <div key={mIdx} className="flex justify-between items-center text-[10px] text-on-surface-variant font-mono">
-                                <span>Envelope {mIdx + 1}: "{m.promptTitle}"</span>
-                                <span className="text-[8.5px] px-1.5 bg-primary/10 text-primary font-bold">{m.status} ({m.unlockMode})</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                  </>
-                )}
               </div>
             </div>
 

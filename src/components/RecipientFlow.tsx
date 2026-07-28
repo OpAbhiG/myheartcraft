@@ -209,7 +209,7 @@ export default function RecipientFlow({
           <div className="h-[1px] bg-primary/10 w-1/4 mx-auto" />
 
           <p className="font-body-lg text-on-surface-variant text-xs leading-relaxed max-w-md mx-auto">
-            A custom interactive digital keepsake, personalized memory scrapbook, and a sweet heartfelt letter are waiting inside.
+            A custom interactive digital keepsake and a sweet heartfelt letter are waiting inside.
           </p>
 
           <button
@@ -255,7 +255,7 @@ export default function RecipientFlow({
                 <div className="p-8 md:p-10 border border-primary/10 bg-white rounded-3xl shadow-xl relative" id="recipient-images-timeline">
                   
                   <div className="text-center mb-8">
-                    <span className="font-label-caps text-[9px] text-primary tracking-[0.15em] uppercase font-bold">Keepsake Scrapbook</span>
+                    <span className="font-label-caps text-[9px] text-primary tracking-[0.15em] uppercase font-bold">Memory Keepsake Album</span>
                     <h3 className="font-display text-2xl text-on-background tracking-tight font-bold mt-1">Our Beautiful Moments</h3>
                   </div>
 

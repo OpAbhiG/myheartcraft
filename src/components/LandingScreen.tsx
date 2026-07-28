@@ -8,18 +8,12 @@ interface LandingScreenProps {
   onNavigateToExplore: () => void;
   onNavigateToWizard: (templateId: string) => void;
   onNavigateToDashboard: () => void;
-  onNavigateToScrapbookDashboard?: () => void;
-  onNavigateToMagazineDashboard?: () => void;
-  onNavigateToOpenWhenDashboard?: () => void;
 }
 
 export default function LandingScreen({
   onNavigateToExplore,
   onNavigateToWizard,
-  onNavigateToDashboard,
-  onNavigateToScrapbookDashboard,
-  onNavigateToMagazineDashboard,
-  onNavigateToOpenWhenDashboard
+  onNavigateToDashboard
 }: LandingScreenProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<'about' | 'privacy' | 'terms' | null>(null);
@@ -403,9 +397,6 @@ export default function LandingScreen({
             <h4 className="font-label-caps text-[10px] uppercase tracking-[0.25em] font-bold text-primary mb-4">EXPERIENCES</h4>
             <ul className="space-y-2.5 text-xs text-on-surface-variant text-left">
               <li><button onClick={() => onNavigateToWizard('birthday')} className="hover:text-primary transition-colors cursor-pointer">Greeting Cards</button></li>
-              {onNavigateToMagazineDashboard && <li><button onClick={onNavigateToMagazineDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">AI Magazine Maker</button></li>}
-              {onNavigateToScrapbookDashboard && <li><button onClick={onNavigateToScrapbookDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">Collage Story Scrapbook</button></li>}
-              {onNavigateToOpenWhenDashboard && <li><button onClick={onNavigateToOpenWhenDashboard} className="hover:text-primary transition-colors font-bold text-primary cursor-pointer">"Open When..." Envelopes</button></li>}
               <li><button onClick={() => onNavigateToWizard('proposal')} className="hover:text-primary transition-colors cursor-pointer">Perfect Proposal</button></li>
               <li><button onClick={() => onNavigateToWizard('puzzle')} className="hover:text-primary transition-colors cursor-pointer">Photo Puzzle Card</button></li>
             </ul>
@@ -501,7 +492,7 @@ export default function LandingScreen({
                   Memora was born from a simple belief: in a world dominated by instant messages and temporary social posts, true emotion deserves a permanent, beautiful form.
                 </p>
                 <p className="text-xs text-on-surface-variant leading-relaxed font-body-lg">
-                  Our platform empowers creators to craft archival digital keepsakes—combining handwritten letter typography, custom memory scrapbooks, interactive photo puzzles, and synthesized audio ambiances into unforgettable experiences.
+                  Our platform empowers creators to craft archival digital keepsakes—combining handwritten letter typography, interactive photo puzzles, and synthesized audio ambiances into unforgettable experiences.
                 </p>
               </div>
             )}

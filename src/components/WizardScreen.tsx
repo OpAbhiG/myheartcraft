@@ -302,7 +302,7 @@ export default function WizardScreen({
               </div>
             )}
 
-            {/* STEP 2: LETTER & PHOTO SCRAPBOOK */}
+            {/* STEP 2: LETTER & PHOTO ALBUM */}
             {step === 2 && (
               <div className="space-y-6">
                 <div className="space-y-4 border-b border-primary/10 pb-6">
@@ -331,7 +331,7 @@ export default function WizardScreen({
                   </div>
                 </div>
 
-                {/* Photo Memory Scrapbook */}
+                {/* Photo Memory Album */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <label className="font-label-caps text-[8px] uppercase font-bold text-on-surface-variant tracking-widest">Memory Photos ({images.length})</label>
